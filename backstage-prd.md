@@ -1,8 +1,11 @@
-# BACKSTAGE FREELAW — Super PRD v2
+# BACKSTAGE FREELAW — Super PRD v3
 
-> Documento bounding para o time de Backstage.
+> O QUE construir e POR QUÊ.
 > Toda decisão, construção e priorização deve estar ancorada aqui.
 > Se não está neste documento, não existe.
+>
+> Para COMO e QUANDO construir, consulte o **Plano de Trabalho**.
+> Para o estado ideal de cada miniapp, consulte o **Discovery**.
 
 **Última atualização**: 2026-03-09
 **Owner**: VDC | **Líder de execução**: Guilherme
@@ -12,545 +15,972 @@
 
 ---
 
-## 1. CONTEXTO E POSICIONAMENTO
+## 1. CONTEXTO ESTRATÉGICO
 
-### O que é o Backstage
-Plataforma interna da Freelaw. Enquanto o Studio Offices atende o contratante e o Studio Providers atende o prestador, o **Backstage conecta todas as pontas** — centraliza gestão operacional, financeira, comercial e de pessoas.
+### 1.1 A tese da Freelaw
 
-### Estado real do código (mapeado 2026-03-09)
+A Freelaw é uma legaltech B2B SaaS para escritórios de advocacia brasileiros (2-15 advogados). O produto principal — o **Studio** — concentra 25+ funcionalidades jurídicas numa plataforma única: publicações, prazos, tarefas, documentos, processos, cálculos, consultas, CRM, IA.
+
+A **Onda Zero** (2026) é uma refundação da empresa. A tese: o mercado jurídico de PMEs no Brasil é enorme, fragmentado, e mal atendido por ferramentas genéricas. A Freelaw quer ser o sistema operacional do escritório de advocacia — e para isso precisa de uma operação interna que funcione tão bem quanto o produto que vende.
+
+### 1.2 O que é o Backstage
+
+O Backstage é a **plataforma interna da Freelaw**. Enquanto o Studio Offices atende o contratante e o Studio Providers atende o prestador, o Backstage conecta todas as pontas internas:
+
+```
+STUDIO OFFICES (cliente)     BACKSTAGE (operação)      STUDIO PROVIDERS (prestador)
+       ↕                           ↕                           ↕
+  Usa o produto    ←→    Vende, monitora,     ←→    Executa serviços
+                         cobra, suporta,
+                         retém, expande
+```
+
+O Backstage centraliza **gestão comercial** (vendas, CRM, pipeline), **gestão financeira** (receita, custos, DRE, billing), **gestão de clientes** (CS, health score, NPS, churn), **mensageria** (WhatsApp, email), **automações** (workflows, cadências) e **inteligência** (dashboards, IA, analytics).
+
+### 1.3 O problema: fragmentação operacional
+
+Hoje a operação da Freelaw depende de:
+- **HubSpot** para CRM e pipeline de vendas
+- **Google Sheets** para business plan e planejamento financeiro
+- **Ferramentas externas** para automações (Zapier, Make, scripts avulsos)
+- **Processos manuais** para acompanhamento de clientes
+
+Isso gera: dados duplicados, decisões baseadas em informação incompleta, dependência de ferramentas caras, e incapacidade de automatizar fluxos end-to-end.
+
+### 1.4 Princípio operacional
+
+> "Isso ajuda a fechar o gate da Fase 0?" — Se não, vai para o backlog.
+
+A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Backstage precisa entregar. Só depois que os 7 gates estiverem fechados é que avançamos para a visão expandida (cadências IA, omni-channel, flywheel).
+
+---
+
+## 2. PERSONAS E JOBS-TO-BE-DONE
+
+### 2.1 BDR / SDR (Aquisição de Clientes)
+
+**Quem**: Time de prospecção outbound (BDR) e qualificação inbound (SDR).
+
+**O que faz hoje**:
+- BDR usa Lead Hunter para encontrar escritórios, prospecta por telefone/email/WhatsApp
+- SDR recebe leads inbound (site, ads) e qualifica
+- Ambos agendam demos para os Closers
+
+**O que deveria fazer no Backstage**:
+- Ver KPIs diários: leads trabalhados, demos agendadas, conversão
+- Gerenciar lista de leads com score e priorização
+- Executar cadências de email/WhatsApp (sequences) sem sair do sistema
+- Ver metas vs realizado em tempo real
+
+**Módulos**: `/aquisicao`, `/vendas/outbound`, `/crm/sequences`, `/vendas/leads`
+
+**Dores atuais**: Outbound ainda depende do HubSpot para dedup e escrita. Sequences não têm motor de execução. KPIs diários estão vazios (falta binding de dados).
+
+---
+
+### 2.2 Closer (Vendas)
+
+**Quem**: Vendedores seniores que fecham deals.
+
+**O que faz hoje**:
+- Recebe leads qualificados do SDR
+- Conduz demo do produto
+- Negocia contrato e fecha venda
+- Acompanha comissão
+
+**O que deveria fazer no Backstage**:
+- Ver pipeline de deals por estágio (visualização kanban)
+- Gerenciar deals: valor, plano, desconto, contrato assinado, pós-venda
+- Acompanhar comissão (BDR 1%, Closer 5%) e forecast
+- Ver analytics de performance: ciclo de vendas, win rate, ticket médio
+
+**Módulos**: `/vendas/deals`, `/vendas/pipeline`, `/vendas/commission`, `/crm`
+
+**Dores atuais**: Pipeline funciona mas métricas de Oitiva (qualidade de ligações) não estão integradas. Forecast de comissão precisa de validação.
+
+---
+
+### 2.3 CS Manager (Customer Success)
+
+**Quem**: Gestores de sucesso do cliente. Responsáveis por retenção e expansão.
+
+**O que faz hoje**:
+- Monitora saúde dos clientes (health score)
+- Identifica clientes em risco de churn
+- Gerencia pipeline de renovações
+- Conduz NPS e atua sobre detractors
+- Faz onboarding de novos clientes
+
+**O que deveria fazer no Backstage**:
+- Ver dashboard com todos os clientes: score, trend, risk signals
+- Receber alertas automáticos quando cliente fica critical
+- Abrir ficha 360 de qualquer cliente (uso, saúde, interações, financeiro)
+- Executar playbooks pré-definidos (onboarding, risco, recovery)
+- Calcular e oferecer retention offers quando cliente quer cancelar
+
+**Módulos**: `/cs`, `/suporte/cliente/[orgId]`, `/cs/health`, `/cs/renewals`, `/cs/playbooks`
+
+**Dores atuais**: Health score existe com 5 componentes mas pesos não foram validados pelo CS. Playbooks estão vazios (0% implementado). Retention offers têm schema mas não estão conectadas. Timeline de interações mistura dados reais e mock.
+
+---
+
+### 2.4 Finance (Financeiro)
+
+**Quem**: CFO, time financeiro. Responsáveis por receita, custos, planejamento.
+
+**O que faz hoje**:
+- Acompanha MRR, churn, inadimplência
+- Gera DRE, balanço, DFC
+- Monitora unit economics (CAC, LTV, payback)
+- Planeja budget e business plan
+- Reconcilia pagamentos (Iugu, Stripe, Conta Azul)
+
+**O que deveria fazer no Backstage**:
+- Ver tudo numa tela: receita, custos, MRR, churn, inadimplência
+- Gerar relatórios sem planilhas externas
+- Business plan editável na UI (sem Google Sheets)
+- Conciliação automática entre gateways e contabilidade
+
+**Módulos**: `/financeiro/*` (28 páginas, 30+ API routes)
+
+**Dores atuais**: Módulo é o mais completo (95% do G1). Única dependência externa: Google Sheets para Business Plan. ERP (Freelaw One) é placeholder. Recebimentos e estruturas organizacionais são stubs.
+
+---
+
+### 2.5 Operações (Automações e Integrações)
+
+**Quem**: Time técnico/operacional que mantém os sistemas rodando.
+
+**O que faz hoje**:
+- Configura e monitora integrações (14 sistemas externos)
+- Cria e mantém automações (workflows, crons)
+- Debugga falhas de sync
+- Conecta novos sistemas
+
+**O que deveria fazer no Backstage**:
+- Ver dashboard de status de todas as integrações
+- Monitorar automações: quais rodaram, quais falharam, logs
+- Criar workflows via UI (trigger → condição → ação)
+- Gerenciar templates de mensagem (WhatsApp, email)
+
+**Módulos**: `/produto/workflows`, `/interno/whatsapp`, integrações
+
+**Dores atuais**: Workflow builder tem tipos e executor definidos, mas execução é STUB. Ações de automação como SMS, webhook, create_deal estão vazias. Lead scoring tem schema mas sem processador. 25 cron jobs definidos, maioria funcional, mas sem monitoramento centralizado.
+
+---
+
+### 2.6 Liderança (Gab, VDC, Didico)
+
+**Quem**: CEO, VP de tecnologia, VP comercial.
+
+**O que faz hoje**:
+- Toma decisões estratégicas baseadas em métricas
+- Acompanha performance da empresa
+
+**O que deveria fazer no Backstage**:
+- Abrir UMA tela e ver: MRR, churn rate, novos clientes, receita, despesas, health score médio, pipeline de vendas
+- Filtrar por período, plano, cohort, ICP
+- Drill-down em qualquer métrica
+
+**Módulos**: `/dashboard`, `/executive`
+
+**Dores atuais**: Dashboard existe mas não unifica todas as métricas. Analytics estão espalhados por módulos diferentes (financeiro, vendas, CS). Falta visão executiva consolidada.
+
+---
+
+### 2.7 Produto / Dev
+
+**Quem**: Time de produto e engenharia.
+
+**O que faz hoje**:
+- Gerencia design system, feature flags, audit logs
+- Usa wiki e chat interno
+- Configura AI agents
+
+**O que deveria fazer no Backstage**:
+- Gerenciar design system atualizado
+- Consultar audit logs para debugging
+- Configurar e monitorar AI agents
+- Usar wiki como base de conhecimento interna
+
+**Módulos**: `/produto/*` (112 páginas — maior módulo), `/wiki`, `/chat`
+
+**Dores atuais**: Módulo funcional mas não é prioridade para Fase 0. Não bloqueia nenhum gate.
+
+---
+
+## 3. INVENTÁRIO DO QUE EXISTE
+
+### 3.1 Números reais do código (mapeado 2026-03-09)
 
 | Métrica | Valor |
 |---------|-------|
 | Pages (Next.js) | 299 |
 | API Routes | 167+ |
 | TSX Files | 431 |
-| Database Tables | 40+ (Backstage) + 50+ (Infra DB) |
+| Database Tables (Backstage) | 40+ |
+| Database Tables (Infra DB) | 80+ (em 80 schema files) |
 | Feature Modules | 23 |
 | Integrações externas | 14 |
 | AI Agents | 4 |
+| Cron Jobs | 25 |
+| Edge Functions (Deno) | 58 |
 
 **Conclusão**: O Backstage já tem MUITA coisa construída. O problema não é "construir do zero" — é **terminar, conectar e estabilizar** o que existe.
 
-### Princípio operacional
-> "Isso ajuda a fechar o gate da Fase 0?" — Se não, vai para o backlog.
+### 3.2 Mapa de módulos
+
+| Módulo | Rota | Páginas | Status | Gate |
+|--------|------|---------|--------|------|
+| **Financeiro** | /financeiro/* | 28 | Funcional | G1, G5 |
+| **Vendas** | /vendas/* | 31 | Funcional | G3 |
+| **CRM** | /crm/* | 12 | Funcional | G3 |
+| **Aquisição** | /aquisicao/* | 6 | Parcial (stubs) | G3 |
+| **CS** | /cs/* | 9 | Parcial | G2 |
+| **Suporte** | /suporte/* | 15 | Parcial | G2, G7 |
+| **WhatsApp** | /interno/whatsapp | 12 | Parcial | G7 |
+| **Prestadores** | /prestadores/* | 12 | Funcional | — |
+| **Produto** | /produto/* | 112 | Funcional | — |
+| **RH** | /rh/* | 18 | Parcial | — |
+| **Chat** | /chat | 4 | Funcional | — |
+| **Wiki** | /wiki | 5 | Funcional | — |
+| **Oitiva** | /oitiva/* | 8 | Em dev | — |
+| **Marketing** | /marketing/* | 4 | Parcial | — |
+| **Planejamento** | /planejamento | — | Parcial | — |
+| **Dashboard** | /dashboard | — | Funcional | G5 |
+
+### 3.3 Integrações externas (14)
+
+| Integração | O que faz | Direção | Status | Gate |
+|------------|-----------|---------|--------|------|
+| **HubSpot** | CRM legado (16 entidades: contacts, companies, deals, calls, meetings, etc.) | Bidirecional → migrando para read-only | Ativo — em deprecação | G3 |
+| **Stripe** | Billing para clientes novos. Webhook de eventos. | Inbound (webhooks) | Ativo — primário | G1 |
+| **Iugu** | Billing legado. Sync via ETL (customers, subscriptions, invoices, financials). | Sync periódico | Ativo — sync estável | G1, G6 |
+| **Omie** | ERP. Schema existe mas sem sync ativo. | — | Schema pronto, inativo | G6 |
+| **Meta Ads** | Marketing analytics. Dados de campanhas e CAPI. | Inbound | Ativo | — |
+| **Google Ads** | Marketing analytics. Dados de campanhas. | Inbound | Ativo | — |
+| **Conta Azul** | Contabilidade. Sync de despesas e categorias. | Sync periódico | Ativo | G1, G6 |
+| **Evolution** | WhatsApp Business API. Envio/recebimento de mensagens. | Bidirecional | Ativo | G7 |
+| **Blip** | Chatbot para atendimento automatizado. | Bidirecional | Ativo | G7 |
+| **Banco Inter** | Banking (mTLS + OAuth). Transações e reconciliação. | Inbound | Pronto, inativo | G6 |
+| **Notion** | Documentação. Sync de conteúdo. | Inbound | Ativo | — |
+| **Slack** | Comunicação interna. Notificações e alertas. | Outbound | Ativo | G2 |
+| **Golden Record** | Entity resolution. Unificação de registros duplicados. | Bidirecional | Ativo | G3 |
+| **Clicksign** | Assinatura digital de contratos. | Bidirecional | Ativo | G3 |
+
+### 3.4 AI Agents (Mastra)
+
+| Agent | Função | Status |
+|-------|--------|--------|
+| **CEO IA** | Insights executivos sobre métricas da empresa. Responde perguntas estratégicas. | Ativo |
+| **Maria Insights** | Análise financeira. Interpreta DRE, MRR, churn. | Ativo |
+| **Oitiva Evaluation** | Avalia qualidade de ligações de vendas via transcrições. Scorecards com critérios ponderados. | Em desenvolvimento |
+| **Backstage Assistant** | Assistente geral do Backstage. Ajuda a navegar e encontrar informação. | Ativo |
+
+### 3.5 Domínios no backstage-core
+
+| Domínio | Entidades principais |
+|---------|---------------------|
+| **Finance** | Subscriptions (Stripe+Iugu), MRR calculation, DRE, Budget, Cashflow, Unit Economics (CAC, LTV, payback) |
+| **Leads** | Lead Hunter (prospecção B2B com IA), filtros por localidade, Google Places enrichment, Exa data enrichment |
+| **Comunidade** | Provider funnel, tiers (S+ a D), journey phases, saturação, ranking |
+| **Retention** | Churn risk signals, health score (5 componentes), risk levels, trends, retention offers |
+| **Marketing** | Ad campaigns (Meta/Google), content analytics, channel performance, CAPI integration |
 
 ---
 
-## 2. O QUE JÁ EXISTE (INVENTÁRIO REAL)
+## 4. OS 7 GATES — ESPECIFICAÇÃO DE PRODUTO
 
-### 2.1 Módulos do Backstage (UI)
+### 4.1 G1: Gestão financeira centralizada
 
-| Módulo | Rota | Status | Notas |
-|--------|------|--------|-------|
-| **Vendas** | /vendas/* | Funcional | Deals, pipeline, leads, performance, analytics, comissões |
-| **Aquisição** | /aquisicao/* | Funcional | BDR/SDR, KPIs diários, lead hunter, metas |
-| **Financeiro** | /financeiro/* | Funcional | Receita, custos, DRE, MRR, LTV, churn, forecast, budget |
-| **CRM** | /crm/* | Funcional | Contatos, empresas, negócios, atividades, sequences |
-| **CS** | /cs/* | Parcial | Health score, churn, NPS, renewals, journey |
-| **Suporte** | /suporte/* | Parcial | Inbox, WhatsApp, chatbot, analytics, knowledge base |
-| **Prestadores** | /prestadores/* | Funcional | Capacidade, ranking, KPIs, base de conhecimento |
-| **RH** | /rh/* | Parcial | Org chart, recrutamento |
-| **Chat interno** | /chat | Funcional | Canais, DMs, threads |
-| **Wiki** | /wiki | Funcional | Knowledge base interna |
-| **Oitiva** | /oitiva/* | Em dev | Avaliações, scorecards, transcrições |
-| **Produto** | /produto/* | Funcional | Design system, academy, audit logs, workflows, agents |
-| **Planejamento** | /planejamento | Parcial | OKRs, forecasts |
-| **Marketing** | /marketing/* | Parcial | Ferramentas de marketing |
-| **Dashboard** | /dashboard | Funcional | Dashboard principal |
+**Declaração**: Toda operação financeira da Freelaw é consultável, analisável e planejável dentro do Backstage, sem dependência de planilhas externas.
 
-### 2.2 Database Schemas (Drizzle ORM)
+**Completude estimada**: 95%
 
-**Tabelas backstage-específicas** (src/db/schema/):
-- users, sales_people, funnels, deals, goals, activities
-- financeiro (vendor_category_mapping, fin_estruturas, fin_centros_custo)
-- hubspot_* (DEPRECATED - migrando para v3.4)
-- chat, chatbots, clicksign, org_chart
-- planejamento, reports, wiki, support, imports, integrations
+**User stories**:
+- Como CFO, quero ver MRR atual, churn rate e inadimplência numa única tela, para saber a saúde financeira da empresa.
+- Como Finance, quero gerar DRE mensal sem exportar para planilha, para fechar o mês mais rápido.
+- Como Finance, quero editar o Business Plan dentro do Backstage, sem precisar do Google Sheets.
+- Como Finance, quero que a conciliação Iugu vs contabilidade funcione automaticamente, para identificar divergências.
 
-**Tabelas infra (re-exported de @freelaw/infra-db)**:
-- v2_sales.* — Dados de vendas
-- v2_sync.* — Sync financeiro (Iugu)
-- v2_billing.* — 24 tabelas de billing
-- v2_customers.* — Dados de clientes
-- v2_subscriptions.* — Subscrições
-- v2_invoices.* — Faturas
+**Estado atual (evidência do código)**:
+- **Receita**: overview, assinaturas, faturamento, billing, novo-MRR → FUNCIONAL
+- **Custos**: despesas (sync Conta Azul), prestadores, nova-sede → FUNCIONAL
+- **Relatórios**: DRE, balanço, DFC, KPIs, auditoria, relatório diário → FUNCIONAL
+- **Análise**: churn, inadimplência, unit economics (CAC/LTV/payback), analytics → FUNCIONAL
+- **Planejamento**: business plan com import/export Google Sheets, estratégico → FUNCIONAL
+- **Configurações**: categorias (vendor_category_mapping), centros de custo (fin_centros_custo), estruturas (fin_estruturas) → FUNCIONAL
+- **Conciliação**: Iugu vs GL → FUNCIONAL
+- **Schemas de billing**: v2_billing com 24+ tabelas (customers, plans, subscriptions, invoices, invoice_items, ai_credits, subscription_events, retention_offer_configs, promotional_coupons, cancellation_tracking)
+- **Sync financeiro**: sync.iugu_customers, sync.iugu_subscriptions, sync.iugu_invoices, sync.iugu_financial_transactions, sync.iugu_receivables
 
-### 2.3 Integrações externas (14)
+**Gaps**:
+- ERP (Freelaw One) → PLACEHOLDER ("em construção") — decisão: entra na Fase 0?
+- Recebimentos → STUB
+- Estruturas organizacionais → STUB ("em breve")
+- Google Sheets como dependência externa para Business Plan
 
-| Integração | Função | Status |
-|------------|--------|--------|
-| HubSpot | CRM (16 entidades) | Ativo - migrando p/ interno |
-| Stripe | Billing (clientes novos) | Ativo - primário |
-| Iugu | Billing (legado) | Ativo - sync via ETL |
-| Omie | ERP | Ativo |
-| Meta Ads | Marketing | Ativo |
-| Google Ads | Marketing | Ativo |
-| Conta Azul | Contabilidade | Ativo |
-| Evolution | WhatsApp | Ativo |
-| Blip | Chatbot | Ativo |
-| Banco Inter | Banking (mTLS+OAuth) | Ativo |
-| Notion | Docs | Ativo |
-| Slack | Comunicação | Ativo |
-| Golden Record | Entity resolution | Ativo |
-| Clicksign | Assinatura digital | Ativo |
+**Critérios de aceite**:
+- [ ] Toda operação financeira consultável no Backstage (nenhum dado só em planilha)
+- [ ] Business Plan editável 100% na UI (import/export CSV como fallback)
+- [ ] Sync Iugu + Conta Azul estável (7 dias sem falha)
+- [ ] DRE, KPIs, Unit Economics com dados reais e atualizados
+- [ ] Zero dependência de Google Sheets para dados financeiros
 
-### 2.4 AI Agents (Mastra)
+**Dependências técnicas**:
+- Tabelas: v2_billing.*, sync.iugu_*, budgetCenarios, budgetDespesas, budgetMetas, mrrMovimentos, unitEconomicsSnapshots, vendor_category_mapping, fin_estruturas, fin_centros_custo
+- APIs: /api/financeiro/* (30+ routes)
+- Externas: Iugu (sync), Stripe (webhooks), Conta Azul (sync)
 
-| Agent | Função |
-|-------|--------|
-| CEO IA | Insights executivos, decisões estratégicas |
-| Maria Insights | Análise financeira |
-| Oitiva Evaluation | Análise de performance |
-| Backstage Assistant | Assistente geral |
-
-### 2.5 Domínios no backstage-core (packages/backstage-core/)
-
-| Domínio | O que tem |
-|---------|-----------|
-| Finance | Subscriptions (Stripe+Iugu), MRR, DRE, Budget, Cashflow, Unit Economics |
-| Leads | Lead Hunter (prospecção B2B com IA), filtros, Google Places |
-| Comunidade | Provider funnel, tiers (S+ a D), journey phases |
-| Retention | Churn risk signals, health score, risk levels, trends |
-| Marketing | Ad campaigns, content analytics, channel performance |
+**Riscos**:
+- Google Sheets elimination pode afetar workflow do CFO — validar antes de remover
 
 ---
 
-## 3. GATES DA FASE 0 — MAPEADOS CONTRA O CÓDIGO
+### 4.2 G2: Acompanhar Cliente v1
 
-### G1: Gestão operacional e financeira centralizada
+**Declaração**: O time de CS consegue acompanhar a saúde de qualquer cliente ativo numa única tela, receber alertas quando algo piora, e agir com playbooks pré-definidos.
 
-**O que já existe:**
-- Módulo financeiro completo (/financeiro/*) com DRE, MRR, custos, receita
-- 30+ API routes de financeiro
-- Sync com Iugu e Stripe funcionando
-- Budget e forecast parcialmente implementados
+**Completude estimada**: 73%
 
-**O que falta para fechar o gate:**
-- [ ] Validar que TODA operação financeira está consultável no Backstage
-- [ ] Eliminar dependência de planilhas externas
-- [ ] Garantir que dados de Omie/Conta Azul estão sincronizados
-- [ ] Dashboard financeiro unificado (um lugar só para ver tudo)
+**User stories**:
+- Como CS Manager, quero ver o health score de todos os clientes numa lista ordenável, para priorizar quem precisa de atenção.
+- Como CS Manager, quero receber alerta no Slack quando um cliente cai para "critical" (score < 40), para agir imediatamente.
+- Como CSM, quero ver todas as interações (WhatsApp, email, suporte, NPS) de um cliente numa timeline unificada, para ter contexto antes de ligar.
+- Como CS Manager, quero ativar um playbook de "cliente em risco" que cria tarefas automáticas para o CSM responsável.
+- Como CSM, quero ver o pipeline de renovações com data, valor e probabilidade, para planejar meu mês.
+- Como CS Manager, quero calcular retention offers automaticamente quando um cliente quer cancelar.
 
-**Estimativa**: 2-3 semanas | **Complexidade**: Média
+**Estado atual (evidência do código)**:
+- **Health Score**: tabela crm.customer_health_scores com 5 componentes:
+  - productUsageScore (0-100) — inputs: DAU, WAU, MAU, featureAdoption, lastLoginAt
+  - engagementScore (0-100) — inputs: emailOpenRate, meetingsAttended, trainingCompleted
+  - supportScore (0-100) — inputs: ticketsLast30Days, avgResolutionTime, csatScore
+  - financialScore (0-100) — inputs: mrr, paymentStatus, invoicesOverdue
+  - advocacyScore (0-100) — inputs: npsScore, referralsGiven, caseStudyParticipant
+  - Status: healthy (≥70), at_risk (40-69), critical (<40)
+  - Trend: improving | stable | declining
+  - Risk signals: array de {type, severity (low/medium/high), description, detectedAt}
+  - Opportunities: array de {type (upsell/cross_sell/expansion), product, estimatedValue, confidence}
+- **Customer 360 API**: agrega 9 fontes — CRM, billing, health, support, WhatsApp, AI, onboarding, churn predictions, NPS
+- **NPS**: surveys + respostas + score (promoter 9-10, passive 7-8, detractor 0-6)
+- **Renovações**: pipeline com status (upcoming, in_negotiation, renewed, churned, downgraded, upgraded)
+- **Journey**: 7 estágios (onboarding → adoption → value_realization → expansion → advocacy → at_risk → churned)
+- **Churn Predictions**: predições com risk score, fatores, ações recomendadas → FUNCIONAL
+- **Playbooks**: → VAZIO (0% implementado)
+- **Retention Offers**: schema existe (retention_offer_configs com tipos: discount_percentage, discount_fixed, upgrade_discount, free_months, custom) mas NÃO conectado à UI
 
----
+**Gaps**:
+- Playbooks: 0% — precisa de pelo menos 3 para a Fase 0
+- Retention offers: engine construída mas não wired
+- Timeline de interações: mistura dados reais e mock
+- Health score: pesos dos componentes não validados pelo CS
+- Dados de uso do Studio: dependem do time de Migração
 
-### G2: Acompanhar Cliente v1
+**Critérios de aceite**:
+- [ ] /suporte/cliente/[orgId] carrega para qualquer cliente ativo com dados reais
+- [ ] Health score calculado para 100% dos clientes ativos (cron rodando)
+- [ ] Alerta automático no Slack quando score < 40
+- [ ] Timeline de interações unificada (WhatsApp + email + suporte + NPS) com dados reais
+- [ ] 3 playbooks CS operando (onboarding, cliente em risco, NPS detractor)
+- [ ] Retention offers calculáveis via API
 
-**O que já existe:**
-- Rota /cs/* com health score, churn, NPS, renewals, journey
-- CustomerHealthScore no backstage-core (overall + component scores)
-- ChurnRiskSignal com scoring e ações recomendadas
-- Dados de uso do Studio via analytics
+**Dependências técnicas**:
+- Tabelas: crm.customer_health_scores, crm.nps_responses, crm.renewal_tracking, crm.customer_journey
+- APIs: /api/customer-360/[id], /api/customer-success/health, /api/customer-success/retention-offers
+- Externas: dados de uso do Studio (depende time Migração), Slack (alertas)
 
-**O que falta para fechar o gate:**
-- [ ] Dashboard por cliente funcional (uso, saúde, interações em uma tela)
-- [ ] Health score calculado e visível para todos os clientes ativos
-- [ ] Histórico de interações consolidado (WhatsApp + email + ligações + suporte)
-- [ ] Alertas automáticos para clientes em risco
-
-**Estimativa**: 2-3 semanas | **Complexidade**: Média-Alta
-
----
-
-### G3: Pipeline e gestão de clientes unificados
-
-**O que já existe:**
-- CRM completo (/crm/*) com contatos, empresas, negócios, atividades, sequences
-- Sales funnel management (BDR/SDR/Closer)
-- Deal tracking + pipeline (/vendas/*)
-- HubSpot sync ativo (mas em deprecação)
-
-**O que falta para fechar o gate:**
-- [ ] Migrar 100% dos dados do HubSpot para o Backstage
-- [ ] Desligar dependência do HubSpot como fonte de verdade
-- [ ] Garantir que todo o funil de vendas opera dentro do Backstage
-- [ ] Sequences (cadências de email) funcionando end-to-end
-
-**Estimativa**: 3-4 semanas | **Complexidade**: Alta (migração de dados + mudança de processo)
-
----
-
-### G4: Automações internas
-
-**O que já existe:**
-- Workflow builder (/produto/workflows/*)
-- 26+ cron jobs definidos
-- Sequences (cadências) parcialmente implementados
-- 58 Edge Functions (Deno)
-
-**O que falta para fechar o gate:**
-- [ ] Inventariar TODAS as automações que rodam fora do Backstage
-- [ ] Migrar automações críticas para dentro (workflows ou crons)
-- [ ] Eliminar ferramentas de automação terceirizadas
-- [ ] Monitoramento de automações (falhas, execuções)
-
-**Estimativa**: 2-3 semanas | **Complexidade**: Média
+**Riscos**:
+- Dados de uso do Studio podem não estar disponíveis a tempo (dep. Juju)
+- Pesos do health score precisam ser validados com o CS antes de produzir
+- Sem playbooks, o CS não tem ação padronizada para clientes em risco
 
 ---
 
-### G5: Dashboard unificado de métricas
+### 4.3 G3: Pipeline e CRM unificados (matar HubSpot)
 
-**O que já existe:**
-- /dashboard principal
-- /financeiro/analise/* (churn, analytics, unit economics)
-- /vendas/analytics/* (CRM, churn cohort, form analysis, plan mix)
-- /aquisicao/kpis-diarios
-- PostHog integrado
+**Declaração**: Todo o funil de vendas — da prospecção ao fechamento — opera dentro do Backstage, com CRM nativo e zero dependência do HubSpot como fonte de verdade.
 
-**O que falta para fechar o gate:**
-- [ ] UM dashboard que mostra: MRR, churn, aquisição, operação, saúde de clientes
-- [ ] Métricas em tempo real (não batch diário)
-- [ ] Filtros por período, cohort, plano, ICP
-- [ ] Acesso rápido para liderança (Gab, VDC, Didico)
+**Completude estimada**: 70%
 
-**Estimativa**: 2 semanas | **Complexidade**: Média
+**User stories**:
+- Como Closer, quero gerenciar meu pipeline de deals no Backstage, sem precisar abrir o HubSpot.
+- Como BDR, quero prospectar leads no outbound sem que o sistema precise do HubSpot para dedup.
+- Como SDR, quero criar e executar cadências de email (sequences) nativamente no Backstage.
+- Como VP Comercial, quero ver métricas de conversão por estágio do pipeline em tempo real.
+- Como vendedor, quero ver o histórico completo de interações com um lead/empresa numa timeline.
 
----
+**Estado atual (evidência do código)**:
+- **CRM nativo (v2_sales)**: Schema completo com:
+  - leads (status: new → contacted → qualified → unqualified → nurturing → converted → lost)
+  - contacts (lifecycle: subscriber → lead → mql → sql → opportunity → customer → evangelist)
+  - companies (type: prospect, customer, partner, competitor; enrichment via Google Places + Exa)
+  - deals (status: open, won, lost; com pipeline_id e stage_id)
+  - pipelines (types: sales, support, onboarding, provider_acquisition)
+  - stages (com probability, daysInStage, isWon, isClosed)
+  - activities (types: call, email, meeting, demo, task, note, follow_up)
+  - proposals (status: draft → sent → viewed → accepted/rejected/expired)
+  - sales_targets (metas por pessoa, time, período)
+- **Sequences (v2_sales)**: Schema COMPLETO mas sem motor de execução:
+  - sequences (status: draft, active, paused, archived; com enrollment limits)
+  - sequence_steps (types: email, call, linkedin_connect, linkedin_message, whatsapp, sms, manual_task; com delay days/hours)
+  - sequence_enrollments (status: active, paused, completed, replied, bounced, unsubscribed, opted_out, meeting_booked)
+  - step_executions (status: pending → scheduled → sent → delivered → opened → clicked → replied → bounced → failed → skipped)
+- **HubSpot sync**: Ainda ativo para:
+  - Sync de dados entrando (contacts, companies, deals)
+  - Outbound dedup (dedupHubspot() consulta HubSpot antes de criar)
+  - Escrita de novos leads (hubspotWrite() envia para HubSpot)
+  - Provider onboarding
+  - hubspot_sync_log ainda em uso
 
-### G6: Integrações estabilizadas
+**Gaps**:
+- Motor de execução de sequences: schema completo mas **não existe cron que processa enrollments e envia emails**
+- Outbound pipeline: dedup ainda usa HubSpot API
+- Provider onboarding: depende de HubSpot
+- Dados históricos do HubSpot: decisão pendente sobre migrar ou perder
+- Tracking de opens/clicks/replies: schema existe (step_executions) mas sem webhook processing
 
-**O que já existe:**
-- 14 integrações ativas
-- Sync engine operando
-- Dual-write para v2_billing
+**Critérios de aceite**:
+- [ ] HubSpot sync desligado (cron desabilitado, HUBSPOT_ACCESS_TOKEN removido)
+- [ ] Contacts, companies, deals criados nativamente em v2_sales
+- [ ] Outbound pipeline funciona sem HubSpot (dedup consulta v2_sales.companies por domain)
+- [ ] Provider onboarding funciona sem HubSpot
+- [ ] Sequences: criar, enrollar, enviar email (via Resend), trackear opens/clicks/replies
+- [ ] Pipeline de vendas 100% no Backstage (zero operação no HubSpot)
 
-**O que falta para fechar o gate:**
-- [ ] Auditoria de TODAS as integrações (quais falham? quais estão atrasadas?)
-- [ ] Monitoramento ativo com alertas
-- [ ] Resolver pendências críticas identificadas na auditoria
-- [ ] Documentar cada integração (o que sincroniza, frequência, fallback)
+**Dependências técnicas**:
+- Tabelas: v2_sales.leads, v2_sales.contacts, v2_sales.companies, v2_sales.deals, v2_sales.pipelines, v2_sales.stages, v2_sales.activities, v2_sales.sequences, v2_sales.sequence_steps, v2_sales.sequence_enrollments, v2_sales.step_executions
+- APIs: /api/crm/*, /api/vendas/*, /api/crm/sequences
+- Externas: Resend (envio de emails), Clicksign (assinatura de contratos), Golden Record (dedup)
 
-**Estimativa**: 1-2 semanas | **Complexidade**: Média
-
----
-
-### G7: Mensageria no monorepo
-
-**O que já existe:**
-- WhatsApp via Evolution + Blip
-- /suporte/whatsapp
-- Email routes (6+ endpoints)
-- Chat interno funcional
-
-**O que falta para fechar o gate:**
-- [ ] WhatsApp business integrado e operando dentro do monorepo
-- [ ] Email transacional e marketing operando internamente
-- [ ] Histórico de todas as mensagens consolidado por cliente/lead
-- [ ] Templates de mensagem gerenciáveis pelo time
-
-**Estimativa**: 2-3 semanas | **Complexidade**: Média-Alta
-
----
-
-## 4. VISÃO DO GAB — MAPEADA CONTRA O QUE EXISTE
-
-### 4.1 Estrutura de dados unificada com cohortização
-
-| Requisito | Status | Onde está |
-|-----------|--------|-----------|
-| Dados unificados | Parcial | v2_customers + v2_billing + deals. Falta consolidar. |
-| Cohortização | Parcial | /vendas/analytics/churn-cohort existe. Falta generalizar. |
-| Segmentação | Parcial | Filtros existem em vários módulos. Falta ser transversal. |
-
-**Gap principal**: Não existe uma "visão 360 do cliente" única. Dados estão em deals, customers, subscriptions, support tickets, separados.
-
-### 4.2 Cadências automáticas/semi-automáticas
-
-| Canal | Humano | IA | Status |
-|-------|--------|-----|--------|
-| Ligação | /crm/atividades | Não existe | Tarefa agendada existe, IA não |
-| WhatsApp | /suporte/whatsapp | Chatbot básico | Parcial |
-| Email | /crm/sequences | Não existe | Sequences parcial, IA não |
-
-**Gap principal**: Cadências existem como conceito (/crm/sequences) mas não estão conectadas end-to-end. IA para cadências não existe.
-
-### 4.3 Sistema omni-channel
-
-| Canal | Status | Onde |
-|-------|--------|------|
-| WhatsApp | Parcial | /suporte/whatsapp + Evolution/Blip |
-| Email | Parcial | API routes existem, UI parcial |
-| Ligação | Não existe | Apenas registro manual |
-| Chat interno | Funcional | /chat |
-
-**Gap principal**: Canais existem separados. Não há visão unificada de "todas as interações com este cliente/lead".
-
-### 4.4 IA por área
-
-| Área | O que existe | O que falta |
-|------|-------------|-------------|
-| Vendas | Maria Insights (financeiro), Lead Hunter | IA coaching SDR/Closer, comparativo humano vs IA |
-| Marketing | Nada específico | Pipeline conteúdo, SEO, mídia paga com IA |
-| CS | ChurnRiskSignal, HealthScore | Tratativa inteligente, onboarding com IA |
-
-**Gap principal**: IA existe como infraestrutura (Mastra, 4 agents) mas não está aplicada para coaching, automação de cadências, ou comparativos.
+**Riscos**:
+- **GATE MAIS CRÍTICO**. Migração HubSpot é mudança de processo, não só de código.
+- Dados históricos do HubSpot: se perder, perde contexto de vendas passadas
+- Sequence engine precisa ser construída do zero (schema pronto, execução não)
+- Time de vendas precisa ser treinado na nova ferramenta
 
 ---
 
-## 5. PROBLEMAS TÉCNICOS CRÍTICOS (DÉBITO)
+### 4.4 G4: Automações internas
 
-### Segurança (P0)
-- **~167 API routes sem autenticação** — CRÍTICO
+**Declaração**: Todas as automações críticas da operação rodam dentro do Backstage, com monitoramento, logs, e UI para gerenciamento.
+
+**Completude estimada**: 60%
+
+**User stories**:
+- Como Operações, quero ver todas as automações rodando no Backstage com status e logs.
+- Como Operações, quero criar automações simples (trigger → condição → ação) sem escrever código.
+- Como Marketing, quero que leads que atingem certo score entrem automaticamente numa cadência.
+- Como vendedor, quero que tarefas sejam criadas automaticamente quando um deal muda de estágio.
+
+**Estado atual (evidência do código)**:
+- **Workflow Builder**: tipos e executor definidos, mas execução é STUB (simula trabalho)
+- **Marketing Automations**: CRUD + cron rodando a cada 5min + enrollment engine → PARCIAL
+  - Ações funcionais: send_email (Resend), send_whatsapp (Evolution), set_contact_property, create_task
+  - Ações STUB: send_sms, create_deal, webhook, internal_notification
+- **Lead Scoring**: schema de regras (lead_scoring_rules) existe → SEM PROCESSADOR (nenhum cron calcula scores)
+- **Cron Jobs**: 25 definidos → maioria funcional mas sem monitoramento centralizado
+- **Edge Functions**: 58 Deno functions → separadas do monorepo
+
+**Gaps**:
+- Workflow execution é stub — não executa ações reais
+- Lead scoring processor não existe
+- 4 ações de automação são stub (SMS, deal, webhook, notification)
+- Sem UI para monitorar automações (logs, falhas, re-runs)
+- Inventário de automações externas (Zapier, Make) não feito
+- Sem monitoramento centralizado dos 25 crons
+
+**Critérios de aceite**:
+- [ ] Marketing automations rodando (cron 5min, TODAS as ações funcionais ou com fallback logado)
+- [ ] Lead scoring processor ativo (cron calcula scores baseado em regras)
+- [ ] UI para listar automações, ativar/desativar, ver enrollments, ver logs
+- [ ] Ferramentas externas de automação eliminadas (ou justificadas com plano de migração)
+- [ ] Logs de execução acessíveis para debugging
+
+**Dependências técnicas**:
+- Tabelas: v2_sales.sequences (reusa para cadências), marketing_automations, lead_scoring_rules
+- APIs: /api/automations/*, /api/cron/*
+- Externas: Resend (email), Evolution (WhatsApp)
+
+**Riscos**:
+- Sem inventário de automações externas, podemos esquecer algo crítico
+- Workflow builder visual pode ser escopo demais para Fase 0 — priorizar execução sobre UI de criação
+
+---
+
+### 4.5 G5: Dashboard unificado de métricas
+
+**Declaração**: A liderança da Freelaw abre UMA tela no Backstage e vê todas as métricas-chave da empresa em tempo real.
+
+**Completude estimada**: 90%
+
+**User stories**:
+- Como CEO, quero abrir o Backstage e ver MRR, churn, novos clientes, NPS, health score médio — tudo numa tela.
+- Como VP Comercial, quero filtrar métricas por período, plano e cohort para entender tendências.
+- Como CFO, quero ver receita vs despesas e unit economics atualizados.
+
+**Estado atual (evidência do código)**:
+- /dashboard: hub principal com links para módulos → FUNCIONAL
+- /financeiro/analise/*: churn analytics, unit economics → FUNCIONAL
+- /vendas/analytics/*: CRM analytics, churn cohort, form analysis, plan mix → FUNCIONAL
+- /aquisicao/kpis-diarios: KPIs diários de aquisição → PARCIAL (dados vazios)
+- PostHog integrado para analytics de produto
+
+**Gaps**:
+- Não existe UM dashboard executivo que consolide tudo
+- Métricas estão espalhadas por módulos diferentes
+- Aquisição KPIs mostrando zeros (falta binding de dados)
+- Falta métricas de CS (health score médio, clientes em risco) no dashboard
+
+**Critérios de aceite**:
+- [ ] UMA página /executive com: MRR, churn rate, novos clientes, receita, despesas, health score médio, pipeline de vendas
+- [ ] Filtros: período, plano, cohort, ICP
+- [ ] Dados atualizados (real-time ou < 24h)
+- [ ] Aprovado por Gab e VDC
+
+**Dependências técnicas**:
+- Tabelas: v2_billing.subscriptions (MRR), crm.customer_health_scores (health), v2_sales.deals (pipeline), v2_sales.leads (aquisição)
+- APIs: /api/dashboard/*, /api/financeiro/*, /api/customer-success/*
+- Depende: G1 (dados financeiros) e G2 (dados de CS) parcialmente prontos
+
+**Riscos**:
+- Baixo — maioria dos dados já existe, é questão de consolidar numa view
+
+---
+
+### 4.6 G6: Integrações estabilizadas
+
+**Declaração**: Todas as 14 integrações externas estão monitoradas, documentadas, e operando sem falhas críticas.
+
+**Completude estimada**: 85%
+
+**User stories**:
+- Como Operações, quero ver o status de cada integração (ok, falha, atrasada) num dashboard.
+- Como Operações, quero receber alerta no Slack quando uma integração falha.
+- Como Dev, quero documentação de cada integração (o que sincroniza, frequência, credenciais, fallback).
+
+**Estado atual (evidência do código)**:
+- **Iugu**: sync estável (customers, subscriptions, invoices, financial_transactions, receivables, plans)
+- **Conta Azul**: sync estável (despesas, categorias)
+- **Stripe**: webhooks funcionando (subscription events, invoice events)
+- **Banco Inter**: mTLS + OAuth implementado, pronto mas INATIVO
+- **Omie**: schema existe mas sync não implementado
+- **HubSpot**: sync ativo mas em deprecação (migra para G3)
+- **Evolution/Blip**: WhatsApp operando
+- **Meta/Google Ads**: ads analytics funcionando
+- Sync engine com dual-write para v2_billing
+
+**Gaps**:
+- Sem monitoramento centralizado com alertas
+- Omie sync não implementado
+- Banco Inter inativo (decisão pendente)
+- Sem documentação formal de cada integração
+- Sem SLA definido para cada sync
+
+**Critérios de aceite**:
+- [ ] Auditoria completa das 14 integrações (status, última sync, erros)
+- [ ] Monitoramento ativo com alertas Sentry/Slack para falhas
+- [ ] Zero falhas críticas em 7 dias consecutivos
+- [ ] Documentação de cada integração (o que sincroniza, frequência, credenciais, fallback)
+
+**Dependências técnicas**:
+- Tabelas: sync.* (todas as tabelas de sync externo)
+- Infra: Sentry (monitoramento), Slack (alertas)
+
+**Riscos**:
+- Baixo — integrações já funcionam, falta formalizar monitoramento e documentação
+
+---
+
+### 4.7 G7: Mensageria no monorepo
+
+**Declaração**: Toda comunicação com clientes e leads (WhatsApp, email) opera dentro do monorepo, com histórico consolidado por cliente e templates gerenciáveis.
+
+**Completude estimada**: 85%
+
+**User stories**:
+- Como CSM, quero enviar WhatsApp para um cliente direto do Backstage, sem trocar de ferramenta.
+- Como vendedor, quero que emails de cadências sejam enviados automaticamente pelo Backstage.
+- Como CS Manager, quero ver TODAS as mensagens (WhatsApp + email + suporte) de um cliente numa timeline.
+- Como Operações, quero gerenciar templates de mensagem (WhatsApp e email) pelo Backstage.
+
+**Estado atual (evidência do código)**:
+- **WhatsApp**: Evolution API para envio/recebimento → FUNCIONAL
+  - v2_comms.conversations (com department, channel, status, assignedTo)
+  - v2_comms.messages (com direction, senderType, content, attachments, readAt, deliveredAt)
+  - v2_comms.message_identities (mapeia contatos cross-channel: phone_hash, email, whatsapp_jid)
+- **Email**: Resend para envio transacional → FUNCIONAL (6+ endpoints)
+  - v2_comms.email_logs (tracking completo com status history)
+  - v2_comms.notification_templates (templates por canal: email, push, sms, in_app, whatsapp, slack)
+- **Chat interno**: /chat com canais, DMs, threads → FUNCIONAL
+- **Blip**: Chatbot para atendimento automatizado → FUNCIONAL
+- **Inbox unificado**: /suporte/inbox → FUNCIONAL (complexo)
+- **AI Classification**: v2_comms.ai_message_classification (classifica mensagens como sales/support/cs/marketing com confidence score)
+
+**Gaps**:
+- SMS: stub (sem provedor configurado)
+- Histórico consolidado por cliente: conversas existem em v2_comms.conversations mas não estão linkadas ao Customer 360 de forma unificada
+- Templates avançados: schema existe (notification_templates) mas UI de gerenciamento não validada
+- Webhook de respostas WhatsApp: parcialmente implementado
+
+**Critérios de aceite**:
+- [ ] WhatsApp enviando e recebendo dentro do monorepo (Evolution API)
+- [ ] Email transacional funcionando (Resend)
+- [ ] Histórico consolidado por cliente: dado um cliente, listar TODAS as interações (WhatsApp + email + suporte) ordenadas por data
+- [ ] Templates de mensagem gerenciáveis pelo time via UI
+- [ ] Webhook de respostas (WhatsApp) processando e aparecendo no histórico
+
+**Dependências técnicas**:
+- Tabelas: v2_comms.conversations, v2_comms.messages, v2_comms.message_identities, v2_comms.notification_templates, v2_comms.email_logs, v2_comms.ai_message_classification
+- APIs: /api/whatsapp/*, /api/email/*, /api/suporte/inbox
+- Externas: Evolution (WhatsApp), Resend (email), Blip (chatbot)
+
+**Riscos**:
+- Evolution API: estabilidade e custo a longo prazo — decisão pendente sobre alternativas
+- Unificação de histórico pode ser complexa (dados em tabelas diferentes com schemas diferentes)
+
+---
+
+## 5. ARQUITETURA DE DADOS
+
+### 5.1 Mapa de schemas
+
+O Backstage usa PostgreSQL via Drizzle ORM com estratégia multi-schema:
+
+```
+SCHEMAS BACKSTAGE (apps/backstage/src/db/schema/):
+├── deals.ts           → daily_funnel_activity, daily_sales_person_activity, deals
+├── sales-people.ts    → sales_people (BDR, SDR, Closer, canais)
+├── goals.ts           → goals (metas mensais/trimestrais)
+├── activities.ts      → métricas diárias de vendas
+├── funnels.ts         → funnels (definição de funis)
+├── financeiro.ts      → vendor_category_mapping, fin_estruturas, fin_centros_custo
+│                        + re-exports: iugu*, v2Plans, v2Subscriptions, v2Invoices,
+│                          budget*, despesas, mrrMovimentos, unitEconomicsSnapshots
+├── hubspot.ts         → DEPRECATED (hubspot_owners, contacts, companies, deals, calls, meetings, sync_log)
+├── chat.ts            → chat interno
+├── chatbots.ts        → configuração chatbots
+├── clicksign.ts       → assinatura digital
+├── org-chart.ts       → hierarquia organizacional
+├── planejamento.ts    → planejamento e forecast
+├── reports.ts         → relatórios
+├── support.ts         → tickets de suporte
+├── user-profiles.ts   → perfis de usuário
+├── users.ts           → autenticação
+├── wiki.ts            → knowledge base
+└── imports.ts         → histórico de imports
+
+SCHEMAS INFRA-DB (packages/infra/db/src/schemas/v2/):
+├── billing/           → v2_billing.* (24+ tabelas)
+│   ├── customers, plans, subscriptions, invoices, invoice_items
+│   ├── ai_credits, ai_credits_ledger
+│   ├── subscription_events
+│   ├── retention_offer_configs, promotional_coupons
+│   ├── cancellation_tracking
+│   └── ... (dispute, refund, collection, usage metrics)
+│
+├── sales/             → v2_sales.* (20+ tabelas)
+│   ├── leads, contacts, companies, deals
+│   ├── pipelines, stages
+│   ├── activities, proposals, sales_targets
+│   ├── sequences, sequence_steps, sequence_enrollments, step_executions
+│   ├── scorecards, scorecard_criteria (Oitiva)
+│   ├── transcriptions, evaluations, evaluation_scores, evaluation_aggregates
+│   └── ...
+│
+├── marketing/         → v2_marketing.* (15+ tabelas)
+│   ├── campaigns, email_campaigns, landing_pages
+│   ├── utm_parameters, conversion_events, conversions_analytics
+│   ├── capi_events, capi_platforms (Meta/Google CAPI)
+│   ├── ad_accounts, ad_campaigns_v2, ad_creative, audience_syncs
+│   └── blog_posts, newsletters, newsletter_subscribers, newsletter_events
+│
+├── comms/             → v2_comms.* (10+ tabelas)
+│   ├── notification_templates, notifications
+│   ├── email_logs
+│   ├── conversations, messages, message_identities
+│   ├── contacts (multi-channel)
+│   └── ai_message_classification
+│
+├── customer-success/  → crm.* (5+ tabelas)
+│   ├── customer_health_scores
+│   ├── nps_responses
+│   ├── renewal_tracking
+│   ├── customer_journey
+│   └── sales_sequences, sequence_steps, sequence_enrollments, sequence_step_executions
+│
+└── sync/              → sync.* (cópias de dados externos)
+    ├── iugu_customers, iugu_subscriptions, iugu_invoices
+    ├── iugu_financial_transactions, iugu_receivables, iugu_plans
+    └── ...
+```
+
+### 5.2 Fluxos de dados entre sistemas
+
+#### Fluxo de Aquisição → Venda → Cliente
+
+```
+LEAD HUNTER                    OUTBOUND/INBOUND              CLOSER
+Google Places + Exa     →     BDR prospecta          →     Demo + Contrato
+    ↓                              ↓                            ↓
+v2_sales.companies            v2_sales.leads               v2_sales.deals
+(enrichment data)             (status: new→contacted       (status: open→won)
+                               →qualified→converted)            ↓
+                                   ↓                      NOVO CLIENTE
+                              v2_sales.contacts            v2_billing.customers
+                              (lifecycle: lead→mql         v2_billing.subscriptions
+                               →sql→opportunity            v2_billing.invoices
+                               →customer)                       ↓
+                                                          sync.iugu_*
+                                                          (sync financeiro)
+```
+
+#### Fluxo de Health Score e Retenção
+
+```
+DADOS DE USO              DADOS FINANCEIROS           DADOS DE SUPORTE
+(Studio - via Migração)   (v2_billing)                (v2_comms)
+       ↓                        ↓                          ↓
+productUsageScore          financialScore              supportScore
+       ↓                        ↓                          ↓
+       └────────────→ HEALTH SCORE (0-100) ←──────────────┘
+                      crm.customer_health_scores
+                              ↓
+                     ┌────────┴────────┐
+                     ↓                 ↓
+              Score ≥ 70          Score < 40
+              HEALTHY             CRITICAL
+                                     ↓
+                              Alerta Slack
+                              Playbook acionado
+                              Retention offer calculada
+```
+
+#### Fluxo HubSpot → Nativo (Migração G3)
+
+```
+HOJE (dependente):                    ALVO (nativo):
+HubSpot API                           v2_sales.*
+    ↓                                     ↑
+hubspot_sync_log                     Criação direta
+    ↓                                     ↑
+hubspot_contacts → MIGRAR →         v2_sales.contacts
+hubspot_companies → MIGRAR →        v2_sales.companies
+hubspot_deals → MIGRAR →            v2_sales.deals
+dedupHubspot() → SUBSTITUIR →       dedup por v2_sales.companies.domain
+hubspotWrite() → SUBSTITUIR →       escrita direta em v2_sales
+```
+
+#### Fluxo de Sequences (Cadências de Email)
+
+```
+CRIAÇÃO:                    EXECUÇÃO:                   TRACKING:
+POST /api/crm/sequences    Cron job (a construir)      Resend webhooks
+    ↓                           ↓                           ↓
+v2_sales.sequences         Busca enrollments com       step_executions
+v2_sales.sequence_steps    nextStepAt <= now            status: sent→
+    ↓                           ↓                       delivered→opened→
+Enrollar contacts          Envia email via Resend       clicked→replied
+    ↓                           ↓                           ↓
+sequence_enrollments       Atualiza step_execution     Exit conditions:
+(status: active)           (status: sent)               reply, meeting,
+                                                        unsubscribe
+```
+
+### 5.3 Entidades que faltam para a visão do Gab
+
+#### Cadência Unificada (expandir v2_sales.sequences)
+O schema de sequences já suporta multi-canal (stepType: email, call, linkedin, whatsapp, sms, manual_task). O que falta é o **motor de execução** e a **integração com WhatsApp/SMS** além de email.
+
+#### Interação Unificada
+A tabela v2_comms.conversations + messages já serve como base. Falta:
+- Linkagem consistente com v2_sales.contacts e v2_sales.companies
+- Consolidação cross-channel via v2_comms.message_identities
+- API unificada: GET /api/customer-360/{id}/interactions
+
+#### Cliente Visão 360 (VIEW)
+O endpoint /api/customer-360 já agrega 9 fontes. Falta:
+- Performance (latência de agregação com muitas fontes)
+- Dados de uso do Studio (depende Migração)
+- Cohortização (segmentar por plano, período de aquisição, ICP)
+
+#### MetricaSnapshot
+Não existe tabela dedicada para snapshots de métricas históricas. Hoje cada módulo calcula em real-time. Para dashboard executivo com comparativos, pode ser necessário:
+- Tabela metric_snapshots com tipo, período, valor, segmentação
+- Cron job diário que snapshota MRR, churn, health score médio, etc.
+
+### 5.4 RLS e Segurança
+
+**Padrão**: Row Level Security no Supabase por organization_id.
+
+```sql
+-- Padrão para tabelas com organizationId
+pgPolicy("table_select", {
+  using: sql`(organization_id = user_organization_id())`
+})
+
+-- Para tabelas filho (herda do pai)
+pgPolicy("child_select", {
+  using: sql`EXISTS (SELECT 1 FROM parent WHERE parent.id = child.parent_id AND parent.org = user_org())`
+})
+
+-- Para dados financeiros (restrito a finance team)
+pgPolicy("finance_only", {
+  using: sql`(sync.is_finance_team(current_user_id()))`
+})
+```
+
+**Problema**: ~167 API routes sem autenticação. Estratégia: corrigir nas routes que tocamos para fechar os gates.
+
+---
+
+## 6. VISÃO PÓS-FASE 0 (Gab)
+
+> Esta seção documenta a visão estratégica do CEO para o Backstage APÓS a Fase 0.
+> Nenhum item desta seção entra no escopo atual. São pré-requisitos futuros que
+> a Fase 0 deve habilitar.
+
+### 6.1 Dados unificados com cohortização
+
+**Visão**: Qualquer métrica da empresa pode ser segmentada por cohort (mês de aquisição), plano, ICP, canal de aquisição. Exemplo: "MRR dos clientes que entraram em janeiro no plano Professional via inbound."
+
+**O que existe**: Churn cohort em /vendas/analytics. Filtros em vários módulos mas não transversais.
+
+**O que a Fase 0 habilita**: Customer 360 (G2) + dashboard unificado (G5) + CRM nativo (G3) criam a base de dados necessária. Cohortização transversal é Fase 1.
+
+### 6.2 Cadências automáticas omni-channel
+
+**Visão**: Cadências de vendas e CS que combinam email + WhatsApp + ligação, operadas por humanos OU por IA, com comparativos de performance.
+
+**O que existe**: Schema de sequences com suporte multi-canal. Evolution API para WhatsApp. Resend para email.
+
+**O que a Fase 0 habilita**: G3 (sequences com motor de execução) + G7 (mensageria consolidada) criam a infraestrutura. IA para cadências é Fase 1+.
+
+### 6.3 IA por área
+
+**Visão**: Cada área da empresa tem IA aplicada: coaching de SDRs/Closers com comparativo humano vs IA, pipeline de conteúdo marketing com IA, health score inteligente com tratativa automatizada.
+
+**O que existe**: 4 AI agents (Mastra), Oitiva para avaliação de ligações, ChurnRiskSignal.
+
+**O que a Fase 0 habilita**: G2 (health score funcionando) + G4 (automações) + Oitiva (avaliações) criam os dados necessários. IA coaching e comparativos são Fase 1+.
+
+### 6.4 Flywheel operacional
+
+**Visão**: O Backstage como flywheel — dados de uso alimentam health score, health score aciona CS, CS melhora retenção, retenção aumenta LTV, LTV justifica mais investimento em aquisição.
+
+**Pré-requisitos da Fase 0**: Todos os 7 gates fechados. Dados fluindo end-to-end. Sem fragmentação.
+
+---
+
+## 7. DÉBITO TÉCNICO
+
+### 7.1 Inventário
+
+**Segurança (P0)**:
+- ~167 API routes sem autenticação — CRÍTICO
 - Vulnerabilidades CSRF em OAuth flows
 - Sem rate limiting
 - 70 arquivos com @ts-nocheck
 
-### Qualidade de código
+**Qualidade de código**:
 - 92 instâncias de z.any() ou `as any`
-- 83 console.log (deveria usar logger)
+- 83 console.log (deveria usar logger estruturado)
 - 30 páginas sem error handling
 - 27 páginas sem loading states
 - 13 páginas sem empty states
 
-### Decisão: Tratar débito técnico na Fase 0?
-> **Recomendação**: NÃO tratar débito técnico de forma horizontal. Apenas corrigir nos módulos que estamos tocando para fechar os gates. Débito horizontal fica para Fase 1.
+**UX**:
+- Aquisição KPIs mostrando zeros (falta data binding)
+- Módulos com dados mock misturados com dados reais
+- Playbooks CS vazio
+
+### 7.2 Estratégia
+
+> **NÃO** tratar débito técnico de forma horizontal na Fase 0.
+> Apenas corrigir nos módulos que estamos tocando para fechar os gates.
+> Débito horizontal fica para Fase 1.
+
+Exceção: se uma route sem auth for pública e expor dados sensíveis, corrigir imediatamente.
+
+### 7.3 Routes sem auth — priorização
+
+A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério sugerido:
+1. Routes públicas que expõem dados de clientes → P0
+2. Routes que escrevem dados (POST/PUT/DELETE) sem auth → P1
+3. Routes internas de leitura → P2 (pode esperar)
 
 ---
 
-## 6. ARQUITETURA DE DADOS — REAL vs ALVO
-
-### 6.1 Estrutura real (código)
-
-```
-BACKSTAGE DB SCHEMAS (apps/backstage/src/db/schema/):
-├── deals.ts          → Deal tracking, pipeline, pricing
-├── sales-people.ts   → BDR, SDR, Closer, canais
-├── goals.ts          → Metas mensais/trimestrais
-├── activities.ts     → Métricas diárias de vendas
-├── funnels.ts        → Definição de funis
-├── financeiro.ts     → Vendor mapping, cost centers
-├── hubspot.ts        → DEPRECATED - sync legado
-├── chat.ts           → Chat interno
-├── chatbots.ts       → Configuração chatbots
-├── clicksign.ts      → Assinatura digital
-├── org-chart.ts      → Hierarquia organizacional
-├── planejamento.ts   → Planejamento e forecast
-├── reports.ts        → Relatórios
-├── support.ts        → Tickets de suporte
-├── user-profiles.ts  → Perfis de usuário
-├── users.ts          → Autenticação
-├── wiki.ts           → Knowledge base
-└── imports.ts        → Histórico de imports
-
-INFRA DB (re-exportado de @freelaw/infra-db):
-├── v2_sales.*          → Dados de vendas
-├── v2_sync.*           → Sync financeiro (Iugu)
-├── v2_billing.*        → 24 tabelas (subscriptions, invoices, credits, usage...)
-├── v2_customers.*      → Dados de clientes
-├── v2_subscriptions.*  → Subscrições
-└── v2_invoices.*       → Faturas
-```
-
-### 6.2 Entidades que FALTAM para a visão do Gab
-
-```
-PRECISAM SER CRIADAS OU EXPANDIDAS:
-
-Cadência (cadences)
-├── tipo (ligação/email/whatsapp)
-├── modo (humano/IA)
-├── destinatário_type (lead/cliente)
-├── destinatário_id
-├── sequência de steps
-├── status (draft/active/paused/completed)
-├── métricas (abertura, resposta, conversão)
-└── created_by, assigned_to
-
-InteraçãoUnificada (unified_interactions)
-├── canal (whatsapp/email/ligação/chat/suporte)
-├── direção (inbound/outbound)
-├── entidade_type (lead/cliente/prestador)
-├── entidade_id
-├── participantes
-├── conteúdo/resumo
-├── sentimento (IA)
-├── cadência_id (se veio de cadência)
-└── tags/classificação
-
-ClienteVisão360 (VIEW, não tabela)
-├── dados cadastrais (de v2_customers)
-├── plano/pricing (de v2_subscriptions)
-├── health score (calculado)
-├── última interação (de unified_interactions)
-├── métricas de uso (de analytics)
-├── financeiro (de v2_billing)
-├── cohort/segmentação
-└── risco de churn (de retention engine)
-
-MetricaSnapshot (metric_snapshots)
-├── tipo (MRR, churn, aquisição, NPS, health)
-├── período (dia/semana/mês)
-├── valor
-├── segmentação (cohort, plano, ICP)
-└── comparativo (meta vs real)
-```
-
----
-
-## 7. ESTRATÉGIA DE EXECUÇÃO
-
-### 7.1 Princípios
-
-1. **Gate-driven**: Tudo fecha um gate. Se não fecha, não fazemos.
-2. **Terminar > Começar**: Priorizar terminar módulos existentes sobre criar novos.
-3. **Data-first**: Estrutura de dados antes de UI.
-4. **Vertical**: Módulo completo end-to-end antes de expandir.
-5. **Demo semanal**: Toda sexta, algo novo funciona.
-
-### 7.2 Cronograma (8 semanas: 10/mar — 30/abr)
-
-```
-SPRINT 1 (10-21 mar): FUNDAÇÃO + G6
-├── Semana 1: Auditoria completa
-│   ├── Mapear estado real de cada módulo
-│   ├── Inventariar ferramentas externas
-│   ├── Auditar integrações (quais falham?)
-│   ├── Alinhar dependências com Migração (Juju)
-│   └── VALIDAR este PRD com VDC e Gab
-│
-├── Semana 2: Estabilizar integrações (G6) + iniciar G1
-│   ├── Resolver falhas de integração críticas
-│   ├── Monitoramento ativo com alertas
-│   ├── Documentar cada integração
-│   └── Iniciar consolidação financeira
-│
-└── DEMO sexta 21/mar: Integrações estabilizadas + plano detalhado
-
-SPRINT 2 (24 mar - 4 abr): G1 + G5
-├── Semana 3: Gestão financeira centralizada (G1)
-│   ├── Validar que toda operação financeira está no Backstage
-│   ├── Eliminar planilhas externas
-│   ├── Sync Omie/Conta Azul estabilizado
-│   └── G1 FECHADO
-│
-├── Semana 4: Dashboard unificado (G5)
-│   ├── Dashboard executivo: MRR, churn, aquisição, operação
-│   ├── Filtros por período, cohort, plano
-│   ├── Acesso rápido para liderança
-│   └── G5 FECHADO
-│
-└── DEMO sexta 4/abr: Financeiro centralizado + dashboard
-
-SPRINT 3 (7-18 abr): G2 + G3
-├── Semana 5: Acompanhar Cliente v1 (G2)
-│   ├── Dashboard por cliente (uso, saúde, interações)
-│   ├── Health score calculado para todos
-│   ├── Histórico de interações consolidado
-│   └── G2 FECHADO
-│
-├── Semana 6: Pipeline unificado (G3)
-│   ├── Migrar dados do HubSpot
-│   ├── Funil de vendas 100% interno
-│   ├── Sequences funcionando
-│   └── G3 FECHADO
-│
-└── DEMO sexta 18/abr: Visão do cliente + pipeline migrado
-
-SPRINT 4 (21-30 abr): G4 + G7 + POLISH
-├── Semana 7: Automações (G4) + Mensageria (G7)
-│   ├── Migrar automações críticas
-│   ├── WhatsApp + Email no monorepo
-│   ├── Templates de mensagem
-│   └── G4 e G7 FECHADOS
-│
-├── Semana 8: Buffer + polish + validação final
-│   ├── Testes end-to-end de todos os gates
-│   ├── UX review com stakeholders
-│   ├── Correções finais
-│   └── TODOS OS 7 GATES FECHADOS
-│
-└── DEMO sexta 25/abr: Backstage completo — gate review
-
-```
-
-### 7.3 Atribuição por pessoa (sugestão inicial)
-
-| Pessoa | Foco principal | Gates |
-|--------|---------------|-------|
-| Guilherme | Liderança, arquitetura, data layer, PRD | Todos (horizontal) |
-| Alex | Financeiro, integrações, dashboard | G1, G5, G6 |
-| Biel | CRM, pipeline, vendas, sequences | G3, G4 |
-| Clarinha | CS, health score, cliente 360 | G2 |
-| Davi | Mensageria, WhatsApp, automações | G7, G4 |
-
-### 7.4 Dependências críticas com outros times
-
-| Dependência | Time | Gate impactado | Quando precisa |
-|-------------|------|----------------|----------------|
-| Monorepo estável | Migração (Juju) | Todos | Semana 1 |
-| Dados do Studio sincronizando | Migração | G2, G5 | Semana 3 |
-| Definição de planos/pricing | GTM (Didico) | G1, G3 | Semana 2 |
-| Definição de ICP | GTM | G2, G3 | Semana 2 |
-| Métricas de uso do Studio | Migração | G2, G5 | Semana 4 |
-
----
-
-## 8. RITUAIS DO TIME
-
-| Ritual | Quando | Duração | Output |
-|--------|--------|---------|--------|
-| Daily standup | Diário, 9h | 15min | Bloqueios + foco do dia |
-| Sprint planning | Segunda | 45min | Tarefas da semana atribuídas |
-| Comitê Produto & Backstage | Quinta | 60min | Decisões sobre dependências |
-| Demo & Report | Sexta (empresa toda) | 30min | O que entregamos esta semana |
-| PRD review | Bi-semanal (segunda) | 30min | Atualizar este documento |
-
----
-
-## 9. DECISÕES PENDENTES
+## 8. DECISÕES PENDENTES
 
 | # | Decisão | Responsável | Deadline | Status |
 |---|---------|-------------|----------|--------|
-| D1 | Quais ferramentas externas eliminar (lista completa) | Time | Sem 1 | Pendente |
-| D2 | Prioridade dos gates (ordem proposta acima OK?) | VDC + Gab | Sem 1 | Pendente |
-| D3 | Health score: quais métricas compõem? | CS + Produto | Sem 3 | Pendente |
-| D4 | HubSpot: timeline de desligamento | Vendas + Backstage | Sem 2 | Pendente |
-| D5 | Stack de mensageria final (Evolution vs outro) | Time | Sem 2 | Pendente |
-| D6 | Débito técnico (167 routes sem auth): tratar agora? | Gab + VDC | Sem 1 | Pendente |
-| D7 | Stakeholders para aprovação de UX | Gab | Sem 1 | Pendente |
-| D8 | Atribuição final do time (quem faz o quê) | Guilherme | Sem 1 | Pendente |
+| D1 | Quais ferramentas externas eliminar (lista completa) | Time | Sprint 1 | Pendente |
+| D2 | Prioridade dos gates (ordem proposta OK?) | VDC + Gab | Sprint 1 | Pendente |
+| D3 | Health score: quais métricas e pesos? CS valida? | CS + Produto | Sprint 2 | Pendente |
+| D4 | HubSpot: data-alvo de desligamento | Vendas + Backstage | Sprint 1 | Pendente |
+| D5 | Stack de mensageria final (Evolution API é definitivo?) | Time | Sprint 1 | Pendente |
+| D6 | 167 routes sem auth: quais priorizar? | Guilherme + Time | Sprint 1 | Pendente |
+| D7 | Stakeholders para aprovação de UX de cada gate | Gab | Sprint 1 | Pendente |
+| D8 | Atribuição final do time (quem faz o quê) | Guilherme | Sprint 1 | Pendente |
+| D9 | ERP (Freelaw One): entra na Fase 0? | VDC | Sprint 1 | Pendente |
+| D10 | Google Sheets: eliminar ou conviver na Fase 0? | Finance + Guilherme | Sprint 1 | Pendente |
+| D11 | Dados históricos do HubSpot: migrar ou perder? | Vendas + Biel | Sprint 1 | Pendente |
+| D12 | Banco Inter sync: ativar na Fase 0? | Finance | Sprint 2 | Pendente |
+| D13 | Omie sync: implementar na Fase 0? | Finance | Sprint 2 | Pendente |
+| D14 | Workflow builder visual: Fase 0 ou Fase 1? | VDC | Sprint 1 | Pendente |
 
 ---
 
-## 10. RISCOS
+## 9. MÉTRICAS DE SUCESSO
 
-| Risco | Prob. | Impacto | Mitigação |
-|-------|-------|---------|-----------|
-| Migração atrasa e bloqueia Backstage | Alta | Crítico | Comitê quinta. Trabalhar em paralelo onde possível. |
-| Escopo cresce além dos 7 gates | Média | Alto | Este doc é bounding. Se não está aqui, não entra. |
-| HubSpot migration mais complexa que esperado | Alta | Alto | Começar mapeamento na semana 1. Plano B: dual-run. |
-| 167 API routes sem auth exploradas | Média | Crítico | Avaliar risco real. Priorizar routes públicas críticas. |
-| Time sobrecarregado com suporte ao legado | Média | Alto | Zero construção no legado. |
+### 9.1 Fase 0 (quantitativas)
 
----
-
-## 11. MÉTRICAS DE SUCESSO
-
-### Fase 0 (até fim de abril)
-- [ ] 7/7 gates fechados
+- [ ] 7/7 gates fechados e aprovados por VDC + Gab
 - [ ] Zero dependência de CRM externo como fonte de verdade
 - [ ] 100% dos dados de clientes consultáveis no Backstage
-- [ ] Dashboard executivo operando em tempo real
-- [ ] Stakeholders aprovaram UX dos módulos principais
+- [ ] Health score calculado para 100% dos clientes ativos
+- [ ] Dashboard executivo operando (aprovado pela liderança)
+- [ ] HubSpot sync desligado
+- [ ] Zero falhas críticas de integração em 7 dias
+- [ ] 3 playbooks CS operando
 
-### Norte pós-Fase 0 (visão Gab)
-- Cadências automáticas (ligação, email, WhatsApp) operando
-- Sistema omni-channel funcional
-- IA para coaching de SDRs/Closers
-- Comparativo humano vs IA em uso
+### 9.2 Norte pós-Fase 0 (qualitativas)
+
+- Cadências automáticas (email + WhatsApp + ligação) operando
+- Sistema omni-channel funcional com timeline unificada
+- IA para coaching de SDRs/Closers com comparativo humano vs IA
 - Pipeline de conteúdo marketing com IA
 - Health score inteligente com tratativa automatizada
+- Cohortização transversal de qualquer métrica
+- Flywheel operacional rodando
+
+---
+
+## 10. GOVERNANÇA
+
+### Regra de ouro
+
+> Se alguém do time quer fazer algo que não está neste documento, a resposta é:
+> "Adiciona no PRD, aprova com o owner, e aí a gente faz."
+
+### Regras de desenvolvimento (do AGENTS.md)
+
+- Workflow obrigatório: PLAN → CLARIFY → BUILD → VALIDATE → PRESENT → SHIP
+- PRs ≤ 500 linhas
+- Screenshots obrigatórios para mudanças de UI
+- Bun como runtime (nunca npm/yarn/pnpm)
+- Sem @ts-nocheck ou `as any` novo
+- Auth (RLS) obrigatório em novas rotas
+- Conventional commits
+- Zero construção no legado — toda energia no monorepo
 
 ---
 
 ## CHANGELOG
 
-| Data | Alteração | Autor |
-|------|-----------|-------|
-| 2026-03-09 | v1 — Documento criado | Guilherme + Claude |
-| 2026-03-09 | v2 — Atualizado com mapeamento real do código (inventário completo) | Guilherme + Claude |
-
----
-
-> **Regra de ouro**: Se alguém do time quer fazer algo que não está neste documento, a resposta é: "Adiciona no PRD, aprova com o owner, e aí a gente faz."
+| Data | Versão | Alteração | Autor |
+|------|--------|-----------|-------|
+| 2026-03-09 | v1 | Documento criado | Guilherme + Claude |
+| 2026-03-09 | v2 | Atualizado com mapeamento real do código | Guilherme + Claude |
+| 2026-03-09 | v3 | Reescrita completa: personas, user stories, arquitetura profunda, separação PRD/Plano | Guilherme + Claude |
