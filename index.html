@@ -856,8 +856,8 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <p><strong>Módulos</strong>: <code>/produto/workflows</code>, <code>/interno/whatsapp</code>, integrações</p>
 <p><strong>Dores atuais</strong>: Workflow builder tem tipos e executor definidos, mas execução é STUB. Ações de automação como SMS, webhook, create_deal estão vazias. Lead scoring tem schema mas sem processador. 25 cron jobs definidos, maioria funcional, mas sem monitoramento centralizado.</p>
 <hr />
-<h3 id="26-lideranca-gab-vdc-didico">2.6 Liderança (Gab, VDC, Didico)</h3>
-<p><strong>Quem</strong>: CEO (Gab), Diretor Financeiro (VDC/Guilherme), VP Comercial (Didico).</p>
+<h3 id="26-lideranca-ju-vdc-carol-didico">2.6 Liderança (Ju, VDC, Carol, Didico)</h3>
+<p><strong>Quem</strong>: CEO (Ju), Diretor Financeiro (VDC/Guilherme), Gerente de CS (Carol), Gerente de Aquisição (Didico).</p>
 <p><strong>O que faz hoje</strong>:<br />
 - Toma decisões estratégicas baseadas em métricas<br />
 - Acompanha performance da empresa</p>
@@ -1236,12 +1236,28 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 O responsável pelo PRD de cada área detalha user stories, critérios de aceite e dependências.<br />
 Esta seção é o <strong>mapa de ownership</strong> — quem é dono de quê.</p>
 </blockquote>
+<h3 id="arquitetura-crm-como-operating-system">Arquitetura: CRM como Operating System</h3>
+<blockquote>
+<p><strong>Decisão arquitetural</strong>: O CRM <strong>não é um módulo isolado</strong>. Ele é uma camada de infraestrutura<br />
+(package) que roda <strong>por dentro</strong> de múltiplas áreas. Marketing + Vendas = CRM, mas a mesma<br />
+estrutura (contacts, companies, deals, activities, pipelines) é reutilizada para outros domínios:<br />
+pipeline de gestão de prestadores, pipeline de CS, etc.</p>
+<p>Essa lógica de <strong>packages transversais</strong> se aplica a outras conexões entre áreas:<br />
+- <strong>Financeiro ↔ Prestadores</strong>: pagamento a prestadores alimenta custos e DRE<br />
+- <strong>Financeiro ↔ CS</strong>: recebimentos ligados a health score e inadimplência<br />
+- <strong>Financeiro ↔ Billing</strong>: faturamento → receita → MRR → business plan<br />
+- <strong>Vendas ↔ CS</strong>: deal fechado → onboarding → health score → renovação<br />
+- <strong>Aquisição ↔ Vendas</strong>: lead qualificado → deal no pipeline<br />
+- <strong>Mensageria ↔ Todos</strong>: WhatsApp/email como canal transversal</p>
+<p><strong>Status</strong>: Mapeamento completo de conexões cross-área <strong>PENDENTE</strong> (ver D14).</p>
+</blockquote>
 <h3 id="mapa-de-atribuicao">Mapa de Atribuição</h3>
 <table>
 <thead>
 <tr>
 <th>#</th>
 <th>Macro-Área</th>
+<th>Tipo</th>
 <th>Módulos</th>
 <th>Páginas</th>
 <th>Gates</th>
@@ -1251,8 +1267,69 @@ Esta seção é o <strong>mapa de ownership</strong> — quem é dono de quê.</
 </thead>
 <tbody>
 <tr>
+<td><strong>PACKAGES (infra transversal)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MA-CRM</td>
+<td>CRM (Operating System)</td>
+<td>Package</td>
+<td>Transversal</td>
+<td>—</td>
+<td>G3</td>
+<td><em>a definir</em></td>
+<td>Não iniciado</td>
+</tr>
+<tr>
+<td>MA7</td>
+<td>Integrações</td>
+<td>Package</td>
+<td>Transversal (13 sistemas)</td>
+<td>—</td>
+<td>G6</td>
+<td><em>a definir</em></td>
+<td>Não iniciado</td>
+</tr>
+<tr>
+<td>MA6</td>
+<td>Automações &amp; Workflows</td>
+<td>Package</td>
+<td>/produto/workflows, crons, edge functions</td>
+<td>—</td>
+<td>G4</td>
+<td><em>a definir</em></td>
+<td>Não iniciado</td>
+</tr>
+<tr>
+<td>MA5</td>
+<td>Mensageria &amp; Comunicação</td>
+<td>Package</td>
+<td>/interno/whatsapp, /suporte/inbox, /chat</td>
+<td>31</td>
+<td>G7</td>
+<td><em>a definir</em></td>
+<td>Não iniciado</td>
+</tr>
+<tr>
+<td><strong>ÁREAS DE NEGÓCIO (consomem os packages)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
 <td>MA1</td>
 <td>Financeiro &amp; Billing</td>
+<td>Área</td>
 <td>/financeiro/*</td>
 <td>28</td>
 <td>G1, G5</td>
@@ -1262,8 +1339,9 @@ Esta seção é o <strong>mapa de ownership</strong> — quem é dono de quê.</
 <tr>
 <td>MA2</td>
 <td>Vendas &amp; Pipeline</td>
-<td>/vendas/<em>, /crm/</em>, /oitiva/*</td>
-<td>51</td>
+<td>Área</td>
+<td>/vendas/<em>, /oitiva/</em></td>
+<td>39</td>
 <td>G3</td>
 <td><em>a definir</em></td>
 <td>Não iniciado</td>
@@ -1271,6 +1349,7 @@ Esta seção é o <strong>mapa de ownership</strong> — quem é dono de quê.</
 <tr>
 <td>MA3</td>
 <td>Aquisição &amp; Outbound</td>
+<td>Área</td>
 <td>/aquisicao/*, /vendas/outbound</td>
 <td>6</td>
 <td>G3</td>
@@ -1280,6 +1359,7 @@ Esta seção é o <strong>mapa de ownership</strong> — quem é dono de quê.</
 <tr>
 <td>MA4</td>
 <td>Customer Success</td>
+<td>Área</td>
 <td>/cs/<em>, /suporte/cliente/</em></td>
 <td>24</td>
 <td>G2</td>
@@ -1287,62 +1367,9 @@ Esta seção é o <strong>mapa de ownership</strong> — quem é dono de quê.</
 <td>Não iniciado</td>
 </tr>
 <tr>
-<td>MA5</td>
-<td>Mensageria &amp; Comunicação</td>
-<td>/interno/whatsapp, /suporte/inbox, /chat</td>
-<td>31</td>
-<td>G7</td>
-<td><em>a definir</em></td>
-<td>Não iniciado</td>
-</tr>
-<tr>
-<td>MA6</td>
-<td>Automações &amp; Workflows</td>
-<td>/produto/workflows, crons, edge functions</td>
-<td>—</td>
-<td>G4</td>
-<td><em>a definir</em></td>
-<td>Não iniciado</td>
-</tr>
-<tr>
-<td>MA7</td>
-<td>Integrações</td>
-<td>Transversal (13 sistemas)</td>
-<td>—</td>
-<td>G6</td>
-<td><em>a definir</em></td>
-<td>Não iniciado</td>
-</tr>
-<tr>
-<td>MA8</td>
-<td>Dashboard &amp; Analytics Executivo</td>
-<td>/dashboard, /executive</td>
-<td>—</td>
-<td>G5</td>
-<td><em>a definir</em></td>
-<td>Não iniciado</td>
-</tr>
-<tr>
-<td>MA9</td>
-<td>RH &amp; Produtividade</td>
-<td>/rh/*</td>
-<td>18</td>
-<td>—</td>
-<td><em>a definir</em></td>
-<td>Não iniciado</td>
-</tr>
-<tr>
-<td>MA10</td>
-<td>Marketing</td>
-<td>/marketing/*</td>
-<td>4</td>
-<td>—</td>
-<td><em>a definir</em></td>
-<td>Não iniciado</td>
-</tr>
-<tr>
 <td>MA11</td>
 <td>Prestadores &amp; Comunidade</td>
+<td>Área</td>
 <td>/prestadores/*</td>
 <td>12</td>
 <td>—</td>
@@ -1350,13 +1377,152 @@ Esta seção é o <strong>mapa de ownership</strong> — quem é dono de quê.</
 <td>Não iniciado</td>
 </tr>
 <tr>
+<td>MA10</td>
+<td>Marketing</td>
+<td>Área</td>
+<td>/marketing/*</td>
+<td>4</td>
+<td>—</td>
+<td><em>a definir</em></td>
+<td>Não iniciado</td>
+</tr>
+<tr>
+<td>MA9</td>
+<td>RH &amp; Produtividade</td>
+<td>Área</td>
+<td>/rh/*</td>
+<td>18</td>
+<td>—</td>
+<td><em>a definir</em></td>
+<td>Não iniciado</td>
+</tr>
+<tr>
+<td><strong>SUPORTE</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MA8</td>
+<td>Dashboard &amp; Analytics Executivo</td>
+<td>Suporte</td>
+<td>/dashboard, /executive</td>
+<td>—</td>
+<td>G5</td>
+<td><em>a definir</em></td>
+<td>Não iniciado</td>
+</tr>
+<tr>
 <td>MA12</td>
 <td>Produto &amp; Plataforma</td>
+<td>Suporte</td>
 <td>/produto/*, /wiki, /chat</td>
 <td>121</td>
 <td>—</td>
 <td><em>a definir</em></td>
 <td>Não iniciado</td>
+</tr>
+</tbody>
+</table>
+<h3 id="conexoes-cross-area-a-mapear">Conexões Cross-Área (a mapear)</h3>
+<blockquote>
+<p><strong>ATENÇÃO</strong>: As conexões abaixo são o mapeamento inicial. Cada conexão precisa ser<br />
+detalhada com: dados que fluem, direção, triggers, e quem é owner do fluxo.<br />
+Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
+</blockquote>
+<pre><code>                    ┌─────────────────────────────────────────────┐
+                    │         CRM (Operating System)              │
+                    │  contacts · companies · deals · pipelines   │
+                    │  activities · sequences · scoring           │
+                    └──────┬──────────┬──────────┬────────────────┘
+                           │          │          │
+              ┌────────────┤          │          ├────────────┐
+              ▼            ▼          ▼          ▼            ▼
+         ┌─────────┐ ┌─────────┐ ┌────────┐ ┌──────────┐ ┌──────────┐
+         │ Vendas  │ │Marketing│ │  CS    │ │Prestador.│ │Aquisição │
+         │  (MA2)  │ │ (MA10)  │ │ (MA4)  │ │  (MA11)  │ │  (MA3)   │
+         └────┬────┘ └─────────┘ └───┬────┘ └─────┬────┘ └──────────┘
+              │                      │             │
+              ▼                      ▼             ▼
+         ┌───────────────────────────────────────────────┐
+         │              Financeiro (MA1)                 │
+         │  receita · custos · billing · recebimentos    │
+         │  pagto prestadores · DRE · business plan      │
+         └───────────────────────────────────────────────┘
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Conexão</th>
+<th>De → Para</th>
+<th>Dados que fluem</th>
+<th>Status Mapeamento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Venda → Onboarding</td>
+<td>MA2 → MA4</td>
+<td>Deal fechado dispara onboarding CS</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>CS → Renovação</td>
+<td>MA4 → MA2</td>
+<td>Health score alimenta pipeline renovação</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>CS → Financeiro</td>
+<td>MA4 → MA1</td>
+<td>Inadimplência, churn → impacto MRR</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>Vendas → Financeiro</td>
+<td>MA2 → MA1</td>
+<td>Deal fechado → faturamento → receita</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>Prestadores → Financeiro</td>
+<td>MA11 → MA1</td>
+<td>Pagamento a prestadores → custos/DRE</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>Aquisição → Vendas</td>
+<td>MA3 → MA2</td>
+<td>Lead qualificado → deal no pipeline CRM</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>Marketing → Aquisição</td>
+<td>MA10 → MA3</td>
+<td>Campanhas → leads inbound</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>Financeiro → Dashboard</td>
+<td>MA1 → MA8</td>
+<td>MRR, receita, despesas, unit economics</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>CS → Dashboard</td>
+<td>MA4 → MA8</td>
+<td>Health score médio, NPS, clientes em risco</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>Mensageria → Todos</td>
+<td>MA5 → *</td>
+<td>WhatsApp/email como canal transversal</td>
+<td>A mapear</td>
 </tr>
 </tbody>
 </table>
@@ -1378,12 +1544,28 @@ Esta seção é o <strong>mapa de ownership</strong> — quem é dono de quê.</
 - Eliminar Google Sheets como dependência para Business Plan (D10)</p>
 <p><strong>Gates</strong>: G1 (95%), G5 (parcial — dados financeiros alimentam dashboard)</p>
 <hr />
-<h3 id="ma2-vendas-pipeline">MA2: Vendas &amp; Pipeline</h3>
-<p><strong>Escopo</strong>: Pipeline de deals, CRM nativo, comissões, propostas, metas de vendas, oitiva (avaliação de ligações), sequences de email.</p>
-<p><strong>Módulos</strong>: <code>/vendas/*</code> (31 páginas), <code>/crm/*</code> (12 páginas), <code>/oitiva/*</code> (8 páginas)</p>
+<h3 id="ma-crm-crm-operating-system">MA-CRM: CRM (Operating System)</h3>
+<p><strong>Escopo</strong>: Camada de infraestrutura que fornece contacts, companies, deals, pipelines, activities, sequences e scoring para todas as áreas que precisam gerenciar relacionamentos.</p>
+<p><strong>Módulos</strong>: <code>/crm/*</code> (12 páginas) — mas a lógica roda como package consumido por MA2, MA3, MA4, MA10, MA11</p>
 <p><strong>O que existe</strong>:<br />
-- Pipeline kanban com deals por estágio → FUNCIONAL<br />
-- CRM nativo: contacts, companies, deals, activities → FUNCIONAL<br />
+- Entities: contacts, companies, deals, activities → FUNCIONAL<br />
+- Pipeline kanban com estágios configuráveis → FUNCIONAL<br />
+- Sequences: schema pronto, motor de execução stub<br />
+- Golden Record: entity resolution para dedup → FUNCIONAL<br />
+- Analytics: CRM analytics, churn cohort, form analysis → FUNCIONAL</p>
+<p><strong>O que falta para Fase 0</strong>:<br />
+- Desligar HubSpot como fonte de verdade (D4)<br />
+- Motor de execução de sequences funcional<br />
+- Dedup nativo sem HubSpot<br />
+- Configuração de pipelines por domínio (vendas, prestadores, CS)<br />
+- Documentar API de package para áreas consumidoras</p>
+<p><strong>Gates</strong>: G3 (70%) — <strong>GATE MAIS CRÍTICO</strong> (mudança de processo + código)</p>
+<hr />
+<h3 id="ma2-vendas-pipeline">MA2: Vendas &amp; Pipeline</h3>
+<p><strong>Escopo</strong>: Pipeline de deals, comissões, propostas, metas de vendas, oitiva (avaliação de ligações). <strong>Consome o CRM package (MA-CRM)</strong> para contacts, companies, deals.</p>
+<p><strong>Módulos</strong>: <code>/vendas/*</code> (31 páginas), <code>/oitiva/*</code> (8 páginas)</p>
+<p><strong>O que existe</strong>:<br />
+- Pipeline kanban com deals por estágio (via CRM package) → FUNCIONAL<br />
 - Propostas: draft → sent → viewed → accepted/rejected → FUNCIONAL<br />
 - Metas de vendas (sales_targets) por pessoa e período → FUNCIONAL<br />
 - Oitiva: scorecards com critérios ponderados, transcrições, avaliações → EM DEV<br />
@@ -1547,7 +1729,7 @@ deve ser elevado a G8 ou integrado ao G5 (Dashboard Executivo).</p>
 <p><strong>Gates</strong>: Nenhum gate vinculado. Candidato a Fase 1 (exceto analytics de aquisição que alimenta G5).</p>
 <hr />
 <h3 id="ma11-prestadores-comunidade">MA11: Prestadores &amp; Comunidade</h3>
-<p><strong>Escopo</strong>: Gestão de prestadores de serviço jurídico, funnel de aquisição de prestadores, tiers de qualidade, ranking, saturação.</p>
+<p><strong>Escopo</strong>: Gestão de prestadores de serviço jurídico, funnel de aquisição de prestadores, tiers de qualidade, ranking, saturação. <strong>Consome o CRM package (MA-CRM)</strong> para pipeline de gestão de prestadores.</p>
 <p><strong>Módulos</strong>: <code>/prestadores/*</code> (12 páginas)</p>
 <p><strong>O que existe</strong>:<br />
 - Provider funnel com tiers (S+ a D) e ranking → FUNCIONAL<br />
@@ -1556,8 +1738,9 @@ deve ser elevado a G8 ou integrado ao G5 (Dashboard Executivo).</p>
 - Onboarding de prestadores → PARCIAL (depende HubSpot para parte do fluxo)</p>
 <p><strong>O que falta para Fase 0</strong>:<br />
 - Desvincular onboarding de prestadores do HubSpot (atrelado ao G3)<br />
+- Migrar pipeline de prestadores para CRM package (pipelines configuráveis por domínio)<br />
 - Validar se módulo opera de forma autônoma sem HubSpot</p>
-<p><strong>Gates</strong>: Parcialmente vinculado ao G3 (dependência HubSpot no onboarding)</p>
+<p><strong>Gates</strong>: Parcialmente vinculado ao G3 (dependência HubSpot no onboarding + CRM package)</p>
 <hr />
 <h3 id="ma12-produto-plataforma">MA12: Produto &amp; Plataforma</h3>
 <p><strong>Escopo</strong>: Design system, wiki/knowledge base, audit logs, feature flags, AI agents (Mastra), chatbots, infraestrutura técnica.</p>
@@ -1815,8 +1998,8 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 <p><strong>Completude estimada</strong>: 90%</p>
 <p><strong>User stories</strong>:<br />
 - Como CEO, quero abrir o Backstage e ver MRR, churn, novos clientes, NPS, health score médio — tudo numa tela.<br />
-- Como VP Comercial, quero filtrar métricas por período, plano e cohort para entender tendências.<br />
-- Como CFO, quero ver receita vs despesas e unit economics atualizados.</p>
+- Como Gerente de Aquisição, quero filtrar métricas por período, plano e cohort para entender tendências.<br />
+- Como Diretor Financeiro, quero ver receita vs despesas e unit economics atualizados.</p>
 <p><strong>Estado atual (evidência do código)</strong>:<br />
 - /dashboard: hub principal com links para módulos → FUNCIONAL<br />
 - /financeiro/analise/<em>: churn analytics, unit economics → FUNCIONAL<br />
@@ -1832,7 +2015,7 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 - [ ] UMA página /executive com: MRR, churn rate, novos clientes, receita, despesas, health score médio, pipeline de vendas<br />
 - [ ] Filtros: período, plano, cohort, ICP<br />
 - [ ] Dados atualizados (real-time ou &lt; 24h)<br />
-- [ ] Aprovado por Gab e VDC</p>
+- [ ] Aprovado por Ju e VDC</p>
 <p><strong>Dependências técnicas</strong>:<br />
 - Tabelas: v2_billing.subscriptions (MRR), crm.customer_health_scores (health), v2_sales.deals (pipeline), v2_sales.leads (aquisição)<br />
 - APIs: /api/dashboard/<em>, /api/financeiro/</em>, /api/customer-success/*<br />
@@ -2075,9 +2258,9 @@ pgPolicy(&quot;finance_only&quot;, {
 </code></pre>
 <p><strong>Problema</strong>: ~167 API routes sem autenticação. Estratégia: corrigir nas routes que tocamos para fechar os gates.</p>
 <hr />
-<h2 id="7-visao-pos-fase-0-gab">7. VISÃO PÓS-FASE 0 (Gab)</h2>
+<h2 id="7-visao-pos-fase-0-ju">7. VISÃO PÓS-FASE 0 (Ju)</h2>
 <blockquote>
-<p>Esta seção documenta a visão estratégica do CEO para o Backstage APÓS a Fase 0.<br />
+<p>Esta seção documenta a visão estratégica da CEO (Ju) para o Backstage APÓS a Fase 0.<br />
 Nenhum item desta seção entra no escopo atual. São pré-requisitos futuros que<br />
 a Fase 0 deve habilitar.</p>
 </blockquote>
@@ -2149,7 +2332,7 @@ Débito horizontal fica para Fase 1.</p>
 <tr>
 <td>D2</td>
 <td>Prioridade dos gates (ordem proposta OK?)</td>
-<td>VDC + Gab</td>
+<td>VDC + Ju</td>
 <td>Sprint 1</td>
 <td>Pendente</td>
 </tr>
@@ -2184,7 +2367,7 @@ Débito horizontal fica para Fase 1.</p>
 <tr>
 <td>D7</td>
 <td>Stakeholders para aprovação de UX de cada gate</td>
-<td>Gab</td>
+<td>Ju</td>
 <td>Sprint 1</td>
 <td>Pendente</td>
 </tr>
@@ -2230,13 +2413,27 @@ Débito horizontal fica para Fase 1.</p>
 <td>Sprint 1</td>
 <td>Pendente</td>
 </tr>
+<tr>
+<td>D14</td>
+<td>Mapeamento completo de conexões cross-área (dados, direção, triggers, owners)</td>
+<td>VDC + Time</td>
+<td>Sprint 1</td>
+<td>Pendente</td>
+</tr>
+<tr>
+<td>D15</td>
+<td>CRM package: quais pipelines configuráveis por domínio (vendas, prestadores, CS)?</td>
+<td>VDC + Time</td>
+<td>Sprint 1</td>
+<td>Pendente</td>
+</tr>
 </tbody>
 </table>
 <hr />
 <h2 id="10-metricas-de-sucesso">10. MÉTRICAS DE SUCESSO</h2>
 <h3 id="101-fase-0-quantitativas">10.1 Fase 0 (quantitativas)</h3>
 <ul>
-<li>[ ] 7/7 gates fechados e aprovados por VDC + Gab</li>
+<li>[ ] 7/7 gates fechados e aprovados por VDC + Ju</li>
 <li>[ ] Zero dependência de CRM externo como fonte de verdade</li>
 <li>[ ] 100% dos dados de clientes consultáveis no Backstage</li>
 <li>[ ] Health score calculado para 100% dos clientes ativos</li>
@@ -2307,6 +2504,12 @@ Débito horizontal fica para Fase 1.</p>
 <td>2026-03-09</td>
 <td>v4</td>
 <td>Macro-áreas com ownership, RH &amp; Produtividade, gates orientados, remoção Omie, correção papel VDC</td>
+<td>Guilherme + Claude</td>
+</tr>
+<tr>
+<td>2026-03-09</td>
+<td>v5</td>
+<td>CRM como OS (package transversal), liderança corrigida (Ju CEO, Carol CS, Didico Aquisição), conexões cross-área, D14/D15</td>
 <td>Guilherme + Claude</td>
 </tr>
 </tbody>

@@ -169,9 +169,9 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-### 2.6 Liderança (Gab, VDC, Didico)
+### 2.6 Liderança (Ju, VDC, Carol, Didico)
 
-**Quem**: CEO (Gab), Diretor Financeiro (VDC/Guilherme), VP Comercial (Didico).
+**Quem**: CEO (Ju), Diretor Financeiro (VDC/Guilherme), Gerente de CS (Carol), Gerente de Aquisição (Didico).
 
 **O que faz hoje**:
 - Toma decisões estratégicas baseadas em métricas
@@ -294,22 +294,84 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 > O responsável pelo PRD de cada área detalha user stories, critérios de aceite e dependências.
 > Esta seção é o **mapa de ownership** — quem é dono de quê.
 
+### Arquitetura: CRM como Operating System
+
+> **Decisão arquitetural**: O CRM **não é um módulo isolado**. Ele é uma camada de infraestrutura
+> (package) que roda **por dentro** de múltiplas áreas. Marketing + Vendas = CRM, mas a mesma
+> estrutura (contacts, companies, deals, activities, pipelines) é reutilizada para outros domínios:
+> pipeline de gestão de prestadores, pipeline de CS, etc.
+>
+> Essa lógica de **packages transversais** se aplica a outras conexões entre áreas:
+> - **Financeiro ↔ Prestadores**: pagamento a prestadores alimenta custos e DRE
+> - **Financeiro ↔ CS**: recebimentos ligados a health score e inadimplência
+> - **Financeiro ↔ Billing**: faturamento → receita → MRR → business plan
+> - **Vendas ↔ CS**: deal fechado → onboarding → health score → renovação
+> - **Aquisição ↔ Vendas**: lead qualificado → deal no pipeline
+> - **Mensageria ↔ Todos**: WhatsApp/email como canal transversal
+>
+> **Status**: Mapeamento completo de conexões cross-área **PENDENTE** (ver D14).
+
 ### Mapa de Atribuição
 
-| # | Macro-Área | Módulos | Páginas | Gates | Responsável PRD | Status PRD |
-|---|------------|---------|---------|-------|-----------------|------------|
-| MA1 | Financeiro & Billing | /financeiro/* | 28 | G1, G5 | _a definir_ | Não iniciado |
-| MA2 | Vendas & Pipeline | /vendas/*, /crm/*, /oitiva/* | 51 | G3 | _a definir_ | Não iniciado |
-| MA3 | Aquisição & Outbound | /aquisicao/*, /vendas/outbound | 6 | G3 | _a definir_ | Não iniciado |
-| MA4 | Customer Success | /cs/*, /suporte/cliente/* | 24 | G2 | _a definir_ | Não iniciado |
-| MA5 | Mensageria & Comunicação | /interno/whatsapp, /suporte/inbox, /chat | 31 | G7 | _a definir_ | Não iniciado |
-| MA6 | Automações & Workflows | /produto/workflows, crons, edge functions | — | G4 | _a definir_ | Não iniciado |
-| MA7 | Integrações | Transversal (13 sistemas) | — | G6 | _a definir_ | Não iniciado |
-| MA8 | Dashboard & Analytics Executivo | /dashboard, /executive | — | G5 | _a definir_ | Não iniciado |
-| MA9 | RH & Produtividade | /rh/* | 18 | — | _a definir_ | Não iniciado |
-| MA10 | Marketing | /marketing/* | 4 | — | _a definir_ | Não iniciado |
-| MA11 | Prestadores & Comunidade | /prestadores/* | 12 | — | _a definir_ | Não iniciado |
-| MA12 | Produto & Plataforma | /produto/*, /wiki, /chat | 121 | — | _a definir_ | Não iniciado |
+| # | Macro-Área | Tipo | Módulos | Páginas | Gates | Responsável PRD | Status PRD |
+|---|------------|------|---------|---------|-------|-----------------|------------|
+| **PACKAGES (infra transversal)** ||||||
+| MA-CRM | CRM (Operating System) | Package | Transversal | — | G3 | _a definir_ | Não iniciado |
+| MA7 | Integrações | Package | Transversal (13 sistemas) | — | G6 | _a definir_ | Não iniciado |
+| MA6 | Automações & Workflows | Package | /produto/workflows, crons, edge functions | — | G4 | _a definir_ | Não iniciado |
+| MA5 | Mensageria & Comunicação | Package | /interno/whatsapp, /suporte/inbox, /chat | 31 | G7 | _a definir_ | Não iniciado |
+| **ÁREAS DE NEGÓCIO (consomem os packages)** ||||||
+| MA1 | Financeiro & Billing | Área | /financeiro/* | 28 | G1, G5 | _a definir_ | Não iniciado |
+| MA2 | Vendas & Pipeline | Área | /vendas/*, /oitiva/* | 39 | G3 | _a definir_ | Não iniciado |
+| MA3 | Aquisição & Outbound | Área | /aquisicao/*, /vendas/outbound | 6 | G3 | _a definir_ | Não iniciado |
+| MA4 | Customer Success | Área | /cs/*, /suporte/cliente/* | 24 | G2 | _a definir_ | Não iniciado |
+| MA11 | Prestadores & Comunidade | Área | /prestadores/* | 12 | — | _a definir_ | Não iniciado |
+| MA10 | Marketing | Área | /marketing/* | 4 | — | _a definir_ | Não iniciado |
+| MA9 | RH & Produtividade | Área | /rh/* | 18 | — | _a definir_ | Não iniciado |
+| **SUPORTE** ||||||
+| MA8 | Dashboard & Analytics Executivo | Suporte | /dashboard, /executive | — | G5 | _a definir_ | Não iniciado |
+| MA12 | Produto & Plataforma | Suporte | /produto/*, /wiki, /chat | 121 | — | _a definir_ | Não iniciado |
+
+### Conexões Cross-Área (a mapear)
+
+> **ATENÇÃO**: As conexões abaixo são o mapeamento inicial. Cada conexão precisa ser
+> detalhada com: dados que fluem, direção, triggers, e quem é owner do fluxo.
+> Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.
+
+```
+                    ┌─────────────────────────────────────────────┐
+                    │         CRM (Operating System)              │
+                    │  contacts · companies · deals · pipelines   │
+                    │  activities · sequences · scoring           │
+                    └──────┬──────────┬──────────┬────────────────┘
+                           │          │          │
+              ┌────────────┤          │          ├────────────┐
+              ▼            ▼          ▼          ▼            ▼
+         ┌─────────┐ ┌─────────┐ ┌────────┐ ┌──────────┐ ┌──────────┐
+         │ Vendas  │ │Marketing│ │  CS    │ │Prestador.│ │Aquisição │
+         │  (MA2)  │ │ (MA10)  │ │ (MA4)  │ │  (MA11)  │ │  (MA3)   │
+         └────┬────┘ └─────────┘ └───┬────┘ └─────┬────┘ └──────────┘
+              │                      │             │
+              ▼                      ▼             ▼
+         ┌───────────────────────────────────────────────┐
+         │              Financeiro (MA1)                 │
+         │  receita · custos · billing · recebimentos    │
+         │  pagto prestadores · DRE · business plan      │
+         └───────────────────────────────────────────────┘
+```
+
+| Conexão | De → Para | Dados que fluem | Status Mapeamento |
+|---------|-----------|-----------------|-------------------|
+| Venda → Onboarding | MA2 → MA4 | Deal fechado dispara onboarding CS | A mapear |
+| CS → Renovação | MA4 → MA2 | Health score alimenta pipeline renovação | A mapear |
+| CS → Financeiro | MA4 → MA1 | Inadimplência, churn → impacto MRR | A mapear |
+| Vendas → Financeiro | MA2 → MA1 | Deal fechado → faturamento → receita | A mapear |
+| Prestadores → Financeiro | MA11 → MA1 | Pagamento a prestadores → custos/DRE | A mapear |
+| Aquisição → Vendas | MA3 → MA2 | Lead qualificado → deal no pipeline CRM | A mapear |
+| Marketing → Aquisição | MA10 → MA3 | Campanhas → leads inbound | A mapear |
+| Financeiro → Dashboard | MA1 → MA8 | MRR, receita, despesas, unit economics | A mapear |
+| CS → Dashboard | MA4 → MA8 | Health score médio, NPS, clientes em risco | A mapear |
+| Mensageria → Todos | MA5 → * | WhatsApp/email como canal transversal | A mapear |
 
 ---
 
@@ -337,15 +399,38 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-### MA2: Vendas & Pipeline
+### MA-CRM: CRM (Operating System)
 
-**Escopo**: Pipeline de deals, CRM nativo, comissões, propostas, metas de vendas, oitiva (avaliação de ligações), sequences de email.
+**Escopo**: Camada de infraestrutura que fornece contacts, companies, deals, pipelines, activities, sequences e scoring para todas as áreas que precisam gerenciar relacionamentos.
 
-**Módulos**: `/vendas/*` (31 páginas), `/crm/*` (12 páginas), `/oitiva/*` (8 páginas)
+**Módulos**: `/crm/*` (12 páginas) — mas a lógica roda como package consumido por MA2, MA3, MA4, MA10, MA11
 
 **O que existe**:
-- Pipeline kanban com deals por estágio → FUNCIONAL
-- CRM nativo: contacts, companies, deals, activities → FUNCIONAL
+- Entities: contacts, companies, deals, activities → FUNCIONAL
+- Pipeline kanban com estágios configuráveis → FUNCIONAL
+- Sequences: schema pronto, motor de execução stub
+- Golden Record: entity resolution para dedup → FUNCIONAL
+- Analytics: CRM analytics, churn cohort, form analysis → FUNCIONAL
+
+**O que falta para Fase 0**:
+- Desligar HubSpot como fonte de verdade (D4)
+- Motor de execução de sequences funcional
+- Dedup nativo sem HubSpot
+- Configuração de pipelines por domínio (vendas, prestadores, CS)
+- Documentar API de package para áreas consumidoras
+
+**Gates**: G3 (70%) — **GATE MAIS CRÍTICO** (mudança de processo + código)
+
+---
+
+### MA2: Vendas & Pipeline
+
+**Escopo**: Pipeline de deals, comissões, propostas, metas de vendas, oitiva (avaliação de ligações). **Consome o CRM package (MA-CRM)** para contacts, companies, deals.
+
+**Módulos**: `/vendas/*` (31 páginas), `/oitiva/*` (8 páginas)
+
+**O que existe**:
+- Pipeline kanban com deals por estágio (via CRM package) → FUNCIONAL
 - Propostas: draft → sent → viewed → accepted/rejected → FUNCIONAL
 - Metas de vendas (sales_targets) por pessoa e período → FUNCIONAL
 - Oitiva: scorecards com critérios ponderados, transcrições, avaliações → EM DEV
@@ -569,7 +654,7 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ### MA11: Prestadores & Comunidade
 
-**Escopo**: Gestão de prestadores de serviço jurídico, funnel de aquisição de prestadores, tiers de qualidade, ranking, saturação.
+**Escopo**: Gestão de prestadores de serviço jurídico, funnel de aquisição de prestadores, tiers de qualidade, ranking, saturação. **Consome o CRM package (MA-CRM)** para pipeline de gestão de prestadores.
 
 **Módulos**: `/prestadores/*` (12 páginas)
 
@@ -581,9 +666,10 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 **O que falta para Fase 0**:
 - Desvincular onboarding de prestadores do HubSpot (atrelado ao G3)
+- Migrar pipeline de prestadores para CRM package (pipelines configuráveis por domínio)
 - Validar se módulo opera de forma autônoma sem HubSpot
 
-**Gates**: Parcialmente vinculado ao G3 (dependência HubSpot no onboarding)
+**Gates**: Parcialmente vinculado ao G3 (dependência HubSpot no onboarding + CRM package)
 
 ---
 
@@ -849,8 +935,8 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 **User stories**:
 - Como CEO, quero abrir o Backstage e ver MRR, churn, novos clientes, NPS, health score médio — tudo numa tela.
-- Como VP Comercial, quero filtrar métricas por período, plano e cohort para entender tendências.
-- Como CFO, quero ver receita vs despesas e unit economics atualizados.
+- Como Gerente de Aquisição, quero filtrar métricas por período, plano e cohort para entender tendências.
+- Como Diretor Financeiro, quero ver receita vs despesas e unit economics atualizados.
 
 **Estado atual (evidência do código)**:
 - /dashboard: hub principal com links para módulos → FUNCIONAL
@@ -869,7 +955,7 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 - [ ] UMA página /executive com: MRR, churn rate, novos clientes, receita, despesas, health score médio, pipeline de vendas
 - [ ] Filtros: período, plano, cohort, ICP
 - [ ] Dados atualizados (real-time ou < 24h)
-- [ ] Aprovado por Gab e VDC
+- [ ] Aprovado por Ju e VDC
 
 **Dependências técnicas**:
 - Tabelas: v2_billing.subscriptions (MRR), crm.customer_health_scores (health), v2_sales.deals (pipeline), v2_sales.leads (aquisição)
@@ -1165,9 +1251,9 @@ pgPolicy("finance_only", {
 
 ---
 
-## 7. VISÃO PÓS-FASE 0 (Gab)
+## 7. VISÃO PÓS-FASE 0 (Ju)
 
-> Esta seção documenta a visão estratégica do CEO para o Backstage APÓS a Fase 0.
+> Esta seção documenta a visão estratégica da CEO (Ju) para o Backstage APÓS a Fase 0.
 > Nenhum item desta seção entra no escopo atual. São pré-requisitos futuros que
 > a Fase 0 deve habilitar.
 
@@ -1247,18 +1333,20 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 | # | Decisão | Responsável | Deadline | Status |
 |---|---------|-------------|----------|--------|
 | D1 | Quais ferramentas externas eliminar (lista completa) | Time | Sprint 1 | Pendente |
-| D2 | Prioridade dos gates (ordem proposta OK?) | VDC + Gab | Sprint 1 | Pendente |
+| D2 | Prioridade dos gates (ordem proposta OK?) | VDC + Ju | Sprint 1 | Pendente |
 | D3 | Health score: quais métricas e pesos? CS valida? | CS + Produto | Sprint 2 | Pendente |
 | D4 | HubSpot: data-alvo de desligamento | Vendas + Backstage | Sprint 1 | Pendente |
 | D5 | Stack de mensageria final (Evolution API é definitivo?) | Time | Sprint 1 | Pendente |
 | D6 | 167 routes sem auth: quais priorizar? | Guilherme + Time | Sprint 1 | Pendente |
-| D7 | Stakeholders para aprovação de UX de cada gate | Gab | Sprint 1 | Pendente |
+| D7 | Stakeholders para aprovação de UX de cada gate | Ju | Sprint 1 | Pendente |
 | D8 | Atribuição final do time (quem faz o quê) | Guilherme | Sprint 1 | Pendente |
 | D9 | ERP (Freelaw One): entra na Fase 0? | VDC | Sprint 1 | Pendente |
 | D10 | Google Sheets: eliminar ou conviver na Fase 0? | Finance + Guilherme | Sprint 1 | Pendente |
 | D11 | Dados históricos do HubSpot: migrar ou perder? | Vendas + Biel | Sprint 1 | Pendente |
 | D12 | Banco Inter sync: ativar na Fase 0? | Finance | Sprint 2 | Pendente |
 | D13 | Workflow builder visual: Fase 0 ou Fase 1? | VDC | Sprint 1 | Pendente |
+| D14 | Mapeamento completo de conexões cross-área (dados, direção, triggers, owners) | VDC + Time | Sprint 1 | Pendente |
+| D15 | CRM package: quais pipelines configuráveis por domínio (vendas, prestadores, CS)? | VDC + Time | Sprint 1 | Pendente |
 
 ---
 
@@ -1266,7 +1354,7 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 
 ### 10.1 Fase 0 (quantitativas)
 
-- [ ] 7/7 gates fechados e aprovados por VDC + Gab
+- [ ] 7/7 gates fechados e aprovados por VDC + Ju
 - [ ] Zero dependência de CRM externo como fonte de verdade
 - [ ] 100% dos dados de clientes consultáveis no Backstage
 - [ ] Health score calculado para 100% dos clientes ativos
@@ -1315,3 +1403,4 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 | 2026-03-09 | v2 | Atualizado com mapeamento real do código | Guilherme + Claude |
 | 2026-03-09 | v3 | Reescrita completa: personas, user stories, arquitetura profunda, separação PRD/Plano | Guilherme + Claude |
 | 2026-03-09 | v4 | Macro-áreas com ownership, RH & Produtividade, gates orientados, remoção Omie, correção papel VDC | Guilherme + Claude |
+| 2026-03-09 | v5 | CRM como OS (package transversal), liderança corrigida (Ju CEO, Carol CS, Didico Aquisição), conexões cross-área, D14/D15 | Guilherme + Claude |
