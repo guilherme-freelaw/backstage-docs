@@ -738,7 +738,7 @@ Sem discovery completa, não tem kickoff.</p>
 <p class="doc-subtitle">O QUE construir</p>
 </div>
 <div class="doc-body">
-<h1 id="backstage-freelaw-super-prd-v3">BACKSTAGE FREELAW — Super PRD v3</h1>
+<h1 id="backstage-freelaw-super-prd-v6">BACKSTAGE FREELAW — Super PRD v6</h1>
 <blockquote>
 <p>O QUE construir e POR QUÊ.<br />
 Toda decisão, construção e priorização deve estar ancorada aqui.<br />
@@ -751,6 +751,11 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <strong>Time</strong>: Alex, Biel, Clarinha, Davi<br />
 <strong>Prazo hard</strong>: Fim de Abril 2026<br />
 <strong>URL produção</strong>: backstage.freelaw.ai</p>
+<blockquote>
+<p><strong>ATENÇÃO</strong>: Todos os elementos marcados como "FUNCIONAL" neste PRD precisam ser verificados<br />
+com testes em produção. Status funcional sem validação em produção é hipótese, não fato.<br />
+Antes de fechar qualquer gate, o PO deve testar cada critério de aceite em produção.</p>
+</blockquote>
 <hr />
 <h2 id="1-contexto-estrategico">1. CONTEXTO ESTRATÉGICO</h2>
 <h3 id="11-a-tese-da-freelaw">1.1 A tese da Freelaw</h3>
@@ -769,14 +774,25 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <p>Hoje a operação da Freelaw depende de:<br />
 - <strong>HubSpot</strong> para CRM e pipeline de vendas<br />
 - <strong>Google Sheets</strong> para business plan e planejamento financeiro<br />
+- <strong>Conta Azul</strong> para contabilidade<br />
+- <strong>Notion</strong> para documentação e knowledge base<br />
+- <strong>Slack</strong> para comunicação interna<br />
 - <strong>Ferramentas externas</strong> para automações (Zapier, Make, scripts avulsos)<br />
-- <strong>Processos manuais</strong> para acompanhamento de clientes</p>
+- <strong>Processos manuais</strong> para acompanhamento de clientes<br />
+- <strong>gestao.freelaw.ai</strong> para gestão de RH e produtividade (nota: gestao.freelaw.ai <strong>É</strong> o Backstage — mesmo deploy Vercel, não é app separado)</p>
 <p>Isso gera: dados duplicados, decisões baseadas em informação incompleta, dependência de ferramentas caras, e incapacidade de automatizar fluxos end-to-end.</p>
 <h3 id="14-principio-operacional">1.4 Princípio operacional</h3>
 <blockquote>
 <p>"Isso ajuda a fechar o gate da Fase 0?" — Se não, vai para o backlog.</p>
 </blockquote>
 <p>A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Backstage precisa entregar. Só depois que os 7 gates estiverem fechados é que avançamos para a visão expandida (cadências IA, omni-channel, flywheel).</p>
+<h3 id="15-principio-do-ciclo-de-vida-completo">1.5 Princípio do ciclo de vida completo</h3>
+<blockquote>
+<p><strong>Todo cliente deve ser rastreável do ABSOLUTO início ao fim.</strong></p>
+</blockquote>
+<p>O Backstage deve registrar cada touchpoint desde o primeiro contato (clique num ad, preenchimento de formulário, ligação fria) até o offboarding (churn, exclusão de dados). O ciclo completo:</p>
+<p><strong>Aquisição → Qualificação → Deal → Onboarding → Ativo → Risco → Renovação/Churn → Offboarding</strong></p>
+<p>Cada transição gera dados. Cada dado alimenta decisões. Nenhum touchpoint pode ser perdido. Este princípio atravessa todas as macro-áreas e é pré-requisito para cohortização, unit economics confiáveis e flywheel operacional.</p>
 <hr />
 <h2 id="2-personas-e-jobs-to-be-done">2. PERSONAS E JOBS-TO-BE-DONE</h2>
 <h3 id="21-bdr-sdr-aquisicao-de-clientes">2.1 BDR / SDR (Aquisição de Clientes)</h3>
@@ -837,7 +853,8 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 - Ver tudo numa tela: receita, custos, MRR, churn, inadimplência<br />
 - Gerar relatórios sem planilhas externas<br />
 - Business plan editável na UI (sem Google Sheets)<br />
-- Conciliação automática entre gateways e contabilidade</p>
+- Conciliação automática entre gateways e contabilidade<br />
+- Contabilidade nativa (substituindo Conta Azul)</p>
 <p><strong>Módulos</strong>: <code>/financeiro/*</code> (28 páginas, 30+ API routes)</p>
 <p><strong>Dores atuais</strong>: Módulo é o mais completo (95% do G1). Única dependência externa: Google Sheets para Business Plan. ERP (Freelaw One) é placeholder. Recebimentos e estruturas organizacionais são stubs.</p>
 <hr />
@@ -893,44 +910,52 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 </thead>
 <tbody>
 <tr>
-<td>Pages (Next.js)</td>
+<td>Apps no monorepo</td>
+<td>7 (backstage, studio-offices, studio-providers, mobile x2, website, cron-service)</td>
+</tr>
+<tr>
+<td>Packages compartilhados</td>
+<td>27</td>
+</tr>
+<tr>
+<td>Pages (Backstage)</td>
 <td>299</td>
 </tr>
 <tr>
-<td>API Routes</td>
-<td>167+</td>
+<td>Pages (total, todos os apps)</td>
+<td>448</td>
 </tr>
 <tr>
-<td>TSX Files</td>
-<td>431</td>
+<td>API Routes (total)</td>
+<td>629</td>
 </tr>
 <tr>
-<td>Database Tables (Backstage)</td>
-<td>40+</td>
-</tr>
-<tr>
-<td>Database Tables (Infra DB)</td>
-<td>80+ (em 80 schema files)</td>
-</tr>
-<tr>
-<td>Feature Modules</td>
-<td>23</td>
+<td>Database Schema Files</td>
+<td>100+</td>
 </tr>
 <tr>
 <td>Integrações externas</td>
-<td>13</td>
+<td>14 (com plano de internalização — ver 3.7)</td>
 </tr>
 <tr>
-<td>AI Agents</td>
-<td>4</td>
+<td>AI Agents (Mastra)</td>
+<td>3 backstage + monorepo AI separado</td>
 </tr>
 <tr>
-<td>Cron Jobs</td>
-<td>25</td>
+<td>Cron Jobs (Vercel)</td>
+<td>24</td>
 </tr>
 <tr>
-<td>Edge Functions (Deno)</td>
-<td>58</td>
+<td>Test Files (Backstage)</td>
+<td>184</td>
+</tr>
+<tr>
+<td>UI Components (Design System)</td>
+<td>80+</td>
+</tr>
+<tr>
+<td>Design System Doc Pages</td>
+<td>70+</td>
 </tr>
 </tbody>
 </table>
@@ -985,21 +1010,21 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <tr>
 <td><strong>Suporte</strong></td>
 <td>/suporte/*</td>
-<td>15</td>
+<td>13</td>
 <td>Parcial</td>
 <td>G2, G7</td>
 </tr>
 <tr>
 <td><strong>WhatsApp</strong></td>
 <td>/interno/whatsapp</td>
-<td>12</td>
+<td>7</td>
 <td>Parcial</td>
 <td>G7</td>
 </tr>
 <tr>
 <td><strong>Prestadores</strong></td>
 <td>/prestadores/*</td>
-<td>12</td>
+<td>14</td>
 <td>Funcional</td>
 <td>—</td>
 </tr>
@@ -1070,6 +1095,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <th>Direção</th>
 <th>Status</th>
 <th>Gate</th>
+<th>Plano de Internalização</th>
 </tr>
 </thead>
 <tbody>
@@ -1079,6 +1105,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Bidirecional → migrando para read-only</td>
 <td>Ativo — em deprecação</td>
 <td>G3</td>
+<td><strong>Substituir por CRM package (MA-CRM)</strong></td>
 </tr>
 <tr>
 <td><strong>Stripe</strong></td>
@@ -1086,6 +1113,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Inbound (webhooks)</td>
 <td>Ativo — primário</td>
 <td>G1</td>
+<td>Manter (gateway de pagamento)</td>
 </tr>
 <tr>
 <td><strong>Iugu</strong></td>
@@ -1093,6 +1121,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Sync periódico</td>
 <td>Ativo — sync estável</td>
 <td>G1, G6</td>
+<td>Manter (gateway de pagamento)</td>
 </tr>
 <tr>
 <td><strong>Meta Ads</strong></td>
@@ -1100,6 +1129,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Inbound</td>
 <td>Ativo</td>
 <td>—</td>
+<td>Manter (fonte de dados externa)</td>
 </tr>
 <tr>
 <td><strong>Google Ads</strong></td>
@@ -1107,6 +1137,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Inbound</td>
 <td>Ativo</td>
 <td>—</td>
+<td>Manter (fonte de dados externa)</td>
 </tr>
 <tr>
 <td><strong>Conta Azul</strong></td>
@@ -1114,6 +1145,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Sync periódico</td>
 <td>Ativo</td>
 <td>G1, G6</td>
+<td><strong>Substituir por Financeiro module (MA1)</strong></td>
 </tr>
 <tr>
 <td><strong>Evolution</strong></td>
@@ -1121,6 +1153,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Bidirecional</td>
 <td>Ativo</td>
 <td>G7</td>
+<td>Manter (canal de comunicação)</td>
 </tr>
 <tr>
 <td><strong>Blip</strong></td>
@@ -1128,13 +1161,15 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Bidirecional</td>
 <td>Ativo</td>
 <td>G7</td>
+<td>Manter (canal de comunicação)</td>
 </tr>
 <tr>
 <td><strong>Banco Inter</strong></td>
 <td>Banking (mTLS + OAuth). Transações e reconciliação.</td>
 <td>Inbound</td>
-<td>Pronto, inativo</td>
+<td>Ativo (auto-submit 5min, sync 15min)</td>
 <td>G6</td>
+<td>Manter (fonte de dados bancários)</td>
 </tr>
 <tr>
 <td><strong>Notion</strong></td>
@@ -1142,6 +1177,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Inbound</td>
 <td>Ativo</td>
 <td>—</td>
+<td><strong>Substituir por Wiki/Knowledge Base (MA12)</strong></td>
 </tr>
 <tr>
 <td><strong>Slack</strong></td>
@@ -1149,6 +1185,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Outbound</td>
 <td>Ativo</td>
 <td>G2</td>
+<td><strong>Substituir por Chat interno (MA5)</strong></td>
 </tr>
 <tr>
 <td><strong>Golden Record</strong></td>
@@ -1156,6 +1193,7 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Bidirecional</td>
 <td>Ativo</td>
 <td>G3</td>
+<td>Manter (infra de dados)</td>
 </tr>
 <tr>
 <td><strong>Clicksign</strong></td>
@@ -1163,10 +1201,36 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 <td>Bidirecional</td>
 <td>Ativo</td>
 <td>G3</td>
+<td>Manter (serviço especializado)</td>
+</tr>
+<tr>
+<td><strong>Resend</strong></td>
+<td>Email transacional. Webhooks de tracking (opens/clicks/replies).</td>
+<td>Outbound + webhooks</td>
+<td>Ativo</td>
+<td>G7</td>
+<td>Manter (canal de comunicação)</td>
+</tr>
+<tr>
+<td><strong>PostHog</strong></td>
+<td>Product analytics. Person lookup, métricas de uso.</td>
+<td>Inbound</td>
+<td>Ativo</td>
+<td>G5</td>
+<td>Manter (analytics externo)</td>
+</tr>
+<tr>
+<td><strong>Vapi</strong></td>
+<td>Voice/calls. Webhook handler para ligações.</td>
+<td>Inbound</td>
+<td>Ativo</td>
+<td>—</td>
+<td>Manter (canal de comunicação)</td>
 </tr>
 </tbody>
 </table>
-<h3 id="34-ai-agents-mastra">3.4 AI Agents (Mastra)</h3>
+<h3 id="34-ai-agents-infraestrutura-ia">3.4 AI Agents &amp; Infraestrutura IA</h3>
+<p><strong>Backstage Agents (Mastra)</strong>:</p>
 <table>
 <thead>
 <tr>
@@ -1177,27 +1241,36 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 </thead>
 <tbody>
 <tr>
+<td><strong>Backstage Assistant</strong></td>
+<td>Assistente geral do Backstage (API fetcher autenticado).</td>
+<td>Ativo</td>
+</tr>
+<tr>
 <td><strong>CEO IA</strong></td>
-<td>Insights executivos sobre métricas da empresa. Responde perguntas estratégicas.</td>
+<td>Insights executivos sobre métricas da empresa.</td>
 <td>Ativo</td>
 </tr>
 <tr>
 <td><strong>Maria Insights</strong></td>
-<td>Análise financeira. Interpreta DRE, MRR, churn.</td>
+<td>Insights sobre prestadores (usado no domínio prestadores).</td>
 <td>Ativo</td>
 </tr>
 <tr>
 <td><strong>Oitiva Evaluation</strong></td>
 <td>Avalia qualidade de ligações de vendas via transcrições. Scorecards com critérios ponderados.</td>
-<td>Em desenvolvimento</td>
-</tr>
-<tr>
-<td><strong>Backstage Assistant</strong></td>
-<td>Assistente geral do Backstage. Ajuda a navegar e encontrar informação.</td>
-<td>Ativo</td>
+<td>Ativo (crons: sync-calls 10min, sync-evaluations 15min, process-transcriptions 5min)</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Tools disponíveis</strong>: <code>fetch-financial-data</code>, <code>fetch-sales-data</code>, <code>natural-query</code></p>
+<p><strong>Monorepo AI separado</strong> (<code>ai/</code>):<br />
+- <code>@freelaw/ai</code> — Core AI infrastructure<br />
+- <code>ai/apps/ai-service</code> — Mastra-based AI service (legal prompts, petitions, CNJ validation, tribunal taxonomy)<br />
+- <code>ai/apps/studio-offices</code> — Mastra generate/iterate/chat para clientes<br />
+- <code>ai/apps/backstage</code>, <code>ai/apps/document-converter</code>, <code>ai/apps/marketing</code><br />
+- SDKs: <code>@ai-sdk/anthropic</code>, <code>@ai-sdk/google</code>, <code>@ai-sdk/openai</code></p>
+<p><strong>API Routes IA</strong>: <code>/api/ai/churn</code>, <code>/api/ai/edit</code>, <code>/api/ai/predictions</code>, <code>/api/ai/recommendations</code>, <code>/api/assistente/chat</code><br />
+<strong>Crons IA</strong>: <code>openclaw-runtime</code> (10min), <code>churn-prediction</code> (weekly)</p>
 <h3 id="35-dominios-no-backstage-core">3.5 Domínios no backstage-core</h3>
 <table>
 <thead>
@@ -1229,8 +1302,379 @@ Para o estado ideal de cada miniapp, consulte o <strong>Discovery</strong>.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="36-vantagem-do-monorepo-packages-transversais">3.6 Vantagem do Monorepo: Packages Transversais</h3>
+<p>O monorepo da Freelaw permite que <strong>packages compartilhados</strong> sirvam múltiplas aplicações (backstage, studio, etc.). Esta é uma <strong>vantagem estratégica</strong> que o PRD deve explorar ao máximo.</p>
+<p><strong>O que são packages transversais</strong>:<br />
+- Código compartilhado entre apps: data models, types, validação, UI components<br />
+- Cada package encapsula um domínio e expõe APIs tipadas<br />
+- Qualquer app do monorepo pode importar e consumir</p>
+<p><strong>27 packages existentes no monorepo</strong> (auditoria 2026-03-09):</p>
+<table>
+<thead>
+<tr>
+<th>Categoria</th>
+<th>Packages</th>
+<th>Reuso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Core/Infra</strong></td>
+<td><code>@freelaw/core</code>, <code>@freelaw/config</code>, <code>@freelaw/auth</code>, <code>@freelaw/server</code>, <code>@freelaw/shared</code>, <code>@freelaw/lib</code>, <code>@freelaw/types</code>, <code>@freelaw/tsconfig</code></td>
+<td>Alto — todos os apps</td>
+</tr>
+<tr>
+<td><strong>UI</strong></td>
+<td><code>@freelaw/ui</code> (80+ componentes), <code>@freelaw/ui-native</code></td>
+<td>Alto — todos os apps</td>
+</tr>
+<tr>
+<td><strong>Domínio</strong></td>
+<td><code>@freelaw/backstage-core</code>, <code>@freelaw/hr-core</code>, <code>@freelaw/hr-sdk</code>, <code>@freelaw/payments-core</code>, <code>@freelaw/matching</code>, <code>@freelaw/workspace-core</code>, <code>@freelaw/workspace-ui</code></td>
+<td>Médio — apps específicos</td>
+</tr>
+<tr>
+<td><strong>Infra pesada</strong></td>
+<td><code>@freelaw/infra</code> (100+ schemas, banking, analytics, observability, Slack, WhatsApp, Notion, Meta Ads, RAG)</td>
+<td>Alto — backend</td>
+</tr>
+<tr>
+<td><strong>Produto</strong></td>
+<td><code>@freelaw/api-contracts</code>, <code>@freelaw/feature-gates</code>, <code>@freelaw/workflows</code>, <code>@freelaw/editor</code>, <code>@freelaw/content-pipeline</code>, <code>@freelaw/ai</code></td>
+<td>Médio-Alto</td>
+</tr>
+<tr>
+<td><strong>Provider</strong></td>
+<td><code>@freelaw/studio-providers-core</code>, <code>@freelaw/studio-providers-sdk</code></td>
+<td>Específico</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Por que isso importa</strong>:<br />
+- Evita duplicação de lógica entre 7 apps<br />
+- Garante consistência de tipos e validações<br />
+- Permite que mudanças num domínio reflitam em todas as apps que o consomem<br />
+- Habilita que novas apps (mobile, portal do cliente) reusem a mesma infraestrutura<br />
+- O <code>@freelaw/infra</code> é o package mais estratégico: contém 100+ schemas, todas as integrações, e a camada de dados inteira</p>
+<blockquote>
+<p><strong>Regra</strong>: Sempre que uma funcionalidade serve mais de uma macro-área, ela deve ser um <strong>package</strong>, não código duplicado em cada área.</p>
+</blockquote>
+<h3 id="37-estrategia-de-internalizacao">3.7 Estratégia de Internalização</h3>
+<p>A Freelaw depende de ferramentas externas que, ao longo do tempo, serão substituídas por módulos internos construídos no monorepo. Esta estratégia reduz custos, aumenta controle sobre dados e elimina fragmentação.</p>
+<table>
+<thead>
+<tr>
+<th>Ferramenta externa</th>
+<th>Substituto interno</th>
+<th>Macro-Área</th>
+<th>Timeline</th>
+<th>Impacto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HubSpot</strong></td>
+<td>CRM package nativo</td>
+<td>MA-CRM</td>
+<td>Fase 0 (G3)</td>
+<td>Elimina ~R$X/mês + unifica dados de vendas</td>
+</tr>
+<tr>
+<td><strong>Conta Azul</strong></td>
+<td>Módulo Financeiro com contabilidade nativa</td>
+<td>MA1</td>
+<td>Fase 0-1</td>
+<td>Elimina dependência + habilita General Ledger próprio</td>
+</tr>
+<tr>
+<td><strong>Notion</strong></td>
+<td>Wiki / Knowledge Base interno</td>
+<td>MA12</td>
+<td>Fase 1</td>
+<td>Parcialmente existe; completar e migrar conteúdo</td>
+</tr>
+<tr>
+<td><strong>Slack</strong></td>
+<td>Chat interno do Backstage</td>
+<td>MA5</td>
+<td>Fase 1+</td>
+<td>Parcialmente existe; falta feature parity para alertas críticos</td>
+</tr>
+<tr>
+<td><strong>gestao.freelaw.ai</strong></td>
+<td>RH &amp; Produtividade</td>
+<td>MA9</td>
+<td>Fase 0-1</td>
+<td>Migração completa de funcionalidades existentes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Princípios da internalização</strong>:<br />
+1. <strong>Só internalizar quando o módulo interno for MELHOR</strong> que a ferramenta externa (ou equivalente + integrado)<br />
+2. <strong>Migração gradual</strong>: dual-write → leitura interna → desligar externo<br />
+3. <strong>Dados históricos</strong>: sempre migrar ou manter acessíveis (nunca perder)<br />
+4. <strong>Contagem de integrações</strong>: das 17 integrações atuais, 4 (HubSpot, Conta Azul, Notion, Slack) serão internalizadas. As 13 restantes continuam como integrações externas (gateways de pagamento, canais de comunicação, fontes de dados, serviços especializados).</p>
 <hr />
-<h2 id="4-macro-areas-do-backstage">4. MACRO-ÁREAS DO BACKSTAGE</h2>
+<h2 id="4-arquitetura-de-dados-fonte-da-verdade">4. ARQUITETURA DE DADOS — FONTE DA VERDADE</h2>
+<blockquote>
+<p><strong>Esta seção é CENTRAL ao objetivo do Backstage.</strong> O Backstage existe para ser a fonte da verdade<br />
+operacional da Freelaw. Sem uma arquitetura de dados rigorosa, todo o resto desmorona.</p>
+</blockquote>
+<h3 id="41-principios-fundamentais">4.1 Princípios fundamentais</h3>
+<ol>
+<li><strong>Toda transação financeira → lançamento contábil → razão geral (General Ledger)</strong></li>
+<li>Integrações bancárias (Banco Inter, Iugu, Stripe) DEVEM fluir pelo plano de contas</li>
+<li>Nenhum dado financeiro pode existir fora do GL</li>
+<li>
+<p>Reconciliação automática: gateway ↔ GL ↔ DRE</p>
+</li>
+<li>
+<p><strong>Ciclo de vida completo do cliente</strong></p>
+</li>
+<li>Do primeiro touchpoint (ad click, form fill, ligação fria) até offboarding (churn + exclusão de dados)</li>
+<li>Cada transição gera evento registrado e auditável</li>
+<li>
+<p>Fluxo: <strong>Ad/Conteúdo → Lead → Qualificação → Deal → Contrato → Onboarding → Ativo → Health Monitoring → Renovação/Churn → Offboarding</strong></p>
+</li>
+<li>
+<p><strong>Single source of truth por domínio</strong></p>
+</li>
+<li>Cada dado tem UM owner (uma macro-área responsável)</li>
+<li>Outras áreas consomem via API ou views, nunca duplicam</li>
+<li>
+<p>Conflitos de ownership devem ser resolvidos explicitamente</p>
+</li>
+<li>
+<p><strong>Auditabilidade</strong></p>
+</li>
+<li>Toda mudança de estado deve ter timestamp, autor e motivo</li>
+<li>Dados financeiros devem ter trilha de auditoria completa</li>
+<li>Exclusões lógicas (soft delete) para dados regulados</li>
+</ol>
+<h3 id="42-general-ledger-plano-de-contas">4.2 General Ledger (Plano de Contas)</h3>
+<p>O General Ledger é a espinha dorsal financeira do Backstage. Todo fluxo financeiro converge aqui.</p>
+<pre><code>ENTRADAS DE DADOS                    GENERAL LEDGER                    SAÍDAS
+                                     (Plano de Contas)
+Stripe webhooks ────────┐                                    ┌──→ DRE
+Iugu sync ──────────────┤                                    ├──→ Balanço
+Conta Azul sync ────────┤      ┌───────────────────┐         ├──→ DFC
+Banco Inter sync ───────┼────→ │  Journal Entries   │────────→├──→ Unit Economics
+Pagto prestadores ──────┤      │  (Lançamentos)     │         ├──→ Business Plan
+Despesas manuais ───────┤      │       ↓            │         ├──→ Budget vs Real
+Receita manual ─────────┘      │  General Ledger    │         └──→ Conciliação
+                               │  (Razão)           │
+                               │       ↓            │
+                               │  Chart of Accounts │
+                               │  (Plano de Contas) │
+                               └───────────────────┘
+</code></pre>
+<p><strong>Estado atual (verificado no código 2026-03-09)</strong>:</p>
+<p>O General Ledger <strong>já existe e é maduro</strong>. Schema <code>v2_accounting</code> com:<br />
+- <code>chart_of_accounts</code>: <strong>85 contas</strong> hierárquicas, alinhadas com BP 2026<br />
+- <code>transactions</code>: Double-entry journal entries com workflow (pending → confirmed → reconciled)<br />
+- <code>transaction_allocations</code>: Débitos/créditos vinculados a contas e centros de custo<br />
+- <code>cost_centers</code>: Centros de custo alinhados à estrutura organizacional<br />
+- <code>vendors</code>, <code>bank_accounts</code>, <code>budgets</code>, <code>budget_lines</code>, <code>bank_reconciliations</code><br />
+- <code>approval_requests</code>: Workflow de aprovação multi-nível<br />
+- <code>alerts</code>: Alertas financeiros (info/warning/critical)<br />
+- <code>audit_log</code>: Trilha de auditoria completa</p>
+<p><strong>5 Posting Engines</strong> (5.689 linhas, 10 arquivos):<br />
+1. <code>finance-posting.ts</code> (1.253 linhas) — v2_billing → GL (invoices, subscriptions)<br />
+2. <code>contaazul-posting.ts</code> (405 linhas) — Conta Azul ERP → GL<br />
+3. <code>inter-posting.ts</code> (316 linhas) — Banco Inter banking → GL<br />
+4. <code>payroll-posting.ts</code> (283 linhas) — Folha de pagamento → GL<br />
+5. <code>tax-posting-etl.ts</code> (455 linhas) — Cálculos tributários → GL</p>
+<p><strong>Validação</strong>: Toda posting engine valida balanço double-entry (SUM débitos = SUM créditos) atomicamente. Desbalanceamento causa rollback.</p>
+<p><strong>Hierarquia do Plano de Contas</strong> (85 contas):<br />
+- 1.x ATIVO: Caixa, Contas a Receber, PDD<br />
+- 2.x PASSIVO: Receita Diferida, A Pagar Prestadores, Impostos<br />
+- 3.x PATRIMÔNIO LÍQUIDO: Capital Social, Lucros Acumulados<br />
+- 4.x RECEITA: Faturamento (Contratantes + Prestadores), Não Recorrente, Serviços Avulsos, Deduções (PIS/COFINS, ISS, CBS, PCLD)<br />
+- 5.x DESPESA: Custos Receita, Vendas, Marketing, G&amp;O, Administrativo, PDD, AI Inference, Resultado Financeiro<br />
+- 6.x Depreciação/Amortização<br />
+- 7.x Impostos sobre Lucro (IRPJ, CSLL)</p>
+<h3 id="43-ownership-de-dados-por-macro-area">4.3 Ownership de dados por macro-área</h3>
+<table>
+<thead>
+<tr>
+<th>Domínio de Dados</th>
+<th>Owner (MA)</th>
+<th>Tabelas principais</th>
+<th>Consumidores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Leads, Contacts, Companies</td>
+<td>MA-CRM</td>
+<td>v2_sales.leads, .contacts, .companies</td>
+<td>MA2, MA3, MA4, MA10, MA11</td>
+</tr>
+<tr>
+<td>Deals, Pipelines, Stages</td>
+<td>MA-CRM</td>
+<td>v2_sales.deals, .pipelines, .stages</td>
+<td>MA2, MA1, MA8</td>
+</tr>
+<tr>
+<td>Activities, Sequences</td>
+<td>MA-CRM</td>
+<td>v2_sales.activities, .sequences</td>
+<td>MA2, MA3</td>
+</tr>
+<tr>
+<td>Subscriptions, Invoices, MRR</td>
+<td>MA1</td>
+<td>v2_billing.*</td>
+<td>MA4, MA8</td>
+</tr>
+<tr>
+<td>Despesas, DRE, GL</td>
+<td>MA1</td>
+<td>fin_<em>, budget</em>, vendor_category_mapping</td>
+<td>MA8, MA11</td>
+</tr>
+<tr>
+<td>Health Score, NPS, Journey</td>
+<td>MA4</td>
+<td>crm.customer_health_scores, .nps_responses, .customer_journey</td>
+<td>MA1, MA2, MA8</td>
+</tr>
+<tr>
+<td>Renovações, Churn</td>
+<td>MA4</td>
+<td>crm.renewal_tracking, churn_predictions</td>
+<td>MA1, MA2, MA8</td>
+</tr>
+<tr>
+<td>Conversas, Mensagens</td>
+<td>MA5</td>
+<td>v2_comms.conversations, .messages</td>
+<td>MA2, MA4</td>
+</tr>
+<tr>
+<td>Templates de mensagem</td>
+<td>MA5</td>
+<td>v2_comms.notification_templates</td>
+<td>MA2, MA3, MA4, MA6</td>
+</tr>
+<tr>
+<td>Campanhas, Ads</td>
+<td>MA10</td>
+<td>v2_marketing.campaigns, .ad_campaigns_v2</td>
+<td>MA3, MA8</td>
+</tr>
+<tr>
+<td>Prestadores, Tiers</td>
+<td>MA11</td>
+<td>providers.*</td>
+<td>MA1, MA-CRM</td>
+</tr>
+<tr>
+<td>Workflows, Automações</td>
+<td>MA6</td>
+<td>marketing_automations, lead_scoring_rules</td>
+<td>MA2, MA3, MA4</td>
+</tr>
+<tr>
+<td>Sync externo</td>
+<td>MA7</td>
+<td>sync.*</td>
+<td>MA1, MA-CRM</td>
+</tr>
+</tbody>
+</table>
+<h3 id="44-convencoes-de-schema">4.4 Convenções de schema</h3>
+<ul>
+<li><strong>Naming</strong>: snake_case para tabelas e colunas</li>
+<li><strong>IDs</strong>: UUID v4 (gerado no banco)</li>
+<li><strong>Timestamps</strong>: <code>created_at</code>, <code>updated_at</code> em todas as tabelas (timestamptz)</li>
+<li><strong>Soft delete</strong>: <code>deleted_at</code> (nullable timestamptz) para dados regulados</li>
+<li><strong>Organization</strong>: <code>organization_id</code> para multi-tenancy</li>
+<li><strong>Schemas nomeados</strong>: <code>v2_billing</code>, <code>v2_sales</code>, <code>v2_marketing</code>, <code>v2_comms</code>, <code>crm</code>, <code>sync</code> — nunca <code>public</code></li>
+<li><strong>RLS obrigatório</strong>: todas as tabelas novas devem ter policies</li>
+</ul>
+<h3 id="45-fluxos-de-dados-criticos">4.5 Fluxos de dados críticos</h3>
+<h4 id="fluxo-de-aquisicao-venda-cliente-lifecycle-completo">Fluxo de Aquisição → Venda → Cliente → Lifecycle completo</h4>
+<pre><code>PRIMEIRO TOUCHPOINT              QUALIFICAÇÃO                FECHAMENTO
+(ad click, form fill,     →     BDR/SDR prospecta     →     Closer negocia
+ ligação, evento, referral)          ↓                            ↓
+    ↓                          v2_sales.leads              v2_sales.deals
+v2_marketing.conversion_events (status: new→contacted      (status: open→won)
+v2_sales.activities             →qualified→converted)           ↓
+(first_touch registrado)             ↓                     NOVO CLIENTE
+                               v2_sales.contacts           v2_billing.customers
+                               (lifecycle: lead→mql        v2_billing.subscriptions
+                                →sql→opportunity                ↓
+                                →customer)              ONBOARDING (MA4)
+                                                       crm.customer_journey
+                                                       (stage: onboarding)
+                                                              ↓
+                                                        ATIVO + MONITORAMENTO
+                                                        crm.customer_health_scores
+                                                        (cron calcula scores)
+                                                              ↓
+                                                     ┌────────┴────────┐
+                                                     ↓                 ↓
+                                                  SAUDÁVEL         EM RISCO
+                                                  Renovação        Playbook CS
+                                                  Expansion        Retention offer
+                                                     ↓                 ↓
+                                                  RENEWED          CHURNED
+                                                     ↓                 ↓
+                                                  Novo ciclo      Offboarding
+                                                                  (dados retidos
+                                                                   para analytics)
+</code></pre>
+<h4 id="fluxo-financeiro-general-ledger">Fluxo Financeiro → General Ledger</h4>
+<pre><code>EVENTOS FINANCEIROS            JOURNAL ENTRIES              RELATÓRIOS
+Stripe webhook      ───┐      ┌──────────────┐
+(subscription.paid)     │      │              │         ┌─→ DRE mensal
+                        ├────→ │  Lançamento  │─────────├─→ Balanço patrimonial
+Iugu sync           ───┤      │  Contábil     │         ├─→ DFC
+(invoices, receivables) │      │              │         ├─→ KPIs (MRR, churn)
+                        ├────→ │      ↓       │─────────├─→ Unit Economics
+Conta Azul sync     ───┤      │  Razão Geral │         ├─→ Conciliação
+(despesas, categorias)  │      │ (General     │         └─→ Business Plan
+                        ├────→ │  Ledger)     │
+Banco Inter sync    ───┤      │              │
+(transações)            │      │      ↓       │
+                        ├────→ │  Plano de    │
+Pagto prestadores   ───┘      │  Contas      │
+                              └──────────────┘
+</code></pre>
+<h4 id="fluxo-hubspot-nativo-migracao-g3">Fluxo HubSpot → Nativo (Migração G3)</h4>
+<pre><code>HOJE (dependente):                    ALVO (nativo):
+HubSpot API                           v2_sales.*
+    ↓                                     ↑
+hubspot_sync_log                     Criação direta
+    ↓                                     ↑
+hubspot_contacts → MIGRAR →         v2_sales.contacts
+hubspot_companies → MIGRAR →        v2_sales.companies
+hubspot_deals → MIGRAR →            v2_sales.deals
+dedupHubspot() → SUBSTITUIR →       dedup por v2_sales.companies.domain
+hubspotWrite() → SUBSTITUIR →       escrita direta em v2_sales
+</code></pre>
+<h3 id="46-rls-e-seguranca">4.6 RLS e Segurança</h3>
+<p><strong>Padrão</strong>: Row Level Security no Supabase por organization_id.</p>
+<pre><code class="language-sql">-- Padrão para tabelas com organizationId
+pgPolicy(&quot;table_select&quot;, {
+  using: sql`(organization_id = user_organization_id())`
+})
+
+-- Para tabelas filho (herda do pai)
+pgPolicy(&quot;child_select&quot;, {
+  using: sql`EXISTS (SELECT 1 FROM parent WHERE parent.id = child.parent_id AND parent.org = user_org())`
+})
+
+-- Para dados financeiros (restrito a finance team)
+pgPolicy(&quot;finance_only&quot;, {
+  using: sql`(sync.is_finance_team(current_user_id()))`
+})
+</code></pre>
+<p><strong>Problema</strong>: ~167 API routes sem autenticação. Estratégia: corrigir nas routes que tocamos para fechar os gates.</p>
+<hr />
+<h2 id="5-macro-areas-do-backstage">5. MACRO-ÁREAS DO BACKSTAGE</h2>
 <blockquote>
 <p>Cada macro-área é um domínio funcional do Backstage com escopo, responsável e PRD próprio.<br />
 O responsável pelo PRD de cada área detalha user stories, critérios de aceite e dependências.<br />
@@ -1241,7 +1685,7 @@ Esta seção é o <strong>mapa de ownership</strong> — quem é dono de quê.</
 <p><strong>Decisão arquitetural</strong>: O CRM <strong>não é um módulo isolado</strong>. Ele é uma camada de infraestrutura<br />
 (package) que roda <strong>por dentro</strong> de múltiplas áreas. Marketing + Vendas = CRM, mas a mesma<br />
 estrutura (contacts, companies, deals, activities, pipelines) é reutilizada para outros domínios:<br />
-pipeline de gestão de prestadores, pipeline de CS, etc.</p>
+pipeline de gestão de prestadores, pipeline de CS, pipeline de investidores, etc.</p>
 <p>Essa lógica de <strong>packages transversais</strong> se aplica a outras conexões entre áreas:<br />
 - <strong>Financeiro ↔ Prestadores</strong>: pagamento a prestadores alimenta custos e DRE<br />
 - <strong>Financeiro ↔ CS</strong>: recebimentos ligados a health score e inadimplência<br />
@@ -1250,6 +1694,22 @@ pipeline de gestão de prestadores, pipeline de CS, etc.</p>
 - <strong>Aquisição ↔ Vendas</strong>: lead qualificado → deal no pipeline<br />
 - <strong>Mensageria ↔ Todos</strong>: WhatsApp/email como canal transversal</p>
 <p><strong>Status</strong>: Mapeamento completo de conexões cross-área <strong>PENDENTE</strong> (ver D14).</p>
+</blockquote>
+<h3 id="alerta-desalinhamento-dominios-vs-macro-areas">Alerta: Desalinhamento Domínios vs Macro-Áreas</h3>
+<blockquote>
+<p><strong>Auditoria do código (2026-03-09)</strong> revelou que existem <strong>3 taxonomias independentes</strong> que evoluíram separadamente:</p>
+<ol>
+<li><strong>29 route domains</strong> no filesystem (cresceram organicamente)</li>
+<li><strong>11 sidebar sections</strong> na UI (curadoria manual)</li>
+<li><strong>10 ColaboradorAreas</strong> no DB de RH (org chart)</li>
+</ol>
+<p><strong>Problemas identificados:</strong><br />
+- <strong>10 rotas órfãs</strong> sem entrada no sidebar: <code>chat</code>, <code>wiki</code>, <code>crm</code>, <code>assistente</code>, <code>workflows</code>, <code>design-system</code>, <code>features</code>, <code>projetos</code>, <code>meu-espaco</code>, e todo o grupo <code>(aquisicao)</code><br />
+- 3 sidebar sections (<code>oitiva</code>, <code>whatsapp</code>, <code>suporte</code>) sem ColaboradorArea correspondente no area-mapping<br />
+- Relações many-to-one: "Pessoas" agrega 8 route domains (<code>rh</code>, <code>colaboradores</code>, <code>payroll</code>, <code>performance</code>, <code>ausencias</code>, <code>desenvolvimento</code>, <code>vagas</code>, <code>people-analytics</code>)<br />
+- "Operacoes" no sidebar mapeia para <code>/prestadores</code> nas rotas</p>
+<p><strong>Decisão necessária (D21)</strong>: Unificar as 3 taxonomias sob as macro-áreas do PRD.<br />
+Arquivos-chave: <code>app-sidebar.tsx</code>, <code>area-mapping.ts</code>, <code>permissions.ts</code></p>
 </blockquote>
 <h3 id="mapa-de-atribuicao">Mapa de Atribuição</h3>
 <table>
@@ -1290,7 +1750,7 @@ pipeline de gestão de prestadores, pipeline de CS, etc.</p>
 <td>MA7</td>
 <td>Integrações</td>
 <td>Package</td>
-<td>Transversal (13 sistemas)</td>
+<td>Transversal (13→9 sistemas, com internalização)</td>
 <td>—</td>
 <td>G6</td>
 <td><em>a definir</em></td>
@@ -1348,7 +1808,7 @@ pipeline de gestão de prestadores, pipeline de CS, etc.</p>
 </tr>
 <tr>
 <td>MA3</td>
-<td>Aquisição &amp; Outbound</td>
+<td>Aquisição (Multicanal)</td>
 <td>Área</td>
 <td>/aquisicao/*, /vendas/outbound</td>
 <td>6</td>
@@ -1392,6 +1852,16 @@ pipeline de gestão de prestadores, pipeline de CS, etc.</p>
 <td>Área</td>
 <td>/rh/*</td>
 <td>18</td>
+<td>—</td>
+<td><em>a definir</em></td>
+<td>Não iniciado</td>
+</tr>
+<tr>
+<td>MA13</td>
+<td>IA &amp; Produção (LIA)</td>
+<td>Área</td>
+<td>/ia/<em>, /oitiva/</em></td>
+<td>—</td>
 <td>—</td>
 <td><em>a definir</em></td>
 <td>Não iniciado</td>
@@ -1452,6 +1922,13 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
          │              Financeiro (MA1)                 │
          │  receita · custos · billing · recebimentos    │
          │  pagto prestadores · DRE · business plan      │
+         │  General Ledger · plano de contas             │
+         └────────────────────┬──────────────────────────┘
+                              │
+                              ▼
+         ┌───────────────────────────────────────────────┐
+         │            IA &amp; Produção (MA13)               │
+         │  LIA · AI agents · Oitiva · insights          │
          └───────────────────────────────────────────────┘
 </code></pre>
 <table>
@@ -1485,13 +1962,13 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 <tr>
 <td>Vendas → Financeiro</td>
 <td>MA2 → MA1</td>
-<td>Deal fechado → faturamento → receita</td>
+<td>Deal fechado → faturamento → receita → GL</td>
 <td>A mapear</td>
 </tr>
 <tr>
 <td>Prestadores → Financeiro</td>
 <td>MA11 → MA1</td>
-<td>Pagamento a prestadores → custos/DRE</td>
+<td>Pagamento a prestadores → custos/DRE/GL</td>
 <td>A mapear</td>
 </tr>
 <tr>
@@ -1503,7 +1980,7 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 <tr>
 <td>Marketing → Aquisição</td>
 <td>MA10 → MA3</td>
-<td>Campanhas → leads inbound</td>
+<td>Campanhas (qualquer canal) → leads</td>
 <td>A mapear</td>
 </tr>
 <tr>
@@ -1524,11 +2001,29 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 <td>WhatsApp/email como canal transversal</td>
 <td>A mapear</td>
 </tr>
+<tr>
+<td>CS → Suporte</td>
+<td>MA4 ↔ MA5</td>
+<td>Tickets de suporte alimentam health score</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>CS → Produto</td>
+<td>MA4 ← Studio</td>
+<td>Dados de uso alimentam health score</td>
+<td>A mapear</td>
+</tr>
+<tr>
+<td>Aquisição → CS</td>
+<td>MA3 → MA4</td>
+<td>Onboarding inicia imediatamente após deal close</td>
+<td>A mapear</td>
+</tr>
 </tbody>
 </table>
 <hr />
 <h3 id="ma1-financeiro-billing">MA1: Financeiro &amp; Billing</h3>
-<p><strong>Escopo</strong>: Toda gestão financeira — receita, custos, MRR, DRE, billing, conciliação, unit economics, business plan.</p>
+<p><strong>Escopo</strong>: Toda gestão financeira — receita, custos, MRR, DRE, billing, conciliação, unit economics, business plan. Inclui contabilidade nativa (substituindo Conta Azul) e General Ledger.</p>
 <p><strong>Módulos</strong>: <code>/financeiro/*</code> (28 páginas, 30+ API routes)</p>
 <p><strong>O que existe</strong>:<br />
 - Receita: overview, assinaturas, faturamento, billing, novo-MRR → FUNCIONAL<br />
@@ -1541,11 +2036,26 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 - ERP (Freelaw One): placeholder — decisão pendente (D9)<br />
 - Recebimentos: STUB<br />
 - Estruturas organizacionais: STUB<br />
-- Eliminar Google Sheets como dependência para Business Plan (D10)</p>
+- Eliminar Google Sheets como dependência para Business Plan (D10)<br />
+- General Ledger / Plano de Contas: estruturar para receber todos os fluxos financeiros<br />
+- Contabilidade nativa: definir escopo mínimo para começar a substituir Conta Azul</p>
 <p><strong>Gates</strong>: G1 (95%), G5 (parcial — dados financeiros alimentam dashboard)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Business Plan 100% editável na UI (eliminar dependência Google Sheets)<br />
+- [ ] General Ledger: tabela de journal_entries com plano de contas configurável<br />
+- [ ] Todas as transações Iugu e Stripe → journal entries automáticos<br />
+- [ ] Despesas Conta Azul → journal entries (sync mantido, mas GL como fonte de verdade)<br />
+- [ ] DRE gerada a partir do GL (não de queries avulsas)<br />
+- [ ] Recebimentos: tela funcional com dados reais do Iugu/Stripe<br />
+- [ ] Estruturas organizacionais: CRUD mínimo funcional<br />
+- [ ] Conciliação automática: GL ↔ gateway (Iugu + Stripe) com alerta de divergências<br />
+- [ ] ERP (Freelaw One): decisão tomada e documentada (D9)<br />
+- [ ] Unit Economics com dados atualizados (&lt; 24h defasagem)<br />
+- [ ] Relatório diário automático funcionando<br />
+- [ ] Banco Inter: decisão sobre ativação (D12)</p>
 <hr />
 <h3 id="ma-crm-crm-operating-system">MA-CRM: CRM (Operating System)</h3>
-<p><strong>Escopo</strong>: Camada de infraestrutura que fornece contacts, companies, deals, pipelines, activities, sequences e scoring para todas as áreas que precisam gerenciar relacionamentos.</p>
+<p><strong>Escopo</strong>: Camada de infraestrutura que fornece contacts, companies, deals, pipelines, activities, sequences e scoring para todas as áreas que precisam gerenciar relacionamentos. Inclui pipeline de investidores para relações com investidores.</p>
 <p><strong>Módulos</strong>: <code>/crm/*</code> (12 páginas) — mas a lógica roda como package consumido por MA2, MA3, MA4, MA10, MA11</p>
 <p><strong>O que existe</strong>:<br />
 - Entities: contacts, companies, deals, activities → FUNCIONAL<br />
@@ -1557,9 +2067,25 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 - Desligar HubSpot como fonte de verdade (D4)<br />
 - Motor de execução de sequences funcional<br />
 - Dedup nativo sem HubSpot<br />
-- Configuração de pipelines por domínio (vendas, prestadores, CS)<br />
+- Configuração de pipelines por domínio (vendas, prestadores, CS, investidores)<br />
 - Documentar API de package para áreas consumidoras</p>
+<p><strong>Pipeline de Investidores (Fase 1+)</strong>:<br />
+- A arquitetura de pipelines configuráveis DEVE suportar extensão para relações com investidores<br />
+- Funcionalidades futuras: investor pipeline, fundraising tracking, data room management<br />
+- A decisão de implementar é Fase 1+, mas o design dos pipelines na Fase 0 não pode bloquear isso<br />
+- Mesma infraestrutura: contacts (tipo: investor), companies (tipo: fund), deals (pipeline: fundraising)</p>
 <p><strong>Gates</strong>: G3 (70%) — <strong>GATE MAIS CRÍTICO</strong> (mudança de processo + código)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] HubSpot sync desligado (cron desabilitado, fonte de verdade = v2_sales)<br />
+- [ ] Migração completa de dados históricos HubSpot → v2_sales (contacts, companies, deals)<br />
+- [ ] Dedup nativo funcionando (consulta v2_sales.companies.domain, sem HubSpot)<br />
+- [ ] Motor de sequences: cron que processa enrollments e envia emails via Resend<br />
+- [ ] 3 pipelines configurados: vendas (MA2), prestadores (MA11), CS (MA4)<br />
+- [ ] API de package documentada (como outras áreas consomem o CRM)<br />
+- [ ] Golden Record integrado ao fluxo de criação (dedup automática)<br />
+- [ ] Tracking de opens/clicks/replies via webhooks Resend<br />
+- [ ] Contacts com lifecycle tracking completo (lead → customer → churned)<br />
+- [ ] Activities registrando TODOS os touchpoints (calls, emails, meetings, demos, tasks)</p>
 <hr />
 <h3 id="ma2-vendas-pipeline">MA2: Vendas &amp; Pipeline</h3>
 <p><strong>Escopo</strong>: Pipeline de deals, comissões, propostas, metas de vendas, oitiva (avaliação de ligações). <strong>Consome o CRM package (MA-CRM)</strong> para contacts, companies, deals.</p>
@@ -1577,27 +2103,72 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 - Dedup nativo sem HubSpot (consultar v2_sales.companies.domain)<br />
 - Integrar métricas de Oitiva ao pipeline e scorecards<br />
 - Validar forecast de comissão com vendas<br />
-- Tracking de opens/clicks/replies (webhooks Resend)</p>
+- Tracking de opens/clicks/replies (webhooks Resend)<br />
+- <strong>Conexão com CS</strong>: deal fechado → trigger automático de onboarding</p>
 <p><strong>Gates</strong>: G3 (70%) — <strong>GATE MAIS CRÍTICO</strong> (mudança de processo + código)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Pipeline de deals 100% no Backstage (zero operação no HubSpot)<br />
+- [ ] Propostas: fluxo completo draft → sent → viewed → accepted com notificação<br />
+- [ ] Comissão: forecast validado com time de vendas (BDR 1%, Closer 5%)<br />
+- [ ] Oitiva: avaliação de ligações integrada ao scorecard do vendedor<br />
+- [ ] Analytics de vendas: ciclo de vendas, win rate, ticket médio, conversão por estágio<br />
+- [ ] Metas vs realizado: dashboard com progresso em tempo real<br />
+- [ ] Deal fechado → trigger automático: criar subscription + iniciar onboarding CS<br />
+- [ ] Timeline de interações por deal (todas as activities linkadas)</p>
 <hr />
-<h3 id="ma3-aquisicao-outbound">MA3: Aquisição &amp; Outbound</h3>
-<p><strong>Escopo</strong>: Prospecção outbound (BDR), qualificação inbound (SDR), Lead Hunter, lead scoring, KPIs de aquisição.</p>
+<h3 id="ma3-aquisicao-multicanal">MA3: Aquisição (Multicanal)</h3>
+<p><strong>Escopo</strong>: Toda a estratégia de aquisição de clientes, independente do canal. A macro-área responde à pergunta "como trazemos clientes?" e deve suportar qualquer canal de aquisição presente ou futuro.</p>
 <p><strong>Módulos</strong>: <code>/aquisicao/*</code> (6 páginas), <code>/vendas/outbound</code>, <code>/vendas/leads</code></p>
+<p><strong>Canais suportados</strong> (a estrutura deve ser agnóstica ao canal):<br />
+- <strong>Outbound</strong>: prospecção BDR (Lead Hunter, telefone, email, LinkedIn)<br />
+- <strong>Inbound</strong>: site, blog, landing pages, formulários<br />
+- <strong>Paid</strong>: Meta Ads, Google Ads, outras plataformas<br />
+- <strong>Organic</strong>: SEO, conteúdo, redes sociais<br />
+- <strong>Referral</strong>: indicação de clientes existentes, parceiros<br />
+- <strong>Events</strong>: eventos, webinars, conferências<br />
+- <strong>Partnerships</strong>: parceiros estratégicos, revendedores<br />
+- <strong>Community</strong>: comunidade jurídica, fóruns</p>
 <p><strong>O que existe</strong>:<br />
 - Lead Hunter: prospecção B2B com Google Places + Exa enrichment → FUNCIONAL<br />
 - Lista de leads com filtros por localidade e segmento → FUNCIONAL<br />
 - KPIs diários de aquisição → PARCIAL (tela existe mas dados vazios)<br />
-- Leads com scoring schema (lead_scoring_rules) → SCHEMA PRONTO</p>
+- Leads com scoring schema (lead_scoring_rules) → SCHEMA PRONTO<br />
+- Meta/Google Ads com analytics e CAPI → FUNCIONAL<br />
+- UTM tracking e conversion events → SCHEMA PRONTO</p>
 <p><strong>O que falta para Fase 0</strong>:<br />
 - KPIs diários com data binding real (hoje mostra zeros)<br />
-- Lead scoring processor: cron que calcula scores baseado nas regras<br />
+- Lead scoring processor: cron que calcula scores baseado nas regras — <strong>agnóstico ao canal</strong><br />
 - Cadências outbound funcionais (depende do motor de sequences de MA2)<br />
-- Dedup nativo sem HubSpot</p>
+- Dedup nativo sem HubSpot<br />
+- <strong>Atribuição de canal</strong>: rastrear de qual canal cada lead veio (first-touch + last-touch)<br />
+- <strong>Conversão por canal</strong>: qual canal gera mais leads, mais MQLs, mais deals fechados<br />
+- <strong>Referral tracking</strong>: mecanismo para registrar indicações de clientes existentes</p>
 <p><strong>Gates</strong>: G3 (parcial — depende de MA2 para sequences e dedup)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] KPIs diários com dados reais (leads trabalhados, demos agendadas, conversão)<br />
+- [ ] Lead scoring processor ativo (cron que calcula score por regras configuráveis)<br />
+- [ ] Score agnóstico ao canal: mesma fórmula aplica a lead outbound, inbound, referral, etc.<br />
+- [ ] Atribuição de canal: every lead tem <code>acquisition_channel</code> e <code>first_touch_source</code><br />
+- [ ] Cadências outbound: BDR consegue executar sequence de email sem HubSpot<br />
+- [ ] Dedup nativo: verificação por domain + email + telefone<br />
+- [ ] Dashboard de aquisição: leads por canal, conversão por estágio, CAC por canal<br />
+- [ ] UTM tracking funcional: leads inbound com source/medium/campaign registrados<br />
+- [ ] Referral: campo para registrar "indicado por" (link com contact existente)</p>
 <hr />
 <h3 id="ma4-customer-success">MA4: Customer Success</h3>
-<p><strong>Escopo</strong>: Health score, NPS, renovações, playbooks, retention offers, customer 360, journey, churn prediction.</p>
+<p><strong>Escopo</strong>: Gestão completa do ciclo de vida do cliente pós-venda. Foco em <strong>confiabilidade operacional</strong> — toda ação de CS deve gerar dados confiáveis e auditáveis.</p>
 <p><strong>Módulos</strong>: <code>/cs/*</code> (9 páginas), <code>/suporte/cliente/[orgId]</code> (15 páginas)</p>
+<p><strong>Áreas operacionais principais</strong>:<br />
+1. <strong>Onboarding</strong>: receber o cliente do pipeline de vendas e guiá-lo até o primeiro valor<br />
+2. <strong>Atendimento (Suporte)</strong>: resolução de problemas e tickets<br />
+3. <strong>Monitoramento proativo</strong>: health score, risk signals, alertas automáticos<br />
+4. <strong>Renovações e expansão</strong>: pipeline de renovações, upsell, cross-sell<br />
+5. <strong>Gestão de churn</strong>: retention offers, playbooks de recuperação</p>
+<p><strong>Conexões profundas com outras áreas</strong>:<br />
+- <strong>Aquisição/Vendas → CS</strong>: onboarding começa IMEDIATAMENTE após deal close. Não pode haver gap.<br />
+- <strong>CS → Financeiro</strong>: health score impacta decisões de billing (retention offers, descontos). Inadimplência alimenta risk signals.<br />
+- <strong>CS → Suporte (Mensageria)</strong>: resolução de tickets alimenta support score do health score. Volume e tempo de resolução são inputs diretos.<br />
+- <strong>CS → Produto</strong>: dados de uso do Studio alimentam product usage score. Feature adoption, login frequency, feature depth.</p>
 <p><strong>O que existe</strong>:<br />
 - Health Score: 5 componentes (usage, engagement, support, financial, advocacy) com thresholds → FUNCIONAL<br />
 - Customer 360 API: agrega 9 fontes (CRM, billing, health, support, WhatsApp, AI, onboarding, churn, NPS) → FUNCIONAL<br />
@@ -1611,8 +2182,23 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 - Wiring de retention offers à UI (engine existe, falta conectar)<br />
 - Validar pesos do health score com time de CS (D3)<br />
 - Timeline de interações com dados 100% reais (hoje mistura real + mock)<br />
-- Dados de uso do Studio: depende time Migração (risco externo)</p>
+- Dados de uso do Studio: depende time Migração (risco externo)<br />
+- <strong>Onboarding automático</strong>: trigger de deal close → tarefas de onboarding criadas<br />
+- <strong>Support score wiring</strong>: tickets resolvidos → atualização automática do health score</p>
 <p><strong>Gates</strong>: G2 (73%)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] 3 playbooks CS operando: onboarding (4-6 tarefas automáticas), cliente em risco (alerta + ações), NPS detractor (follow-up imediato)<br />
+- [ ] Health score calculado para 100% dos clientes ativos (cron diário)<br />
+- [ ] Pesos do health score validados com time de CS (D3 resolvido)<br />
+- [ ] Retention offers conectadas à UI: CS Manager calcula offer em 2 cliques<br />
+- [ ] Timeline 100% real (zero dados mock)<br />
+- [ ] Alerta automático Slack/Chat quando score &lt; 40<br />
+- [ ] Customer 360 carrega em &lt; 3 segundos para qualquer cliente<br />
+- [ ] Onboarding automático: deal fechado → playbook de onboarding dispara<br />
+- [ ] Renovações: pipeline com alertas 60/30/15 dias antes do vencimento<br />
+- [ ] Integração suporte → health score: tickets de suporte atualizam support score<br />
+- [ ] NPS: survey automático a cada 90 dias para clientes ativos<br />
+- [ ] Dados de uso do Studio integrados (se time Migração entregar)</p>
 <hr />
 <h3 id="ma5-mensageria-comunicacao">MA5: Mensageria &amp; Comunicação</h3>
 <p><strong>Escopo</strong>: WhatsApp, email transacional, inbox unificado, templates, chat interno, classificação IA de mensagens.</p>
@@ -1631,6 +2217,16 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 - UI de gerenciamento de templates validada com o time<br />
 - SMS: stub sem provedor (decisão: entra na Fase 0?)</p>
 <p><strong>Gates</strong>: G7 (85%)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Histórico consolidado: dado um orgId, retornar TODAS as interações (WhatsApp + email + suporte) ordenadas<br />
+- [ ] Webhook de respostas WhatsApp processando e aparecendo no histórico<br />
+- [ ] Templates: UI de CRUD funcional, validada com CS e Vendas<br />
+- [ ] Chat interno: notificações de alertas do sistema (health score, integrações, etc.) — substituição gradual do Slack<br />
+- [ ] AI Classification: accuracy &gt; 85% medida em amostra real<br />
+- [ ] Inbox unificado: assignedTo funcionando com roteamento por department<br />
+- [ ] Integração Customer 360 ↔ v2_comms.conversations (link por orgId)<br />
+- [ ] Email tracking: opens/clicks registrados e visíveis na timeline do deal<br />
+- [ ] Decisão sobre SMS (entra Fase 0 ou não)</p>
 <hr />
 <h3 id="ma6-automacoes-workflows">MA6: Automações &amp; Workflows</h3>
 <p><strong>Escopo</strong>: Workflow builder, marketing automations, lead scoring engine, cron jobs, edge functions, automações de processo.</p>
@@ -1650,29 +2246,50 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 - Inventário de automações externas (Zapier, Make) para migrar ou eliminar (D1)<br />
 - Monitoramento centralizado dos 25 crons (health dashboard)</p>
 <p><strong>Gates</strong>: G4 (60%)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Marketing automations: TODAS as 8 ações funcionais (incluir create_deal, webhook, internal_notification)<br />
+- [ ] Lead scoring processor: cron ativo que calcula scores e marca leads para follow-up<br />
+- [ ] Monitoramento de crons: dashboard com status, última execução, falhas<br />
+- [ ] Inventário completo de automações externas (Zapier, Make) com plano de migração<br />
+- [ ] Workflow builder: pelo menos 3 workflows simples executando (ex: deal stage change → task, health score &lt; 40 → alert, lead score &gt; 80 → notify)<br />
+- [ ] Logs de execução acessíveis na UI para debugging<br />
+- [ ] Edge functions: inventário com status e documentação mínima<br />
+- [ ] Alerta automático quando cron falha (Slack/Chat/Sentry)</p>
 <hr />
 <h3 id="ma7-integracoes">MA7: Integrações</h3>
-<p><strong>Escopo</strong>: 13 integrações externas, sync engine, monitoramento de saúde, documentação técnica.</p>
+<p><strong>Escopo</strong>: Integrações externas (evoluindo de 13 para 9 com internalização), sync engine, monitoramento de saúde, documentação técnica.</p>
 <p><strong>Módulos</strong>: Transversal — afeta todos os módulos</p>
 <p><strong>O que existe</strong>:<br />
 - <strong>Iugu</strong>: sync estável (customers, subscriptions, invoices, financials, receivables, plans)<br />
 - <strong>Stripe</strong>: webhooks funcionando (subscription + invoice events)<br />
-- <strong>Conta Azul</strong>: sync estável (despesas, categorias)<br />
+- <strong>Conta Azul</strong>: sync estável (despesas, categorias) — <strong>em processo de internalização (MA1)</strong><br />
 - <strong>Banco Inter</strong>: mTLS + OAuth implementado → pronto mas INATIVO (D12)<br />
-- <strong>HubSpot</strong>: sync ativo → em deprecação, migrando para G3<br />
+- <strong>HubSpot</strong>: sync ativo → <strong>em deprecação, substituído por CRM package (MA-CRM)</strong><br />
 - <strong>Evolution/Blip</strong>: WhatsApp operando<br />
 - <strong>Meta/Google Ads</strong>: analytics funcionando, CAPI integrado<br />
 - <strong>Golden Record</strong>: entity resolution para dedup<br />
 - <strong>Clicksign</strong>: assinatura digital de contratos<br />
-- <strong>Slack</strong>: notificações outbound<br />
-- <strong>Notion</strong>: sync de documentação<br />
+- <strong>Slack</strong>: notificações outbound — <strong>sendo gradualmente substituído por chat interno (MA5)</strong><br />
+- <strong>Notion</strong>: sync de documentação — <strong>sendo substituído por wiki interna (MA12)</strong><br />
 - Sync engine com dual-write para v2_billing</p>
 <p><strong>O que falta para Fase 0</strong>:<br />
 - Monitoramento centralizado com alertas (Sentry/Slack)<br />
 - Documentação formal de cada integração (o que sincroniza, frequência, credenciais, fallback)<br />
 - SLA definido por sync<br />
-- Decisão sobre Banco Inter (D12)</p>
+- Decisão sobre Banco Inter (D12)<br />
+- Plano de desligamento para integrações sendo internalizadas (HubSpot, Conta Azul)</p>
 <p><strong>Gates</strong>: G6 (85%)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Dashboard de integrações: status, última sync, erros, latência<br />
+- [ ] Alerta automático (Sentry + Slack/Chat) quando integração falha<br />
+- [ ] SLA definido: cada sync tem frequência esperada e threshold de alerta<br />
+- [ ] Zero falhas críticas em 7 dias consecutivos<br />
+- [ ] Documentação: cada integração com ficha técnica (credenciais, frequência, tabelas, fallback)<br />
+- [ ] HubSpot: plano de desligamento com data-alvo e checklist de migração<br />
+- [ ] Conta Azul: plano de transição para contabilidade nativa (MA1)<br />
+- [ ] Banco Inter: decisão tomada (D12) — ativar ou postergar com justificativa<br />
+- [ ] Sync engine: dual-write validado sem perda de dados<br />
+- [ ] Inventário de credenciais: todas em vault seguro, nenhuma hardcoded</p>
 <hr />
 <h3 id="ma8-dashboard-analytics-executivo">MA8: Dashboard &amp; Analytics Executivo</h3>
 <p><strong>Escopo</strong>: Dashboard unificado para liderança, métricas consolidadas, filtros transversais, visão executiva.</p>
@@ -1689,15 +2306,27 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 - Métricas de CS no dashboard (health score médio, clientes em risco, NPS)<br />
 - MetricaSnapshot: tabela para snapshots históricos + cron diário (para comparativos mês a mês)</p>
 <p><strong>Gates</strong>: G5 (90%)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] /executive page: MRR, churn rate, novos clientes, receita, despesas, health score médio, pipeline — tudo numa tela<br />
+- [ ] Filtros transversais: período (mês, trimestre, ano), plano, ICP<br />
+- [ ] MetricaSnapshot: cron diário que snapshota métricas-chave para histórico<br />
+- [ ] Comparativo mês a mês: MRR atual vs anterior, churn trend, pipeline trend<br />
+- [ ] KPIs de aquisição com dados reais (binding funcional)<br />
+- [ ] Métricas de CS: health score médio, # clientes em risco, NPS score<br />
+- [ ] Drill-down: clicar em qualquer métrica leva ao módulo correspondente<br />
+- [ ] Aprovação formal por Ju e VDC (PO sign-off)<br />
+- [ ] Cohort básico: filtrar métricas por mês de aquisição do cliente</p>
 <hr />
 <h3 id="ma9-rh-produtividade">MA9: RH &amp; Produtividade</h3>
-<p><strong>Escopo</strong>: Gestão de pessoas, org chart, dashboards de produtividade do time de desenvolvimento, performance tracking.</p>
+<p><strong>Escopo</strong>: Gestão de pessoas, org chart, dashboards de produtividade do time de desenvolvimento, performance tracking. Inclui a <strong>migração do gestao.freelaw.ai</strong> para dentro do Backstage.</p>
 <p><strong>Módulos</strong>: <code>/rh/*</code> (18 páginas)</p>
 <p><strong>O que existe</strong>:<br />
 - 18 páginas de RH parcialmente implementadas<br />
 - Org chart → PARCIAL<br />
-- Perfis de usuário (user_profiles) → FUNCIONAL</p>
+- Perfis de usuário (user_profiles) → FUNCIONAL<br />
+- gestao.freelaw.ai → É O BACKSTAGE (mesmo deploy Vercel — não é app separado, apenas domínio/rota diferente)</p>
 <p><strong>O que falta para Fase 0</strong>:<br />
+- <strong>Migração do gestao.freelaw.ai</strong>: inventário de funcionalidades, plano de migração, execução (D18)<br />
 - <strong>Dashboard de produtividade dos devs</strong>:<br />
   - Métricas de código: commits, PRs abertos/merged, code review time, lines changed<br />
   - Velocity do time: story points, cycle time (PR aberto → merged → deployed)<br />
@@ -1712,6 +2341,15 @@ Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.</p>
 Se a liderança considerar os dashboards de produtividade críticos para Fase 0,<br />
 deve ser elevado a G8 ou integrado ao G5 (Dashboard Executivo).</p>
 </blockquote>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Inventário completo do gestao.freelaw.ai: funcionalidades, dados, usuários<br />
+- [ ] Plano de migração gestao.freelaw.ai → Backstage (D18 resolvido)<br />
+- [ ] Org chart funcional: hierarquia, reportes, departamentos<br />
+- [ ] Perfis de usuário completos: cargo, departamento, data de entrada, gestor<br />
+- [ ] Dashboard de produtividade dev: commits, PRs, cycle time (integração GitHub API)<br />
+- [ ] Visão de alocação: quem está em qual projeto/sprint<br />
+- [ ] 1:1s: template + registro de notas por período<br />
+- [ ] Goals: CRUD de metas por pessoa com tracking de progresso</p>
 <hr />
 <h3 id="ma10-marketing">MA10: Marketing</h3>
 <p><strong>Escopo</strong>: Campanhas de ads, analytics de marketing, email marketing, newsletters, landing pages, CAPI.</p>
@@ -1727,6 +2365,14 @@ deve ser elevado a G8 ou integrado ao G5 (Dashboard Executivo).</p>
 - Landing pages: schema sem builder visual<br />
 - Analytics de canal de aquisição consolidado</p>
 <p><strong>Gates</strong>: Nenhum gate vinculado. Candidato a Fase 1 (exceto analytics de aquisição que alimenta G5).</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Dashboard de marketing: investimento, leads gerados, CPL, CAC por canal<br />
+- [ ] Campanhas Meta/Google: métricas atualizadas com &lt; 24h defasagem<br />
+- [ ] CAPI: validar eventos de conversão (lead, deal, subscription) fluindo corretamente<br />
+- [ ] UTM tracking: leads inbound com source/medium/campaign registrados e visíveis no CRM<br />
+- [ ] Email marketing: campanha simples (selecionar lista, template, enviar, trackear)<br />
+- [ ] Newsletter: subscriber management + envio + métricas de abertura<br />
+- [ ] Analytics de canal consolidado: qual canal traz mais leads qualificados</p>
 <hr />
 <h3 id="ma11-prestadores-comunidade">MA11: Prestadores &amp; Comunidade</h3>
 <p><strong>Escopo</strong>: Gestão de prestadores de serviço jurídico, funnel de aquisição de prestadores, tiers de qualidade, ranking, saturação. <strong>Consome o CRM package (MA-CRM)</strong> para pipeline de gestão de prestadores.</p>
@@ -1741,6 +2387,14 @@ deve ser elevado a G8 ou integrado ao G5 (Dashboard Executivo).</p>
 - Migrar pipeline de prestadores para CRM package (pipelines configuráveis por domínio)<br />
 - Validar se módulo opera de forma autônoma sem HubSpot</p>
 <p><strong>Gates</strong>: Parcialmente vinculado ao G3 (dependência HubSpot no onboarding + CRM package)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Onboarding de prestadores 100% no Backstage (zero dependência HubSpot)<br />
+- [ ] Pipeline de prestadores via CRM package (pipeline configurável tipo: provider_acquisition)<br />
+- [ ] Funnel com métricas: candidatos → triagem → aprovados → ativos por tier<br />
+- [ ] Saturação: dashboard por região e especialidade com alertas<br />
+- [ ] Ranking: algoritmo funcionando com inputs reais (qualidade, prazo, NPS do cliente)<br />
+- [ ] Pagamento a prestadores integrado com Financeiro (MA1) → journal entry no GL<br />
+- [ ] Perfil do prestador: histórico de trabalhos, tier atual, avaliações</p>
 <hr />
 <h3 id="ma12-produto-plataforma">MA12: Produto &amp; Plataforma</h3>
 <p><strong>Escopo</strong>: Design system, wiki/knowledge base, audit logs, feature flags, AI agents (Mastra), chatbots, infraestrutura técnica.</p>
@@ -1755,11 +2409,55 @@ deve ser elevado a G8 ou integrado ao G5 (Dashboard Executivo).</p>
 <p><strong>O que falta para Fase 0</strong>:<br />
 - Nenhum bloqueio crítico — módulo funcional e mantido<br />
 - Melhorias são Fase 1+</p>
-<p><strong>Gates</strong>: Nenhum — plataforma de suporte transversal</p>
-<hr />
-<h2 id="5-os-7-gates-especificacao-de-produto">5. OS 7 GATES — ESPECIFICAÇÃO DE PRODUTO</h2>
+<p><strong>Design System — Trabalho de alta prioridade</strong>:</p>
+<p>O Design System é um pilar transversal que afeta TODAS as outras macro-áreas. Todo componente de UI do Backstage deve consumir tokens e componentes do design system. Este é um trabalho de escala significativa.</p>
+<p><strong>Escopo do Design System</strong>:<br />
+- <strong>Design Tokens</strong>: cores, tipografia, espaçamento, sombras, border-radius — definidos centralmente<br />
+- <strong>Component Library</strong>: botões, forms, modais, tabelas, cards, charts — todos consumindo tokens<br />
+- <strong>Patterns</strong>: layout patterns, navigation patterns, data display patterns<br />
+- <strong>Designer's Bible</strong>: documento de referência com guidelines visuais, do's and don'ts, exemplos<br />
+- <strong>Aplicação</strong>: TODAS as macro-áreas devem usar o design system (não é opcional)</p>
 <blockquote>
-<p>Cada gate é um marco de capacidade que cruza uma ou mais macro-áreas (seção 4).<br />
+<p><strong>Decisão D19</strong>: Definir escopo do Design System para Fase 0. Considerar se deve ser<br />
+elevado a gate próprio (G8), dado o impacto transversal em todas as áreas.</p>
+</blockquote>
+<p><strong>Gates</strong>: Nenhum — plataforma de suporte transversal (candidato a G8 para Design System)</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Design tokens documentados e implementados (Tailwind config centralizada)<br />
+- [ ] Componentes core: Button, Input, Select, Modal, Table, Card, Badge, Alert — todos com variants<br />
+- [ ] Designer's Bible v1: documento com guidelines visuais, paleta, tipografia, espaçamento (D19)<br />
+- [ ] Auditoria: listar todas as páginas que NÃO usam o design system<br />
+- [ ] Wiki: migração de conteúdo prioritário do Notion → wiki interna<br />
+- [ ] Audit logs: query por usuário, ação, recurso, período<br />
+- [ ] Feature flags: UI de gerenciamento funcional<br />
+- [ ] AI Agents: documentar capabilities e limitações de cada agente</p>
+<hr />
+<h3 id="ma13-ia-producao-lia">MA13: IA &amp; Produção (LIA)</h3>
+<p><strong>Escopo</strong>: IA centralizada da Freelaw — inclui produção de peças jurídicas para clientes (LIA), AI agents internos (Mastra), avaliação de ligações (Oitiva), e infraestrutura compartilhada de IA.</p>
+<p><strong>Módulos</strong>: <code>/ia/*</code> (a criar), <code>/oitiva/*</code> (8 páginas existentes)</p>
+<p><strong>O que é LIA</strong>:<br />
+LIA é a IA centralizada para clientes da Freelaw — produção de peças jurídicas, análise de documentos, pesquisa jurisprudencial assistida. A mesma infraestrutura pode (e deve ser avaliada se deve) servir necessidades internas: agents internos, insights automáticos, coaching de vendas.</p>
+<p><strong>O que existe</strong>:<br />
+- Oitiva Evaluation: avaliação de ligações com scorecards → EM DEV<br />
+- 4 AI Agents internos (Mastra): CEO IA, Maria Insights, Oitiva, Backstage Assistant → FUNCIONAL<br />
+- Infraestrutura de AI credits e ledger: v2_billing.ai_credits, ai_credits_ledger → FUNCIONAL</p>
+<p><strong>Questão arquitetural (D16)</strong>:<br />
+- <strong>Opção A</strong>: Infraestrutura compartilhada — mesma base de código, configurações e modelos servem tanto clientes (LIA) quanto uso interno (agents, insights). Vantagem: eficiência, consistência. Risco: complexidade, blast radius.<br />
+- <strong>Opção B</strong>: Infraestrutura separada com máximo reuso de código — LIA como serviço independente, agents internos como outro serviço, mas compartilhando packages de utils, types, prompt engineering. Vantagem: isolamento, deploy independente. Risco: duplicação.</p>
+<p><strong>Gates</strong>: Nenhum gate vinculado na Fase 0. Candidato a gate futuro.</p>
+<p><strong>Escopo Fase 0 (2 meses)</strong>:<br />
+- [ ] Decisão arquitetural (D16): compartilhar ou separar infraestrutura IA<br />
+- [ ] Oitiva: avaliação de ligações funcional com scorecards reais (integrado a MA2)<br />
+- [ ] AI Agents: documentação de capabilities, custos, limitações<br />
+- [ ] AI Credits: billing de uso de IA rastreável por cliente e por agent<br />
+- [ ] Inventário de necessidades de IA: quais áreas precisam de IA e para quê<br />
+- [ ] PoC LIA: produção de 1 tipo de peça jurídica com avaliação de qualidade<br />
+- [ ] Infraestrutura: definição do stack (modelos, hosting, rate limiting, custo por request)<br />
+- [ ] Coaching de vendas (via Oitiva): comparativo humano vs IA em avaliações</p>
+<hr />
+<h2 id="6-os-7-gates-especificacao-de-produto">6. OS 7 GATES — ESPECIFICAÇÃO DE PRODUTO</h2>
+<blockquote>
+<p>Cada gate é um marco de capacidade que cruza uma ou mais macro-áreas (seção 5).<br />
 Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 </blockquote>
 <table>
@@ -1816,7 +2514,7 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="51-g1-gestao-financeira-centralizada">5.1 G1: Gestão financeira centralizada</h3>
+<h3 id="61-g1-gestao-financeira-centralizada">6.1 G1: Gestão financeira centralizada</h3>
 <p><strong>Declaração</strong>: Toda operação financeira da Freelaw é consultável, analisável e planejável dentro do Backstage, sem dependência de planilhas externas.</p>
 <p><strong>Completude estimada</strong>: 95%</p>
 <p><strong>User stories</strong>:<br />
@@ -1838,13 +2536,15 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 - ERP (Freelaw One) → PLACEHOLDER ("em construção") — decisão: entra na Fase 0?<br />
 - Recebimentos → STUB<br />
 - Estruturas organizacionais → STUB ("em breve")<br />
-- Google Sheets como dependência externa para Business Plan</p>
+- Google Sheets como dependência externa para Business Plan<br />
+- General Ledger: precisa ser formalizado como hub central de todas as transações</p>
 <p><strong>Critérios de aceite</strong>:<br />
 - [ ] Toda operação financeira consultável no Backstage (nenhum dado só em planilha)<br />
 - [ ] Business Plan editável 100% na UI (import/export CSV como fallback)<br />
 - [ ] Sync Iugu + Conta Azul estável (7 dias sem falha)<br />
 - [ ] DRE, KPIs, Unit Economics com dados reais e atualizados<br />
-- [ ] Zero dependência de Google Sheets para dados financeiros</p>
+- [ ] Zero dependência de Google Sheets para dados financeiros<br />
+- [ ] General Ledger recebendo transações de todos os gateways</p>
 <p><strong>Dependências técnicas</strong>:<br />
 - Tabelas: v2_billing.<em>, sync.iugu_</em>, budgetCenarios, budgetDespesas, budgetMetas, mrrMovimentos, unitEconomicsSnapshots, vendor_category_mapping, fin_estruturas, fin_centros_custo<br />
 - APIs: /api/financeiro/* (30+ routes)<br />
@@ -1852,7 +2552,7 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 <p><strong>Riscos</strong>:<br />
 - Google Sheets elimination pode afetar workflow do CFO — validar antes de remover</p>
 <hr />
-<h3 id="52-g2-acompanhar-cliente-v1">5.2 G2: Acompanhar Cliente v1</h3>
+<h3 id="62-g2-acompanhar-cliente-v1">6.2 G2: Acompanhar Cliente v1</h3>
 <p><strong>Declaração</strong>: O time de CS consegue acompanhar a saúde de qualquer cliente ativo numa única tela, receber alertas quando algo piora, e agir com playbooks pré-definidos.</p>
 <p><strong>Completude estimada</strong>: 73%</p>
 <p><strong>User stories</strong>:<br />
@@ -1902,7 +2602,7 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 - Pesos do health score precisam ser validados com o CS antes de produzir<br />
 - Sem playbooks, o CS não tem ação padronizada para clientes em risco</p>
 <hr />
-<h3 id="53-g3-pipeline-e-crm-unificados-matar-hubspot">5.3 G3: Pipeline e CRM unificados (matar HubSpot)</h3>
+<h3 id="63-g3-pipeline-e-crm-unificados-matar-hubspot">6.3 G3: Pipeline e CRM unificados (matar HubSpot)</h3>
 <p><strong>Declaração</strong>: Todo o funil de vendas — da prospecção ao fechamento — opera dentro do Backstage, com CRM nativo e zero dependência do HubSpot como fonte de verdade.</p>
 <p><strong>Completude estimada</strong>: 70%</p>
 <p><strong>User stories</strong>:<br />
@@ -1956,7 +2656,7 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 - Sequence engine precisa ser construída do zero (schema pronto, execução não)<br />
 - Time de vendas precisa ser treinado na nova ferramenta</p>
 <hr />
-<h3 id="54-g4-automacoes-internas">5.4 G4: Automações internas</h3>
+<h3 id="64-g4-automacoes-internas">6.4 G4: Automações internas</h3>
 <p><strong>Declaração</strong>: Todas as automações críticas da operação rodam dentro do Backstage, com monitoramento, logs, e UI para gerenciamento.</p>
 <p><strong>Completude estimada</strong>: 60%</p>
 <p><strong>User stories</strong>:<br />
@@ -1993,7 +2693,7 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 - Sem inventário de automações externas, podemos esquecer algo crítico<br />
 - Workflow builder visual pode ser escopo demais para Fase 0 — priorizar execução sobre UI de criação</p>
 <hr />
-<h3 id="55-g5-dashboard-unificado-de-metricas">5.5 G5: Dashboard unificado de métricas</h3>
+<h3 id="65-g5-dashboard-unificado-de-metricas">6.5 G5: Dashboard unificado de métricas</h3>
 <p><strong>Declaração</strong>: A liderança da Freelaw abre UMA tela no Backstage e vê todas as métricas-chave da empresa em tempo real.</p>
 <p><strong>Completude estimada</strong>: 90%</p>
 <p><strong>User stories</strong>:<br />
@@ -2023,8 +2723,8 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 <p><strong>Riscos</strong>:<br />
 - Baixo — maioria dos dados já existe, é questão de consolidar numa view</p>
 <hr />
-<h3 id="56-g6-integracoes-estabilizadas">5.6 G6: Integrações estabilizadas</h3>
-<p><strong>Declaração</strong>: Todas as 13 integrações externas estão monitoradas, documentadas, e operando sem falhas críticas.</p>
+<h3 id="66-g6-integracoes-estabilizadas">6.6 G6: Integrações estabilizadas</h3>
+<p><strong>Declaração</strong>: Todas as integrações externas estão monitoradas, documentadas, e operando sem falhas críticas. Integrações em processo de internalização (HubSpot, Conta Azul) têm plano de transição claro.</p>
 <p><strong>Completude estimada</strong>: 85%</p>
 <p><strong>User stories</strong>:<br />
 - Como Operações, quero ver o status de cada integração (ok, falha, atrasada) num dashboard.<br />
@@ -2045,7 +2745,7 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 - Sem documentação formal de cada integração<br />
 - Sem SLA definido para cada sync</p>
 <p><strong>Critérios de aceite</strong>:<br />
-- [ ] Auditoria completa das 13 integrações (status, última sync, erros)<br />
+- [ ] Auditoria completa das integrações (status, última sync, erros)<br />
 - [ ] Monitoramento ativo com alertas Sentry/Slack para falhas<br />
 - [ ] Zero falhas críticas em 7 dias consecutivos<br />
 - [ ] Documentação de cada integração (o que sincroniza, frequência, credenciais, fallback)</p>
@@ -2055,7 +2755,7 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 <p><strong>Riscos</strong>:<br />
 - Baixo — integrações já funcionam, falta formalizar monitoramento e documentação</p>
 <hr />
-<h3 id="57-g7-mensageria-no-monorepo">5.7 G7: Mensageria no monorepo</h3>
+<h3 id="67-g7-mensageria-no-monorepo">6.7 G7: Mensageria no monorepo</h3>
 <p><strong>Declaração</strong>: Toda comunicação com clientes e leads (WhatsApp, email) opera dentro do monorepo, com histórico consolidado por cliente e templates gerenciáveis.</p>
 <p><strong>Completude estimada</strong>: 85%</p>
 <p><strong>User stories</strong>:<br />
@@ -2094,8 +2794,8 @@ Use a tabela abaixo para navegar entre gates e macro-áreas.</p>
 - Evolution API: estabilidade e custo a longo prazo — decisão pendente sobre alternativas<br />
 - Unificação de histórico pode ser complexa (dados em tabelas diferentes com schemas diferentes)</p>
 <hr />
-<h2 id="6-arquitetura-de-dados">6. ARQUITETURA DE DADOS</h2>
-<h3 id="61-mapa-de-schemas">6.1 Mapa de schemas</h3>
+<h2 id="7-arquitetura-de-dados-schemas">7. ARQUITETURA DE DADOS — SCHEMAS</h2>
+<h3 id="71-mapa-de-schemas">7.1 Mapa de schemas</h3>
 <p>O Backstage usa PostgreSQL via Drizzle ORM com estratégia multi-schema:</p>
 <pre><code>SCHEMAS BACKSTAGE (apps/backstage/src/db/schema/):
 ├── deals.ts           → daily_funnel_activity, daily_sales_person_activity, deals
@@ -2163,53 +2863,7 @@ SCHEMAS INFRA-DB (packages/infra/db/src/schemas/v2/):
     ├── iugu_financial_transactions, iugu_receivables, iugu_plans
     └── ...
 </code></pre>
-<h3 id="62-fluxos-de-dados-entre-sistemas">6.2 Fluxos de dados entre sistemas</h3>
-<h4 id="fluxo-de-aquisicao-venda-cliente">Fluxo de Aquisição → Venda → Cliente</h4>
-<pre><code>LEAD HUNTER                    OUTBOUND/INBOUND              CLOSER
-Google Places + Exa     →     BDR prospecta          →     Demo + Contrato
-    ↓                              ↓                            ↓
-v2_sales.companies            v2_sales.leads               v2_sales.deals
-(enrichment data)             (status: new→contacted       (status: open→won)
-                               →qualified→converted)            ↓
-                                   ↓                      NOVO CLIENTE
-                              v2_sales.contacts            v2_billing.customers
-                              (lifecycle: lead→mql         v2_billing.subscriptions
-                               →sql→opportunity            v2_billing.invoices
-                               →customer)                       ↓
-                                                          sync.iugu_*
-                                                          (sync financeiro)
-</code></pre>
-<h4 id="fluxo-de-health-score-e-retencao">Fluxo de Health Score e Retenção</h4>
-<pre><code>DADOS DE USO              DADOS FINANCEIROS           DADOS DE SUPORTE
-(Studio - via Migração)   (v2_billing)                (v2_comms)
-       ↓                        ↓                          ↓
-productUsageScore          financialScore              supportScore
-       ↓                        ↓                          ↓
-       └────────────→ HEALTH SCORE (0-100) ←──────────────┘
-                      crm.customer_health_scores
-                              ↓
-                     ┌────────┴────────┐
-                     ↓                 ↓
-              Score ≥ 70          Score &lt; 40
-              HEALTHY             CRITICAL
-                                     ↓
-                              Alerta Slack
-                              Playbook acionado
-                              Retention offer calculada
-</code></pre>
-<h4 id="fluxo-hubspot-nativo-migracao-g3">Fluxo HubSpot → Nativo (Migração G3)</h4>
-<pre><code>HOJE (dependente):                    ALVO (nativo):
-HubSpot API                           v2_sales.*
-    ↓                                     ↑
-hubspot_sync_log                     Criação direta
-    ↓                                     ↑
-hubspot_contacts → MIGRAR →         v2_sales.contacts
-hubspot_companies → MIGRAR →        v2_sales.companies
-hubspot_deals → MIGRAR →            v2_sales.deals
-dedupHubspot() → SUBSTITUIR →       dedup por v2_sales.companies.domain
-hubspotWrite() → SUBSTITUIR →       escrita direta em v2_sales
-</code></pre>
-<h4 id="fluxo-de-sequences-cadencias-de-email">Fluxo de Sequences (Cadências de Email)</h4>
+<h3 id="72-fluxo-de-sequences-cadencias-de-email">7.2 Fluxo de Sequences (Cadências de Email)</h3>
 <pre><code>CRIAÇÃO:                    EXECUÇÃO:                   TRACKING:
 POST /api/crm/sequences    Cron job (a construir)      Resend webhooks
     ↓                           ↓                           ↓
@@ -2222,7 +2876,7 @@ sequence_enrollments       Atualiza step_execution     Exit conditions:
 (status: active)           (status: sent)               reply, meeting,
                                                         unsubscribe
 </code></pre>
-<h3 id="63-entidades-que-faltam-para-a-visao-do-gab">6.3 Entidades que faltam para a visão do Gab</h3>
+<h3 id="73-entidades-que-faltam-para-a-visao-do-gab">7.3 Entidades que faltam para a visão do Gab</h3>
 <h4 id="cadencia-unificada-expandir-v2_salessequences">Cadência Unificada (expandir v2_sales.sequences)</h4>
 <p>O schema de sequences já suporta multi-canal (stepType: email, call, linkedin, whatsapp, sms, manual_task). O que falta é o <strong>motor de execução</strong> e a <strong>integração com WhatsApp/SMS</strong> além de email.</p>
 <h4 id="interacao-unificada">Interação Unificada</h4>
@@ -2239,49 +2893,31 @@ sequence_enrollments       Atualiza step_execution     Exit conditions:
 <p>Não existe tabela dedicada para snapshots de métricas históricas. Hoje cada módulo calcula em real-time. Para dashboard executivo com comparativos, pode ser necessário:<br />
 - Tabela metric_snapshots com tipo, período, valor, segmentação<br />
 - Cron job diário que snapshota MRR, churn, health score médio, etc.</p>
-<h3 id="64-rls-e-seguranca">6.4 RLS e Segurança</h3>
-<p><strong>Padrão</strong>: Row Level Security no Supabase por organization_id.</p>
-<pre><code class="language-sql">-- Padrão para tabelas com organizationId
-pgPolicy(&quot;table_select&quot;, {
-  using: sql`(organization_id = user_organization_id())`
-})
-
--- Para tabelas filho (herda do pai)
-pgPolicy(&quot;child_select&quot;, {
-  using: sql`EXISTS (SELECT 1 FROM parent WHERE parent.id = child.parent_id AND parent.org = user_org())`
-})
-
--- Para dados financeiros (restrito a finance team)
-pgPolicy(&quot;finance_only&quot;, {
-  using: sql`(sync.is_finance_team(current_user_id()))`
-})
-</code></pre>
-<p><strong>Problema</strong>: ~167 API routes sem autenticação. Estratégia: corrigir nas routes que tocamos para fechar os gates.</p>
 <hr />
-<h2 id="7-visao-pos-fase-0-ju">7. VISÃO PÓS-FASE 0 (Ju)</h2>
+<h2 id="8-visao-pos-fase-0-ju">8. VISÃO PÓS-FASE 0 (Ju)</h2>
 <blockquote>
 <p>Esta seção documenta a visão estratégica da CEO (Ju) para o Backstage APÓS a Fase 0.<br />
 Nenhum item desta seção entra no escopo atual. São pré-requisitos futuros que<br />
 a Fase 0 deve habilitar.</p>
 </blockquote>
-<h3 id="71-dados-unificados-com-cohortizacao">7.1 Dados unificados com cohortização</h3>
+<h3 id="81-dados-unificados-com-cohortizacao">8.1 Dados unificados com cohortização</h3>
 <p><strong>Visão</strong>: Qualquer métrica da empresa pode ser segmentada por cohort (mês de aquisição), plano, ICP, canal de aquisição. Exemplo: "MRR dos clientes que entraram em janeiro no plano Professional via inbound."</p>
 <p><strong>O que existe</strong>: Churn cohort em /vendas/analytics. Filtros em vários módulos mas não transversais.</p>
 <p><strong>O que a Fase 0 habilita</strong>: Customer 360 (G2) + dashboard unificado (G5) + CRM nativo (G3) criam a base de dados necessária. Cohortização transversal é Fase 1.</p>
-<h3 id="72-cadencias-automaticas-omni-channel">7.2 Cadências automáticas omni-channel</h3>
+<h3 id="82-cadencias-automaticas-omni-channel">8.2 Cadências automáticas omni-channel</h3>
 <p><strong>Visão</strong>: Cadências de vendas e CS que combinam email + WhatsApp + ligação, operadas por humanos OU por IA, com comparativos de performance.</p>
 <p><strong>O que existe</strong>: Schema de sequences com suporte multi-canal. Evolution API para WhatsApp. Resend para email.</p>
 <p><strong>O que a Fase 0 habilita</strong>: G3 (sequences com motor de execução) + G7 (mensageria consolidada) criam a infraestrutura. IA para cadências é Fase 1+.</p>
-<h3 id="73-ia-por-area">7.3 IA por área</h3>
+<h3 id="83-ia-por-area">8.3 IA por área</h3>
 <p><strong>Visão</strong>: Cada área da empresa tem IA aplicada: coaching de SDRs/Closers com comparativo humano vs IA, pipeline de conteúdo marketing com IA, health score inteligente com tratativa automatizada.</p>
 <p><strong>O que existe</strong>: 4 AI agents (Mastra), Oitiva para avaliação de ligações, ChurnRiskSignal.</p>
 <p><strong>O que a Fase 0 habilita</strong>: G2 (health score funcionando) + G4 (automações) + Oitiva (avaliações) criam os dados necessários. IA coaching e comparativos são Fase 1+.</p>
-<h3 id="74-flywheel-operacional">7.4 Flywheel operacional</h3>
+<h3 id="84-flywheel-operacional">8.4 Flywheel operacional</h3>
 <p><strong>Visão</strong>: O Backstage como flywheel — dados de uso alimentam health score, health score aciona CS, CS melhora retenção, retenção aumenta LTV, LTV justifica mais investimento em aquisição.</p>
 <p><strong>Pré-requisitos da Fase 0</strong>: Todos os 7 gates fechados. Dados fluindo end-to-end. Sem fragmentação.</p>
 <hr />
-<h2 id="8-debito-tecnico">8. DÉBITO TÉCNICO</h2>
-<h3 id="81-inventario">8.1 Inventário</h3>
+<h2 id="9-debito-tecnico">9. DÉBITO TÉCNICO</h2>
+<h3 id="91-inventario">9.1 Inventário</h3>
 <p><strong>Segurança (P0)</strong>:<br />
 - ~167 API routes sem autenticação — CRÍTICO<br />
 - Vulnerabilidades CSRF em OAuth flows<br />
@@ -2297,20 +2933,20 @@ a Fase 0 deve habilitar.</p>
 - Aquisição KPIs mostrando zeros (falta data binding)<br />
 - Módulos com dados mock misturados com dados reais<br />
 - Playbooks CS vazio</p>
-<h3 id="82-estrategia">8.2 Estratégia</h3>
+<h3 id="92-estrategia">9.2 Estratégia</h3>
 <blockquote>
 <p><strong>NÃO</strong> tratar débito técnico de forma horizontal na Fase 0.<br />
 Apenas corrigir nos módulos que estamos tocando para fechar os gates.<br />
 Débito horizontal fica para Fase 1.</p>
 </blockquote>
 <p>Exceção: se uma route sem auth for pública e expor dados sensíveis, corrigir imediatamente.</p>
-<h3 id="83-routes-sem-auth-priorizacao">8.3 Routes sem auth — priorização</h3>
+<h3 id="93-routes-sem-auth-priorizacao">9.3 Routes sem auth — priorização</h3>
 <p>A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério sugerido:<br />
 1. Routes públicas que expõem dados de clientes → P0<br />
 2. Routes que escrevem dados (POST/PUT/DELETE) sem auth → P1<br />
 3. Routes internas de leitura → P2 (pode esperar)</p>
 <hr />
-<h2 id="9-decisoes-pendentes">9. DECISÕES PENDENTES</h2>
+<h2 id="10-decisoes-pendentes">10. DECISÕES PENDENTES</h2>
 <table>
 <thead>
 <tr>
@@ -2422,16 +3058,58 @@ Débito horizontal fica para Fase 1.</p>
 </tr>
 <tr>
 <td>D15</td>
-<td>CRM package: quais pipelines configuráveis por domínio (vendas, prestadores, CS)?</td>
+<td>CRM package: quais pipelines configuráveis por domínio (vendas, prestadores, CS, investidores)?</td>
 <td>VDC + Time</td>
+<td>Sprint 1</td>
+<td>Pendente</td>
+</tr>
+<tr>
+<td>D16</td>
+<td>LIA: compartilhar infraestrutura IA entre cliente e interno, ou separar?</td>
+<td>VDC + Produto</td>
+<td>Sprint 1</td>
+<td>Pendente</td>
+</tr>
+<tr>
+<td>D17</td>
+<td>Documentação completa da arquitetura de dados (schemas, ownership, fluxos)</td>
+<td>VDC + Time</td>
+<td>Sprint 1</td>
+<td>Pendente</td>
+</tr>
+<tr>
+<td>D18</td>
+<td>Plano de migração gestao.freelaw.ai → Backstage MA9</td>
+<td>VDC + RH</td>
+<td>Sprint 1</td>
+<td>Pendente</td>
+</tr>
+<tr>
+<td>D19</td>
+<td>Design System: escopo Fase 0 e aplicação do Designer's Bible</td>
+<td>VDC + Design</td>
+<td>Sprint 1</td>
+<td>Pendente</td>
+</tr>
+<tr>
+<td>D20</td>
+<td>Validação em produção: plano de testes para todos os módulos "FUNCIONAL"</td>
+<td>VDC + QA</td>
+<td>Sprint 1</td>
+<td>Pendente</td>
+</tr>
+<tr>
+<td>D21</td>
+<td>Unificar 3 taxonomias (route domains, sidebar sections, ColaboradorAreas) sob macro-áreas</td>
+<td>VDC + Produto</td>
 <td>Sprint 1</td>
 <td>Pendente</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="10-metricas-de-sucesso">10. MÉTRICAS DE SUCESSO</h2>
-<h3 id="101-fase-0-quantitativas">10.1 Fase 0 (quantitativas)</h3>
+<h2 id="11-metricas-de-sucesso">11. MÉTRICAS DE SUCESSO</h2>
+<h3 id="111-fase-0-quantitativas">11.1 Fase 0 (quantitativas)</h3>
 <ul>
 <li>[ ] 7/7 gates fechados e aprovados por VDC + Ju</li>
 <li>[ ] Zero dependência de CRM externo como fonte de verdade</li>
@@ -2441,8 +3119,10 @@ Débito horizontal fica para Fase 1.</p>
 <li>[ ] HubSpot sync desligado</li>
 <li>[ ] Zero falhas críticas de integração em 7 dias</li>
 <li>[ ] 3 playbooks CS operando</li>
+<li>[ ] Todos os módulos marcados "FUNCIONAL" validados em produção (D20)</li>
+<li>[ ] Ciclo de vida completo do cliente rastreável (primeiro touchpoint → status atual)</li>
 </ul>
-<h3 id="102-norte-pos-fase-0-qualitativas">10.2 Norte pós-Fase 0 (qualitativas)</h3>
+<h3 id="112-norte-pos-fase-0-qualitativas">11.2 Norte pós-Fase 0 (qualitativas)</h3>
 <ul>
 <li>Cadências automáticas (email + WhatsApp + ligação) operando</li>
 <li>Sistema omni-channel funcional com timeline unificada</li>
@@ -2451,13 +3131,23 @@ Débito horizontal fica para Fase 1.</p>
 <li>Health score inteligente com tratativa automatizada</li>
 <li>Cohortização transversal de qualquer métrica</li>
 <li>Flywheel operacional rodando</li>
+<li>LIA (IA para clientes) integrada à plataforma</li>
+<li>Contabilidade 100% nativa (Conta Azul desligado)</li>
+<li>Comunicação interna 100% no Backstage (Slack desligado)</li>
 </ul>
 <hr />
-<h2 id="11-governanca">11. GOVERNANÇA</h2>
+<h2 id="12-governanca">12. GOVERNANÇA</h2>
 <h3 id="regra-de-ouro">Regra de ouro</h3>
 <blockquote>
 <p>Se alguém do time quer fazer algo que não está neste documento, a resposta é:<br />
 "Adiciona no PRD, aprova com o owner, e aí a gente faz."</p>
+</blockquote>
+<h3 id="validacao-em-producao">Validação em produção</h3>
+<blockquote>
+<p><strong>ATENÇÃO</strong>: Todos os elementos marcados como "FUNCIONAL" neste PRD precisam ser verificados<br />
+com testes em produção. Status funcional sem validação em produção é hipótese, não fato.<br />
+O PO deve testar cada critério de aceite em ambiente de produção antes de considerar um gate fechado.<br />
+Ver D20 para plano de testes.</p>
 </blockquote>
 <h3 id="regras-de-desenvolvimento-do-agentsmd">Regras de desenvolvimento (do AGENTS.md)</h3>
 <ul>
@@ -2510,6 +3200,12 @@ Débito horizontal fica para Fase 1.</p>
 <td>2026-03-09</td>
 <td>v5</td>
 <td>CRM como OS (package transversal), liderança corrigida (Ju CEO, Carol CS, Didico Aquisição), conexões cross-área, D14/D15</td>
+<td>Guilherme + Claude</td>
+</tr>
+<tr>
+<td>2026-03-09</td>
+<td>v6</td>
+<td>Rewrite + auditoria de código: internalização (HubSpot/Conta Azul/Notion/Slack), MA13 LIA, Arquitetura de Dados com GL real (85 contas, 5 posting engines), ciclo de vida do cliente, CRM investidores, 27 packages documentados, aquisição multicanal, CS operacional, escopo 2 meses todas MAs, validação produção, desalinhamento domínios (3 taxonomias), D16-D21</td>
 <td>Guilherme + Claude</td>
 </tr>
 </tbody>
