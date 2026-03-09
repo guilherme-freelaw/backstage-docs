@@ -1,0 +1,2257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backstage Freelaw — Kickoff Fase 0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800;9..144,900&family=Public+Sans:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  font-family: 'Public Sans', system-ui, -apple-system, sans-serif;
+  font-weight: 300;
+  background: #0d001a;
+  color: #F6F5F3;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  --purple: #330066;
+  --purple-deep: #1a0033;
+  --purple-glow: #5a1aad;
+  --lilac: #A994E6;
+  --lilac-soft: rgba(169, 148, 230, 0.15);
+  --lilac-mid: rgba(169, 148, 230, 0.3);
+  --offwhite: #F6F5F3;
+  --charcoal: #2C2C34;
+  --gold: #CC9900;
+  --gold-soft: rgba(204, 153, 0, 0.15);
+  --lightgray: #CCCCCC;
+  --deepred: #670001;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+}
+
+/* ===== SLIDE BASE ===== */
+.slide {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide-inner {
+  max-width: 1200px;
+  width: 100%;
+  z-index: 2;
+  position: relative;
+}
+
+/* ===== TYPOGRAPHY ===== */
+.slide-number {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--lilac);
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--offwhite);
+  margin-bottom: 16px;
+}
+
+h1 .accent { color: var(--lilac); }
+h1 .gold { color: var(--gold); }
+
+h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: clamp(28px, 3.5vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--offwhite);
+  margin-bottom: 12px;
+}
+
+h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.3;
+  color: var(--lilac);
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: clamp(18px, 2.5vw, 28px);
+  line-height: 1.4;
+  color: var(--lilac);
+  margin-bottom: 24px;
+}
+
+.body-text {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 300;
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.7;
+  color: rgba(246, 245, 243, 0.75);
+  max-width: 720px;
+}
+
+.body-text strong {
+  font-weight: 500;
+  color: var(--offwhite);
+}
+
+.context-line {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(246, 245, 243, 0.4);
+  margin-top: 32px;
+}
+
+.emphasis-box {
+  background: var(--lilac-soft);
+  border-left: 3px solid var(--lilac);
+  padding: 20px 24px;
+  border-radius: 0 12px 12px 0;
+  margin-top: 32px;
+  max-width: 800px;
+}
+
+.emphasis-box p {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 1.5;
+  color: var(--lilac);
+  font-style: italic;
+}
+
+/* ===== NAVIGATION DOTS ===== */
+.nav-dots {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
+}
+
+.nav-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(169, 148, 230, 0.25);
+  border: 1.5px solid rgba(169, 148, 230, 0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-dot:hover {
+  background: var(--lilac);
+  transform: scale(1.3);
+}
+
+/* ===== BACKGROUNDS ===== */
+.bg-deepspace {
+  background: radial-gradient(ellipse at 30% 20%, rgba(90, 26, 173, 0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 80%, rgba(51, 0, 102, 0.2) 0%, transparent 50%),
+              #0a0014;
+}
+
+.bg-purple {
+  background: linear-gradient(135deg, #0d001a 0%, var(--purple) 50%, #1a0033 100%);
+}
+
+.bg-charcoal {
+  background: linear-gradient(180deg, #1a1a22 0%, var(--charcoal) 100%);
+}
+
+.bg-tension {
+  background: radial-gradient(ellipse at 50% 50%, rgba(103, 0, 1, 0.12) 0%, transparent 60%),
+              #0d0010;
+}
+
+.bg-vision {
+  background: radial-gradient(ellipse at 50% 30%, rgba(90, 26, 173, 0.2) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 70%, rgba(204, 153, 0, 0.08) 0%, transparent 40%),
+              #0a0014;
+}
+
+.bg-gold-accent {
+  background: radial-gradient(ellipse at 20% 40%, rgba(204, 153, 0, 0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 20%, rgba(90, 26, 173, 0.12) 0%, transparent 50%),
+              #0d0016;
+}
+
+.bg-data {
+  background: radial-gradient(ellipse at 40% 60%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 60% 20%, rgba(90, 26, 173, 0.1) 0%, transparent 50%),
+              #0a0014;
+}
+
+.bg-cta {
+  background: linear-gradient(135deg, #1a0033 0%, var(--purple) 40%, #330066 70%, #1a0033 100%);
+}
+
+/* ===== DECORATIVE ELEMENTS ===== */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(169, 148, 230, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(169, 148, 230, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* ===== SLIDE 1: HERO ===== */
+.hero-visual {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  margin-top: 48px;
+}
+
+.puzzle-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.puzzle-piece {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.puzzle-scattered {
+  opacity: 0.4;
+  border: 1.5px dashed rgba(169, 148, 230, 0.3);
+  background: rgba(169, 148, 230, 0.05);
+}
+
+.puzzle-assembled {
+  opacity: 1;
+  background: var(--lilac);
+  border: none;
+  box-shadow: 0 0 20px rgba(169, 148, 230, 0.3);
+}
+
+.puzzle-piece:nth-child(1) { background: var(--lilac); opacity: 0.9; }
+.puzzle-piece:nth-child(2) { background: rgba(169, 148, 230, 0.7); }
+.puzzle-piece:nth-child(3) { background: rgba(169, 148, 230, 0.5); }
+.puzzle-piece:nth-child(4) { background: rgba(169, 148, 230, 0.3); border: 1.5px dashed rgba(169, 148, 230, 0.4); }
+.puzzle-piece:nth-child(5) { background: rgba(169, 148, 230, 0.65); }
+.puzzle-piece:nth-child(6) { background: var(--gold); opacity: 0.85; }
+.puzzle-piece:nth-child(7) { background: rgba(169, 148, 230, 0.4); border: 1.5px dashed rgba(169, 148, 230, 0.3); }
+.puzzle-piece:nth-child(8) { background: rgba(169, 148, 230, 0.75); }
+.puzzle-piece:nth-child(9) { background: rgba(169, 148, 230, 0.35); border: 1.5px dashed rgba(169, 148, 230, 0.3); }
+.puzzle-piece:nth-child(10) { background: rgba(169, 148, 230, 0.6); }
+.puzzle-piece:nth-child(11) { background: rgba(169, 148, 230, 0.8); }
+.puzzle-piece:nth-child(12) { background: var(--gold); opacity: 0.6; }
+
+.puzzle-arrow {
+  font-size: 48px;
+  color: var(--lilac);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.puzzle-right .puzzle-piece {
+  background: var(--lilac) !important;
+  border: none !important;
+  opacity: 1 !important;
+}
+.puzzle-right .puzzle-piece:nth-child(6),
+.puzzle-right .puzzle-piece:nth-child(12) {
+  background: var(--gold) !important;
+}
+
+/* ===== SLIDE 2: PAIN POINTS ===== */
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.pain-card {
+  background: rgba(103, 0, 1, 0.08);
+  border: 1px solid rgba(103, 0, 1, 0.2);
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pain-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--danger);
+  opacity: 0.6;
+  border-radius: 4px 0 0 4px;
+}
+
+.pain-card:hover {
+  background: rgba(103, 0, 1, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  transform: translateY(-2px);
+}
+
+.pain-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.pain-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--offwhite);
+  margin-bottom: 8px;
+}
+
+.pain-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(246, 245, 243, 0.6);
+}
+
+.pain-consequence {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--danger);
+  margin-top: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== SLIDE 3: VISION ===== */
+.vision-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 48px 0 40px;
+  flex-wrap: wrap;
+}
+
+.vision-node {
+  padding: 24px 32px;
+  border-radius: 16px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.vision-node-side {
+  background: rgba(169, 148, 230, 0.08);
+  border: 1px solid rgba(169, 148, 230, 0.2);
+}
+
+.vision-node-center {
+  background: linear-gradient(135deg, var(--purple), var(--purple-glow));
+  border: 2px solid var(--lilac);
+  box-shadow: 0 0 40px rgba(169, 148, 230, 0.2), 0 0 80px rgba(90, 26, 173, 0.1);
+  padding: 32px 40px;
+  min-width: 260px;
+}
+
+.vision-node-label {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(169, 148, 230, 0.7);
+  margin-bottom: 8px;
+}
+
+.vision-node-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--offwhite);
+}
+
+.vision-node-center .vision-node-title {
+  font-size: 24px;
+}
+
+.vision-node-sub {
+  font-size: 14px;
+  color: rgba(246, 245, 243, 0.5);
+  margin-top: 4px;
+}
+
+.vision-arrow {
+  font-size: 28px;
+  color: var(--lilac);
+  opacity: 0.5;
+}
+
+/* ===== SLIDE 4: STAT CARDS ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.stat-card {
+  background: rgba(169, 148, 230, 0.06);
+  border: 1px solid rgba(169, 148, 230, 0.15);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: rgba(169, 148, 230, 0.1);
+  border-color: rgba(169, 148, 230, 0.3);
+  transform: translateY(-3px);
+}
+
+.stat-number {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: clamp(36px, 4vw, 52px);
+  color: var(--lilac);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-card.gold .stat-number { color: var(--gold); }
+
+.stat-label {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(246, 245, 243, 0.55);
+  line-height: 1.4;
+}
+
+/* ===== SLIDE 5: MACRO-AREAS ===== */
+.tiers-container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 36px;
+}
+
+.tier {
+  background: rgba(169, 148, 230, 0.04);
+  border: 1px solid rgba(169, 148, 230, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.tier-label {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(169, 148, 230, 0.1);
+}
+
+.tier-label.infra { color: var(--lilac); }
+.tier-label.negocio { color: var(--gold); }
+.tier-label.suporte { color: rgba(246, 245, 243, 0.5); }
+
+.ma-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.ma-grid.narrow {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 600px;
+}
+
+.ma-chip {
+  background: rgba(169, 148, 230, 0.06);
+  border: 1px solid rgba(169, 148, 230, 0.12);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.ma-chip:hover {
+  background: rgba(169, 148, 230, 0.1);
+  border-color: rgba(169, 148, 230, 0.25);
+}
+
+.ma-chip-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.ma-chip-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ma-chip-name {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--offwhite);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ma-chip-tag {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  color: rgba(169, 148, 230, 0.6);
+}
+
+/* ===== SLIDE 6: GATES ===== */
+.gates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.gate-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px;
+  align-items: center;
+  gap: 20px;
+  background: rgba(169, 148, 230, 0.04);
+  border: 1px solid rgba(169, 148, 230, 0.08);
+  border-radius: 12px;
+  padding: 20px 24px;
+  transition: all 0.3s ease;
+}
+
+.gate-row:hover {
+  background: rgba(169, 148, 230, 0.08);
+  border-color: rgba(169, 148, 230, 0.2);
+}
+
+.gate-row.critical {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.gate-id {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--lilac);
+}
+
+.gate-row.critical .gate-id { color: var(--danger); }
+
+.gate-info { display: flex; flex-direction: column; gap: 8px; }
+
+.gate-name {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--offwhite);
+}
+
+.gate-bar-track {
+  height: 8px;
+  background: rgba(246, 245, 243, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.gate-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gate-bar-fill.green { background: linear-gradient(90deg, #059669, var(--success)); }
+.gate-bar-fill.yellow { background: linear-gradient(90deg, #d97706, var(--warning)); }
+.gate-bar-fill.orange { background: linear-gradient(90deg, var(--danger), #f97316); }
+
+.gate-pct {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: right;
+}
+
+.gate-pct.green { color: var(--success); }
+.gate-pct.yellow { color: var(--warning); }
+.gate-pct.orange { color: var(--danger); }
+
+.critical-badge {
+  display: inline-block;
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  margin-left: 12px;
+}
+
+/* ===== SLIDE 7: DATA ARCHITECTURE ===== */
+.data-flow {
+  margin-top: 40px;
+}
+
+.data-flow-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.data-source {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--info);
+  text-align: center;
+  min-width: 120px;
+}
+
+.data-arrow-down {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  color: var(--lilac);
+  opacity: 0.4;
+  font-size: 24px;
+}
+
+.data-center-box {
+  background: linear-gradient(135deg, var(--purple), var(--purple-glow));
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 28px 48px;
+  text-align: center;
+  box-shadow: 0 0 50px rgba(204, 153, 0, 0.1);
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.data-center-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.data-center-sub {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: rgba(246, 245, 243, 0.6);
+}
+
+.data-output {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--success);
+  text-align: center;
+  min-width: 120px;
+}
+
+.data-mini-stat {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.data-mini-stat span {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: rgba(246, 245, 243, 0.5);
+}
+
+.data-mini-stat strong {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* ===== SLIDE 8: CRM OS ===== */
+.crm-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 48px;
+}
+
+.crm-center {
+  background: linear-gradient(135deg, var(--purple), var(--purple-glow));
+  border: 2px solid var(--lilac);
+  border-radius: 20px;
+  padding: 36px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(169, 148, 230, 0.15);
+  min-width: 220px;
+}
+
+.crm-center-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--offwhite);
+  margin-bottom: 8px;
+}
+
+.crm-center-sub {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  color: rgba(169, 148, 230, 0.8);
+  line-height: 1.5;
+}
+
+.crm-spokes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.crm-spoke {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(169, 148, 230, 0.06);
+  border: 1px solid rgba(169, 148, 230, 0.12);
+  border-radius: 10px;
+  padding: 14px 20px;
+  min-width: 180px;
+  transition: all 0.2s ease;
+}
+
+.crm-spoke:hover {
+  background: rgba(169, 148, 230, 0.1);
+  border-color: rgba(169, 148, 230, 0.25);
+}
+
+.crm-spoke-icon { font-size: 18px; }
+
+.crm-spoke-label {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--offwhite);
+}
+
+.crm-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.crm-arrow-line {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--lilac), transparent);
+  opacity: 0.3;
+}
+
+/* ===== SLIDE 9: LIFECYCLE ===== */
+.lifecycle-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 40px;
+}
+
+.lifecycle-step {
+  background: rgba(169, 148, 230, 0.06);
+  border: 1px solid rgba(169, 148, 230, 0.15);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+  min-width: 110px;
+}
+
+.lifecycle-step:hover {
+  background: rgba(169, 148, 230, 0.12);
+  transform: translateY(-2px);
+}
+
+.lifecycle-step-icon { font-size: 22px; margin-bottom: 6px; }
+
+.lifecycle-step-label {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--offwhite);
+  line-height: 1.3;
+}
+
+.lifecycle-connector {
+  color: var(--lilac);
+  opacity: 0.35;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.lifecycle-connections {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.lifecycle-conn-card {
+  background: rgba(169, 148, 230, 0.04);
+  border: 1px solid rgba(169, 148, 230, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.lifecycle-conn-title {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--lilac);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lifecycle-conn-desc {
+  font-size: 14px;
+  color: rgba(246, 245, 243, 0.55);
+  line-height: 1.5;
+}
+
+/* ===== SLIDE 10: SCOPE ===== */
+.scope-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.scope-card {
+  background: rgba(169, 148, 230, 0.04);
+  border: 1px solid rgba(169, 148, 230, 0.1);
+  border-radius: 14px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.scope-card:hover {
+  background: rgba(169, 148, 230, 0.08);
+  border-color: rgba(169, 148, 230, 0.2);
+}
+
+.scope-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(169, 148, 230, 0.08);
+}
+
+.scope-card-icon { font-size: 18px; }
+
+.scope-card-title {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--offwhite);
+}
+
+.scope-card-gate {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  color: var(--lilac);
+  background: var(--lilac-soft);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: auto;
+}
+
+.scope-item {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  color: rgba(246, 245, 243, 0.6);
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.scope-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lilac);
+  opacity: 0.4;
+}
+
+/* ===== SLIDE 11: TEAM ===== */
+.team-section { margin-top: 36px; }
+
+.team-leadership {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.team-card {
+  background: rgba(169, 148, 230, 0.06);
+  border: 1px solid rgba(169, 148, 230, 0.12);
+  border-radius: 14px;
+  padding: 24px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.team-card:hover {
+  background: rgba(169, 148, 230, 0.1);
+  border-color: rgba(169, 148, 230, 0.25);
+  transform: translateY(-2px);
+}
+
+.team-card.lead {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+
+.team-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--purple-glow));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--lilac);
+}
+
+.team-card.lead .team-avatar {
+  background: linear-gradient(135deg, #664400, var(--gold));
+  color: var(--offwhite);
+}
+
+.team-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--offwhite);
+  margin-bottom: 4px;
+}
+
+.team-role {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(246, 245, 243, 0.5);
+  line-height: 1.4;
+}
+
+.team-dev-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.team-label {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--lilac);
+  opacity: 0.6;
+  margin-bottom: 16px;
+}
+
+.team-dev-focus {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--lilac);
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* ===== SLIDE 12: TIMELINE ===== */
+.timeline-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 40px;
+  position: relative;
+}
+
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 60px;
+  left: 5%;
+  right: 5%;
+  height: 3px;
+  background: linear-gradient(90deg,
+    var(--success) 0%, var(--success) 25%,
+    var(--lilac) 25%, var(--lilac) 50%,
+    var(--warning) 50%, var(--warning) 75%,
+    var(--gold) 75%, var(--gold) 100%
+  );
+  border-radius: 2px;
+  opacity: 0.3;
+}
+
+.sprint-card {
+  background: rgba(169, 148, 230, 0.04);
+  border: 1px solid rgba(169, 148, 230, 0.12);
+  border-radius: 16px;
+  padding: 24px 20px;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.sprint-card:hover {
+  background: rgba(169, 148, 230, 0.08);
+  transform: translateY(-3px);
+}
+
+.sprint-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  border: 3px solid;
+  background: #0d001a;
+}
+
+.sprint-card:nth-child(1) .sprint-dot { border-color: var(--success); box-shadow: 0 0 12px rgba(16, 185, 129, 0.3); }
+.sprint-card:nth-child(2) .sprint-dot { border-color: var(--lilac); box-shadow: 0 0 12px rgba(169, 148, 230, 0.3); }
+.sprint-card:nth-child(3) .sprint-dot { border-color: var(--warning); box-shadow: 0 0 12px rgba(245, 158, 11, 0.3); }
+.sprint-card:nth-child(4) .sprint-dot { border-color: var(--gold); box-shadow: 0 0 12px rgba(204, 153, 0, 0.3); }
+
+.sprint-label {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--lilac);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.sprint-dates {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: rgba(246, 245, 243, 0.4);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.sprint-theme {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--offwhite);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.sprint-gates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sprint-gate-tag {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--lilac-soft);
+  color: var(--lilac);
+  border: 1px solid rgba(169, 148, 230, 0.15);
+}
+
+.sprint-gate-tag.hot {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.sprint-gate-tag.done {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+/* ===== SLIDE 13: DECISIONS ===== */
+.decisions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.decision-card {
+  background: rgba(169, 148, 230, 0.04);
+  border: 1px solid rgba(169, 148, 230, 0.1);
+  border-radius: 10px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.decision-card:hover {
+  background: rgba(169, 148, 230, 0.08);
+}
+
+.decision-card.urgent {
+  border-color: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.decision-id {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--lilac);
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+
+.decision-card.urgent .decision-id { color: var(--danger); opacity: 0.8; }
+
+.decision-text {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: rgba(246, 245, 243, 0.7);
+  line-height: 1.4;
+}
+
+.decision-deadline {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  color: rgba(246, 245, 243, 0.35);
+  margin-top: 8px;
+}
+
+/* ===== SLIDE 14: CTA ===== */
+.cta-content {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-badge {
+  display: inline-block;
+  background: var(--lilac-soft);
+  border: 1px solid rgba(169, 148, 230, 0.3);
+  border-radius: 100px;
+  padding: 8px 24px;
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--lilac);
+  margin-bottom: 32px;
+}
+
+.cta-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--offwhite);
+  margin-bottom: 20px;
+}
+
+.cta-title .accent { color: var(--lilac); }
+
+.cta-subtitle {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: clamp(20px, 2.5vw, 28px);
+  color: var(--lilac);
+  margin-bottom: 48px;
+  opacity: 0.8;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, var(--gold), #e6ad00);
+  color: #1a0033;
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 18px 48px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 40px rgba(204, 153, 0, 0.2);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 60px rgba(204, 153, 0, 0.3);
+}
+
+.cta-footer {
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: rgba(246, 245, 243, 0.35);
+  margin-top: 48px;
+}
+
+.cta-footer a {
+  color: var(--lilac);
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.cta-footer a:hover { text-decoration: underline; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .slide { padding: 40px 40px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .ma-grid { grid-template-columns: repeat(2, 1fr); }
+  .pain-grid { grid-template-columns: 1fr; }
+  .team-leadership { grid-template-columns: repeat(2, 1fr); }
+  .team-dev-grid { grid-template-columns: repeat(2, 1fr); }
+  .timeline-container { grid-template-columns: repeat(2, 1fr); }
+  .timeline-container::before { display: none; }
+  .scope-grid { grid-template-columns: repeat(2, 1fr); }
+  .decisions-grid { grid-template-columns: repeat(2, 1fr); }
+  .lifecycle-connections { grid-template-columns: 1fr; }
+  .vision-diagram { flex-direction: column; }
+  .vision-arrow { transform: rotate(90deg); }
+  .hero-visual { flex-direction: column; gap: 24px; }
+  .puzzle-arrow { transform: rotate(90deg); }
+}
+
+@media (max-width: 640px) {
+  .slide { padding: 32px 20px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .ma-grid { grid-template-columns: 1fr; }
+  .nav-dots { display: none; }
+  .crm-diagram { flex-direction: column; }
+  .crm-arrows { flex-direction: row; }
+  .crm-arrow-line { width: 2px; height: 24px; background: linear-gradient(180deg, var(--lilac), transparent); }
+  .timeline-container { grid-template-columns: 1fr; }
+  .scope-grid { grid-template-columns: 1fr; }
+  .decisions-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== PRINT ===== */
+@media print {
+  html { scroll-snap-type: none; }
+  .slide {
+    min-height: auto;
+    height: auto;
+    page-break-after: always;
+    page-break-inside: avoid;
+    padding: 40px;
+  }
+  .nav-dots { display: none; }
+  .glow-orb { display: none; }
+  body { background: #fff; color: #1a1a1a; }
+  h1, h2, h3, .stat-number, .gate-id { color: var(--purple) !important; }
+  .pain-card, .stat-card, .gate-row, .team-card, .sprint-card, .decision-card, .scope-card {
+    border-color: #ddd !important;
+    background: #f9f9f9 !important;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+.slide-inner > * {
+  animation: fadeInUp 0.8s ease-out both;
+}
+
+.slide-inner > *:nth-child(2) { animation-delay: 0.1s; }
+.slide-inner > *:nth-child(3) { animation-delay: 0.2s; }
+.slide-inner > *:nth-child(4) { animation-delay: 0.3s; }
+.slide-inner > *:nth-child(5) { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION DOTS -->
+<nav class="nav-dots">
+  <a href="#hero" class="nav-dot" title="Hero"></a>
+  <a href="#problema" class="nav-dot" title="O Problema"></a>
+  <a href="#visao" class="nav-dot" title="A Visao"></a>
+  <a href="#fundacao" class="nav-dot" title="Fundacao"></a>
+  <a href="#macro-areas" class="nav-dot" title="Macro-Areas"></a>
+  <a href="#gates" class="nav-dot" title="Os 7 Gates"></a>
+  <a href="#dados" class="nav-dot" title="Arquitetura"></a>
+  <a href="#crm" class="nav-dot" title="CRM OS"></a>
+  <a href="#conexoes" class="nav-dot" title="Conexoes"></a>
+  <a href="#escopo" class="nav-dot" title="Escopo"></a>
+  <a href="#time" class="nav-dot" title="Time"></a>
+  <a href="#timeline" class="nav-dot" title="Timeline"></a>
+  <a href="#decisoes" class="nav-dot" title="Decisoes"></a>
+  <a href="#cta" class="nav-dot" title="Call to Action"></a>
+</nav>
+
+<!-- ========== SLIDE 1: HERO ========== -->
+<section id="hero" class="slide bg-purple">
+  <div class="glow-orb" style="width:400px;height:400px;background:rgba(169,148,230,0.15);top:-100px;right:-100px;"></div>
+  <div class="glow-orb" style="width:300px;height:300px;background:rgba(204,153,0,0.08);bottom:-80px;left:-80px;"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">Backstage Freelaw</div>
+    <h1>Backstage Freelaw<br><span class="accent">Fase 0</span></h1>
+    <div class="subtitle">De fragmentacao para sistema operacional</div>
+
+    <div class="hero-visual">
+      <div class="puzzle-container">
+        <div class="puzzle-piece" style="transform:translate(-8px,-12px) rotate(-5deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(5px,8px) rotate(3deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(-3px,15px) rotate(-8deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(10px,-5px) rotate(6deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(12px,3px) rotate(-3deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(-6px,-10px) rotate(7deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(4px,12px) rotate(-6deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(-10px,5px) rotate(4deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(8px,-8px) rotate(-4deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(-5px,10px) rotate(5deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(6px,-3px) rotate(-7deg);"></div>
+        <div class="puzzle-piece" style="transform:translate(-8px,6px) rotate(3deg);"></div>
+      </div>
+      <div class="puzzle-arrow">&#10230;</div>
+      <div class="puzzle-container puzzle-right">
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+        <div class="puzzle-piece"></div>
+      </div>
+    </div>
+
+    <div class="context-line">Kickoff para o time &middot; Marco 2026</div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 2: O PROBLEMA ========== -->
+<section id="problema" class="slide bg-tension">
+  <div class="glow-orb" style="width:350px;height:350px;background:rgba(103,0,1,0.12);top:20%;left:-80px;"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">01 &mdash; A Tensao</div>
+    <h2>Hoje, a operacao da Freelaw<br>vive <span style="color:var(--danger)">fragmentada</span></h2>
+
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="pain-icon">&#128736;</span>
+        <div class="pain-title">HubSpot para CRM</div>
+        <div class="pain-desc">16 entidades sincronizadas. Dados duplicados entre HubSpot e nosso banco. Qualquer mudanca depende de integracao fragil.</div>
+        <div class="pain-consequence">Dados duplicados &middot; Fonte de verdade ambigua</div>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">&#128200;</span>
+        <div class="pain-title">Google Sheets para Business Plan</div>
+        <div class="pain-desc">Planejamento financeiro vive numa planilha. Dados entram manualmente. Ninguem confia nos numeros em tempo real.</div>
+        <div class="pain-consequence">Decisoes lentas &middot; Informacao desatualizada</div>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">&#9889;</span>
+        <div class="pain-title">Zapier + Make + Scripts Avulsos</div>
+        <div class="pain-desc">Automacoes espalhadas por 3 plataformas. Quebram sem aviso. Custam caro. Ninguem sabe o mapa completo.</div>
+        <div class="pain-consequence">Fragil e caro &middot; Sem visibilidade</div>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">&#9997;</span>
+        <div class="pain-title">Processos Manuais</div>
+        <div class="pain-desc">Acompanhamento de clientes, onboarding, renovacoes, health score &mdash; tudo depende de alguem lembrar de fazer.</div>
+        <div class="pain-consequence">Impossivel escalar &middot; Erros humanos</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 3: A VISAO ========== -->
+<section id="visao" class="slide bg-vision">
+  <div class="glow-orb" style="width:500px;height:500px;background:rgba(90,26,173,0.12);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">02 &mdash; A Visao</div>
+    <h2>Uma plataforma.<br>Uma <span class="gold">fonte da verdade.</span></h2>
+
+    <div class="vision-diagram">
+      <div class="vision-node vision-node-side">
+        <div class="vision-node-label">Cliente</div>
+        <div class="vision-node-title">Studio Offices</div>
+        <div class="vision-node-sub">Usa o produto</div>
+      </div>
+      <div class="vision-arrow">&#8596;</div>
+      <div class="vision-node vision-node-center">
+        <div class="vision-node-label">Operacao Interna</div>
+        <div class="vision-node-title">Backstage</div>
+        <div class="vision-node-sub">Vende, monitora, cobra, suporta, retem, expande</div>
+      </div>
+      <div class="vision-arrow">&#8596;</div>
+      <div class="vision-node vision-node-side">
+        <div class="vision-node-label">Prestador</div>
+        <div class="vision-node-title">Studio Providers</div>
+        <div class="vision-node-sub">Executa servicos</div>
+      </div>
+    </div>
+
+    <div class="emphasis-box">
+      <p>"Tudo que a Freelaw precisa para operar, vender, monitorar e crescer &mdash; num so lugar."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 4: FOUNDATION ========== -->
+<section id="fundacao" class="slide bg-deepspace">
+  <div class="glow-orb" style="width:400px;height:400px;background:rgba(169,148,230,0.1);bottom:-100px;right:-100px;"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">03 &mdash; Fundacao</div>
+    <h2>Nao estamos comecando<br>do <span class="accent">zero</span></h2>
+    <p class="body-text">O Backstage ja tem MUITA coisa construida. O desafio nao e "construir do zero" &mdash; e <strong>terminar, conectar e estabilizar</strong> o que existe.</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">299</div>
+        <div class="stat-label">Paginas construidas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">629</div>
+        <div class="stat-label">Rotas de API</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">27</div>
+        <div class="stat-label">Packages compartilhados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">80+</div>
+        <div class="stat-label">Componentes UI</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-number">85</div>
+        <div class="stat-label">Contas no General Ledger</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">17</div>
+        <div class="stat-label">Integracoes ativas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">184</div>
+        <div class="stat-label">Arquivos de teste</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">24</div>
+        <div class="stat-label">Cron Jobs</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 5: MACRO-AREAS ========== -->
+<section id="macro-areas" class="slide bg-charcoal">
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">04 &mdash; O Mapa</div>
+    <h2>As 14 macro-areas<br>do <span class="accent">Backstage</span></h2>
+
+    <div class="tiers-container">
+      <div class="tier">
+        <div class="tier-label infra">Packages &mdash; Infra Transversal</div>
+        <div class="ma-grid">
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128279;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">CRM (OS)</span>
+              <span class="ma-chip-tag">MA-CRM &middot; G3</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128268;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Integracoes</span>
+              <span class="ma-chip-tag">MA7 &middot; G6</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#9881;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Automacoes</span>
+              <span class="ma-chip-tag">MA6 &middot; G4</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128172;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Mensageria</span>
+              <span class="ma-chip-tag">MA5 &middot; G7</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tier">
+        <div class="tier-label negocio">Areas de Negocio</div>
+        <div class="ma-grid">
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128176;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Financeiro</span>
+              <span class="ma-chip-tag">MA1 &middot; G1, G5</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128200;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Vendas</span>
+              <span class="ma-chip-tag">MA2 &middot; G3</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#127919;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Aquisicao</span>
+              <span class="ma-chip-tag">MA3 &middot; G3</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128588;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Customer Success</span>
+              <span class="ma-chip-tag">MA4 &middot; G2</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128101;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Prestadores</span>
+              <span class="ma-chip-tag">MA11</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128226;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Marketing</span>
+              <span class="ma-chip-tag">MA10</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128106;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">RH</span>
+              <span class="ma-chip-tag">MA9</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#129302;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">IA / LIA</span>
+              <span class="ma-chip-tag">MA13</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tier">
+        <div class="tier-label suporte">Suporte</div>
+        <div class="ma-grid narrow">
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128202;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Dashboard Executivo</span>
+              <span class="ma-chip-tag">MA8 &middot; G5</span>
+            </div>
+          </div>
+          <div class="ma-chip">
+            <span class="ma-chip-icon">&#128736;</span>
+            <div class="ma-chip-info">
+              <span class="ma-chip-name">Produto & Plataforma</span>
+              <span class="ma-chip-tag">MA12</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 6: OS 7 GATES ========== -->
+<section id="gates" class="slide bg-deepspace">
+  <div class="glow-orb" style="width:400px;height:400px;background:rgba(16,185,129,0.06);top:-50px;left:-100px;"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">05 &mdash; Os Marcos</div>
+    <h2>7 gates que definem<br>o <span class="gold">sucesso</span></h2>
+
+    <div class="gates-list">
+      <div class="gate-row">
+        <div class="gate-id">G1</div>
+        <div class="gate-info">
+          <div class="gate-name">Gestao Financeira Centralizada</div>
+          <div class="gate-bar-track"><div class="gate-bar-fill green" style="width:95%"></div></div>
+        </div>
+        <div class="gate-pct green">95%</div>
+      </div>
+
+      <div class="gate-row">
+        <div class="gate-id">G5</div>
+        <div class="gate-info">
+          <div class="gate-name">Dashboard Executivo Unificado</div>
+          <div class="gate-bar-track"><div class="gate-bar-fill green" style="width:90%"></div></div>
+        </div>
+        <div class="gate-pct green">90%</div>
+      </div>
+
+      <div class="gate-row">
+        <div class="gate-id">G6</div>
+        <div class="gate-info">
+          <div class="gate-name">Integracoes Estabilizadas</div>
+          <div class="gate-bar-track"><div class="gate-bar-fill green" style="width:85%"></div></div>
+        </div>
+        <div class="gate-pct green">85%</div>
+      </div>
+
+      <div class="gate-row">
+        <div class="gate-id">G7</div>
+        <div class="gate-info">
+          <div class="gate-name">Mensageria no Monorepo</div>
+          <div class="gate-bar-track"><div class="gate-bar-fill green" style="width:85%"></div></div>
+        </div>
+        <div class="gate-pct green">85%</div>
+      </div>
+
+      <div class="gate-row">
+        <div class="gate-id">G2</div>
+        <div class="gate-info">
+          <div class="gate-name">Acompanhar Cliente v1</div>
+          <div class="gate-bar-track"><div class="gate-bar-fill yellow" style="width:73%"></div></div>
+        </div>
+        <div class="gate-pct yellow">73%</div>
+      </div>
+
+      <div class="gate-row critical">
+        <div class="gate-id">G3</div>
+        <div class="gate-info">
+          <div class="gate-name">Pipeline / CRM Unificado <span class="critical-badge">Caminho Critico</span></div>
+          <div class="gate-bar-track"><div class="gate-bar-fill orange" style="width:70%"></div></div>
+        </div>
+        <div class="gate-pct orange">70%</div>
+      </div>
+
+      <div class="gate-row">
+        <div class="gate-id">G4</div>
+        <div class="gate-info">
+          <div class="gate-name">Automacoes Internas</div>
+          <div class="gate-bar-track"><div class="gate-bar-fill orange" style="width:60%"></div></div>
+        </div>
+        <div class="gate-pct orange">60%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 7: DATA ARCHITECTURE ========== -->
+<section id="dados" class="slide bg-data">
+  <div class="glow-orb" style="width:350px;height:350px;background:rgba(204,153,0,0.06);top:30%;right:-80px;"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">06 &mdash; Arquitetura de Dados</div>
+    <h2>A espinha dorsal:<br><span class="gold">General Ledger</span></h2>
+
+    <div class="data-flow">
+      <div class="data-flow-row">
+        <div class="data-source">Stripe</div>
+        <div class="data-source">Iugu</div>
+        <div class="data-source">Conta Azul</div>
+        <div class="data-source">Banco Inter</div>
+        <div class="data-source">Payroll</div>
+      </div>
+
+      <div class="data-arrow-down">&#8595; &#8595; &#8595;</div>
+
+      <div style="display:flex;justify-content:center;margin-bottom:16px;">
+        <div style="background:rgba(169,148,230,0.08);border:1px solid rgba(169,148,230,0.2);border-radius:10px;padding:12px 32px;text-align:center;">
+          <span style="font-family:'Public Sans',sans-serif;font-weight:500;font-size:14px;color:var(--lilac);">Journal Entries</span>
+        </div>
+      </div>
+
+      <div class="data-arrow-down">&#8595;</div>
+
+      <div class="data-center-box">
+        <div class="data-center-title">General Ledger</div>
+        <div class="data-center-sub">Plano de Contas &middot; Double-Entry &middot; Validado</div>
+        <div class="data-mini-stat">
+          <span><strong>85</strong> contas</span>
+          <span><strong>5</strong> posting engines</span>
+          <span><strong>100%</strong> double-entry</span>
+        </div>
+      </div>
+
+      <div class="data-arrow-down">&#8595; &#8595; &#8595;</div>
+
+      <div class="data-flow-row">
+        <div class="data-output">DRE</div>
+        <div class="data-output">Balanco</div>
+        <div class="data-output">Unit Economics</div>
+        <div class="data-output">Business Plan</div>
+      </div>
+    </div>
+
+    <div class="emphasis-box" style="margin:32px auto 0;max-width:680px;">
+      <p>"A fonte da verdade financeira JA existe. 85 contas, 5 posting engines, double-entry validado."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 8: CRM COMO OS ========== -->
+<section id="crm" class="slide bg-deepspace">
+  <div class="glow-orb" style="width:450px;height:450px;background:rgba(169,148,230,0.08);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">07 &mdash; Arquitetura</div>
+    <h2>CRM nao e um app.<br>E o <span class="accent">sistema operacional.</span></h2>
+    <p class="body-text">A mesma infraestrutura &mdash; contacts, companies, deals, pipelines &mdash; serve <strong>todos os dominios</strong>.</p>
+
+    <div class="crm-diagram">
+      <div class="crm-spokes">
+        <div class="crm-spoke"><span class="crm-spoke-icon">&#128200;</span><span class="crm-spoke-label">Vendas</span></div>
+        <div class="crm-spoke"><span class="crm-spoke-icon">&#128226;</span><span class="crm-spoke-label">Marketing</span></div>
+        <div class="crm-spoke"><span class="crm-spoke-icon">&#127919;</span><span class="crm-spoke-label">Aquisicao</span></div>
+      </div>
+
+      <div class="crm-arrows">
+        <div class="crm-arrow-line"></div>
+        <div class="crm-arrow-line"></div>
+        <div class="crm-arrow-line"></div>
+      </div>
+
+      <div class="crm-center">
+        <div class="crm-center-title">CRM Package</div>
+        <div class="crm-center-sub">contacts &middot; companies<br>deals &middot; pipelines<br>activities &middot; sequences</div>
+      </div>
+
+      <div class="crm-arrows">
+        <div class="crm-arrow-line" style="background:linear-gradient(270deg, var(--lilac), transparent);"></div>
+        <div class="crm-arrow-line" style="background:linear-gradient(270deg, var(--lilac), transparent);"></div>
+        <div class="crm-arrow-line" style="background:linear-gradient(270deg, var(--lilac), transparent);"></div>
+      </div>
+
+      <div class="crm-spokes">
+        <div class="crm-spoke"><span class="crm-spoke-icon">&#128588;</span><span class="crm-spoke-label">Customer Success</span></div>
+        <div class="crm-spoke"><span class="crm-spoke-icon">&#128101;</span><span class="crm-spoke-label">Prestadores</span></div>
+        <div class="crm-spoke"><span class="crm-spoke-icon">&#128176;</span><span class="crm-spoke-label">Financeiro</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 9: CONEXOES ========== -->
+<section id="conexoes" class="slide bg-charcoal">
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">08 &mdash; Ciclo de Vida</div>
+    <h2>Tudo conectado,<br>de <span class="accent">ponta a ponta</span></h2>
+
+    <div class="lifecycle-flow">
+      <div class="lifecycle-step"><div class="lifecycle-step-icon">&#128073;</div><div class="lifecycle-step-label">Ad Click</div></div>
+      <span class="lifecycle-connector">&#10230;</span>
+      <div class="lifecycle-step"><div class="lifecycle-step-icon">&#128100;</div><div class="lifecycle-step-label">Lead</div></div>
+      <span class="lifecycle-connector">&#10230;</span>
+      <div class="lifecycle-step"><div class="lifecycle-step-icon">&#128270;</div><div class="lifecycle-step-label">Qualificacao</div></div>
+      <span class="lifecycle-connector">&#10230;</span>
+      <div class="lifecycle-step"><div class="lifecycle-step-icon">&#129309;</div><div class="lifecycle-step-label">Deal</div></div>
+      <span class="lifecycle-connector">&#10230;</span>
+      <div class="lifecycle-step"><div class="lifecycle-step-icon">&#128221;</div><div class="lifecycle-step-label">Contrato</div></div>
+      <span class="lifecycle-connector">&#10230;</span>
+      <div class="lifecycle-step"><div class="lifecycle-step-icon">&#127919;</div><div class="lifecycle-step-label">Onboarding</div></div>
+      <span class="lifecycle-connector">&#10230;</span>
+      <div class="lifecycle-step"><div class="lifecycle-step-icon">&#9989;</div><div class="lifecycle-step-label">Ativo</div></div>
+      <span class="lifecycle-connector">&#10230;</span>
+      <div class="lifecycle-step"><div class="lifecycle-step-icon">&#128202;</div><div class="lifecycle-step-label">Health</div></div>
+      <span class="lifecycle-connector">&#10230;</span>
+      <div class="lifecycle-step"><div class="lifecycle-step-icon">&#128260;</div><div class="lifecycle-step-label">Renovacao</div></div>
+    </div>
+
+    <div class="lifecycle-connections">
+      <div class="lifecycle-conn-card">
+        <div class="lifecycle-conn-title">Financeiro</div>
+        <div class="lifecycle-conn-desc">Billing, receita, MRR, inadimplencia &mdash; cada transacao gera dados contabeis no General Ledger.</div>
+      </div>
+      <div class="lifecycle-conn-card">
+        <div class="lifecycle-conn-title">Customer Success</div>
+        <div class="lifecycle-conn-desc">Health score, NPS, churn predictions &mdash; monitoramento continuo com alertas automaticos.</div>
+      </div>
+      <div class="lifecycle-conn-card">
+        <div class="lifecycle-conn-title">Mensageria</div>
+        <div class="lifecycle-conn-desc">WhatsApp, email, notificacoes &mdash; canal transversal que acompanha o cliente em cada passo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 10: ESCOPO ========== -->
+<section id="escopo" class="slide bg-deepspace">
+  <div class="glow-orb" style="width:350px;height:350px;background:rgba(169,148,230,0.08);bottom:-80px;left:-80px;"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">09 &mdash; Fase 0</div>
+    <h2>O que vamos entregar<br>em <span class="gold">2 meses</span></h2>
+
+    <div class="scope-grid">
+      <div class="scope-card">
+        <div class="scope-card-header">
+          <span class="scope-card-icon">&#128176;</span>
+          <span class="scope-card-title">Financeiro</span>
+          <span class="scope-card-gate">G1</span>
+        </div>
+        <div class="scope-item">Eliminar dependencia Google Sheets</div>
+        <div class="scope-item">Business Plan editavel na UI</div>
+        <div class="scope-item">Conciliacao automatica 100%</div>
+      </div>
+
+      <div class="scope-card">
+        <div class="scope-card-header">
+          <span class="scope-card-icon">&#128200;</span>
+          <span class="scope-card-title">CRM / Pipeline</span>
+          <span class="scope-card-gate" style="background:rgba(239,68,68,0.1);color:var(--danger);">G3</span>
+        </div>
+        <div class="scope-item">Matar HubSpot como fonte de verdade</div>
+        <div class="scope-item">Dedup e outbound 100% nativos</div>
+        <div class="scope-item">Sequences engine funcionando</div>
+      </div>
+
+      <div class="scope-card">
+        <div class="scope-card-header">
+          <span class="scope-card-icon">&#128588;</span>
+          <span class="scope-card-title">Customer Success</span>
+          <span class="scope-card-gate">G2</span>
+        </div>
+        <div class="scope-item">Health score para 100% dos clientes</div>
+        <div class="scope-item">Alertas automaticos de risco</div>
+        <div class="scope-item">Customer 360 com dados reais</div>
+      </div>
+
+      <div class="scope-card">
+        <div class="scope-card-header">
+          <span class="scope-card-icon">&#128202;</span>
+          <span class="scope-card-title">Dashboard</span>
+          <span class="scope-card-gate">G5</span>
+        </div>
+        <div class="scope-item">MRR, churn, receita, despesas numa tela</div>
+        <div class="scope-item">Filtros por periodo e plano</div>
+        <div class="scope-item">Drill-down em qualquer metrica</div>
+      </div>
+
+      <div class="scope-card">
+        <div class="scope-card-header">
+          <span class="scope-card-icon">&#128268;</span>
+          <span class="scope-card-title">Integracoes</span>
+          <span class="scope-card-gate">G6</span>
+        </div>
+        <div class="scope-item">Monitoramento centralizado</div>
+        <div class="scope-item">Alertas de falha automaticos</div>
+        <div class="scope-item">Zero falhas criticas em 7 dias</div>
+      </div>
+
+      <div class="scope-card">
+        <div class="scope-card-header">
+          <span class="scope-card-icon">&#9881;</span>
+          <span class="scope-card-title">Automacoes</span>
+          <span class="scope-card-gate">G4</span>
+        </div>
+        <div class="scope-item">Action executor funcional</div>
+        <div class="scope-item">25 cron jobs sem falhas</div>
+        <div class="scope-item">Workflow builder operando</div>
+      </div>
+
+      <div class="scope-card">
+        <div class="scope-card-header">
+          <span class="scope-card-icon">&#128172;</span>
+          <span class="scope-card-title">Mensageria</span>
+          <span class="scope-card-gate">G7</span>
+        </div>
+        <div class="scope-item">WhatsApp + Email consolidados</div>
+        <div class="scope-item">Templates gerenciaveis</div>
+        <div class="scope-item">Historico unificado por cliente</div>
+      </div>
+
+      <div class="scope-card">
+        <div class="scope-card-header">
+          <span class="scope-card-icon">&#128226;</span>
+          <span class="scope-card-title">Marketing + Aquisicao</span>
+        </div>
+        <div class="scope-item">Cadencias outbound nativas</div>
+        <div class="scope-item">Lead scoring operando</div>
+        <div class="scope-item">KPIs BDR/SDR em tempo real</div>
+      </div>
+
+      <div class="scope-card">
+        <div class="scope-card-header">
+          <span class="scope-card-icon">&#128101;</span>
+          <span class="scope-card-title">Prestadores + RH</span>
+        </div>
+        <div class="scope-item">Pipeline de prestadores nativo</div>
+        <div class="scope-item">Onboarding sem HubSpot</div>
+        <div class="scope-item">Migrar gestao.freelaw.ai</div>
+      </div>
+    </div>
+
+    <div class="emphasis-box" style="margin-top:24px;">
+      <p>"Tudo testavel em producao pelo PO. Sem excecao."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 11: TIME ========== -->
+<section id="time" class="slide bg-charcoal">
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">10 &mdash; O Time</div>
+    <h2>Quem e responsavel<br>pelo <span class="accent">que</span></h2>
+
+    <div class="team-section">
+      <div class="team-label">Lideranca</div>
+      <div class="team-leadership">
+        <div class="team-card lead">
+          <div class="team-avatar">J</div>
+          <div class="team-name">Ju</div>
+          <div class="team-role">CEO</div>
+        </div>
+        <div class="team-card lead">
+          <div class="team-avatar">G</div>
+          <div class="team-name">Guilherme</div>
+          <div class="team-role">VDC &middot; Dir. Financeiro<br>Owner do Backstage</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">C</div>
+          <div class="team-name">Carol</div>
+          <div class="team-role">Gerente de CS</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">D</div>
+          <div class="team-name">Didico</div>
+          <div class="team-role">Gerente de Aquisicao</div>
+        </div>
+      </div>
+
+      <div class="team-label">Time de Desenvolvimento</div>
+      <div class="team-dev-grid">
+        <div class="team-card">
+          <div class="team-avatar">A</div>
+          <div class="team-name">Alex</div>
+          <div class="team-role">Financeiro + Integracoes</div>
+          <div class="team-dev-focus">G1, G5, G6</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">B</div>
+          <div class="team-name">Biel</div>
+          <div class="team-role">CRM + Pipeline</div>
+          <div class="team-dev-focus">G3, G4</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">C</div>
+          <div class="team-name">Clarinha</div>
+          <div class="team-role">CS + Cliente 360</div>
+          <div class="team-dev-focus">G2, G5</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">D</div>
+          <div class="team-name">Davi</div>
+          <div class="team-role">Mensageria + Automacoes</div>
+          <div class="team-dev-focus">G4, G7</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 12: TIMELINE ========== -->
+<section id="timeline" class="slide bg-deepspace">
+  <div class="glow-orb" style="width:500px;height:200px;background:rgba(169,148,230,0.06);top:40%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">11 &mdash; Ritmo</div>
+    <h2>8 semanas. 4 sprints.<br><span class="gold">7 gates.</span></h2>
+
+    <div class="timeline-container">
+      <div class="sprint-card">
+        <div class="sprint-dot"></div>
+        <div class="sprint-label">Sprint 1</div>
+        <div class="sprint-dates">10 &ndash; 21 mar</div>
+        <div class="sprint-theme">Fundacao & Estabilizacao</div>
+        <div class="sprint-gates">
+          <span class="sprint-gate-tag">Auditorias</span>
+          <span class="sprint-gate-tag">Mapeamento</span>
+          <span class="sprint-gate-tag hot">G3 inicio</span>
+        </div>
+      </div>
+
+      <div class="sprint-card">
+        <div class="sprint-dot"></div>
+        <div class="sprint-label">Sprint 2</div>
+        <div class="sprint-dates">24 mar &ndash; 4 abr</div>
+        <div class="sprint-theme">Fechar G1, G5, G6</div>
+        <div class="sprint-gates">
+          <span class="sprint-gate-tag done">G1 fechar</span>
+          <span class="sprint-gate-tag done">G5 fechar</span>
+          <span class="sprint-gate-tag done">G6 fechar</span>
+        </div>
+      </div>
+
+      <div class="sprint-card">
+        <div class="sprint-dot"></div>
+        <div class="sprint-label">Sprint 3</div>
+        <div class="sprint-dates">7 &ndash; 18 abr</div>
+        <div class="sprint-theme">Fechar G2, G3, G7</div>
+        <div class="sprint-gates">
+          <span class="sprint-gate-tag done">G2 fechar</span>
+          <span class="sprint-gate-tag hot">G3 fechar</span>
+          <span class="sprint-gate-tag done">G7 fechar</span>
+        </div>
+      </div>
+
+      <div class="sprint-card">
+        <div class="sprint-dot"></div>
+        <div class="sprint-label">Sprint 4</div>
+        <div class="sprint-dates">21 &ndash; 30 abr</div>
+        <div class="sprint-theme">G4 + Polish + Validacao Final</div>
+        <div class="sprint-gates">
+          <span class="sprint-gate-tag done">G4 fechar</span>
+          <span class="sprint-gate-tag">Polish</span>
+          <span class="sprint-gate-tag">PO Validacao</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 13: DECISOES ========== -->
+<section id="decisoes" class="slide bg-tension" style="background:radial-gradient(ellipse at 50% 50%, rgba(245,158,11,0.06) 0%, transparent 60%), #0d0012;">
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="slide-number">12 &mdash; Decisoes</div>
+    <h2><span style="color:var(--warning)">21</span> decisoes que<br>precisamos tomar</h2>
+    <p class="body-text" style="margin-bottom:8px;">Sem decisao, sem progresso. As mais criticas precisam sair no <strong>Sprint 1</strong>.</p>
+
+    <div class="decisions-grid">
+      <div class="decision-card urgent">
+        <div class="decision-id">D4</div>
+        <div class="decision-text">HubSpot: data-alvo de desligamento</div>
+        <div class="decision-deadline">Sprint 1 &middot; Vendas + Backstage</div>
+      </div>
+      <div class="decision-card urgent">
+        <div class="decision-id">D1</div>
+        <div class="decision-text">Quais ferramentas externas eliminar</div>
+        <div class="decision-deadline">Sprint 1 &middot; Time completo</div>
+      </div>
+      <div class="decision-card urgent">
+        <div class="decision-id">D6</div>
+        <div class="decision-text">167 routes sem auth: quais priorizar?</div>
+        <div class="decision-deadline">Sprint 1 &middot; Guilherme + Time</div>
+      </div>
+      <div class="decision-card urgent">
+        <div class="decision-id">D9</div>
+        <div class="decision-text">ERP (Freelaw One): entra na Fase 0?</div>
+        <div class="decision-deadline">Sprint 1 &middot; VDC</div>
+      </div>
+      <div class="decision-card urgent">
+        <div class="decision-id">D10</div>
+        <div class="decision-text">Google Sheets: eliminar ou conviver?</div>
+        <div class="decision-deadline">Sprint 1 &middot; Finance</div>
+      </div>
+      <div class="decision-card urgent">
+        <div class="decision-id">D11</div>
+        <div class="decision-text">Dados historicos do HubSpot: migrar ou perder?</div>
+        <div class="decision-deadline">Sprint 1 &middot; Vendas + Biel</div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-id">D2</div>
+        <div class="decision-text">Prioridade dos gates (ordem proposta OK?)</div>
+        <div class="decision-deadline">Sprint 1 &middot; VDC + Ju</div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-id">D5</div>
+        <div class="decision-text">Stack de mensageria final (Evolution API?)</div>
+        <div class="decision-deadline">Sprint 1 &middot; Time</div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-id">D8</div>
+        <div class="decision-text">Atribuicao final do time (quem faz o que)</div>
+        <div class="decision-deadline">Sprint 1 &middot; Guilherme</div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-id">D13</div>
+        <div class="decision-text">Workflow builder visual: Fase 0 ou 1?</div>
+        <div class="decision-deadline">Sprint 1 &middot; VDC</div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-id">D14</div>
+        <div class="decision-text">Mapeamento completo de conexoes cross-area</div>
+        <div class="decision-deadline">Sprint 1 &middot; VDC + Time</div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-id">D15</div>
+        <div class="decision-text">CRM: quais pipelines configuraveis por dominio?</div>
+        <div class="decision-deadline">Sprint 1 &middot; VDC + Time</div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-id">D3</div>
+        <div class="decision-text">Health score: quais metricas e pesos?</div>
+        <div class="decision-deadline">Sprint 2 &middot; CS + Produto</div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-id">D12</div>
+        <div class="decision-text">Banco Inter sync: ativar na Fase 0?</div>
+        <div class="decision-deadline">Sprint 2 &middot; Finance</div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-id">D16 &ndash; D21</div>
+        <div class="decision-text">LIA infraestrutura, dados docs, migracao RH, Design System, testes producao, taxonomias</div>
+        <div class="decision-deadline">Sprint 1-2 &middot; Varias areas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 14: CTA ========== -->
+<section id="cta" class="slide bg-cta">
+  <div class="glow-orb" style="width:600px;height:600px;background:rgba(169,148,230,0.1);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="glow-orb" style="width:300px;height:300px;background:rgba(204,153,0,0.08);bottom:10%;right:10%;"></div>
+  <div class="grid-overlay"></div>
+  <div class="slide-inner">
+    <div class="cta-content">
+      <div class="cta-badge">Marco 2026 &mdash; Abril 2026</div>
+      <div class="cta-title">Vamos construir um<br>excelente <span class="accent">Backstage</span></div>
+      <div class="cta-subtitle">O sistema operacional que a Freelaw merece</div>
+      <a href="#" class="cta-button">Discovery comeca agora</a>
+      <div class="cta-footer">
+        PRD completo: <a href="https://backstage-docs.vercel.app" target="_blank">backstage-docs.vercel.app</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
