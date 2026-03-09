@@ -8,7 +8,7 @@
 > Para o estado ideal de cada miniapp, consulte o **Discovery**.
 
 **Última atualização**: 2026-03-09
-**Owner**: VDC | **Líder de execução**: Guilherme
+**Owner**: Guilherme (VDC), Diretor Financeiro
 **Time**: Alex, Biel, Clarinha, Davi
 **Prazo hard**: Fim de Abril 2026
 **URL produção**: backstage.freelaw.ai
@@ -171,7 +171,7 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ### 2.6 Liderança (Gab, VDC, Didico)
 
-**Quem**: CEO, VP de tecnologia, VP comercial.
+**Quem**: CEO (Gab), Diretor Financeiro (VDC/Guilherme), VP Comercial (Didico).
 
 **O que faz hoje**:
 - Toma decisões estratégicas baseadas em métricas
@@ -221,7 +221,7 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 | Database Tables (Backstage) | 40+ |
 | Database Tables (Infra DB) | 80+ (em 80 schema files) |
 | Feature Modules | 23 |
-| Integrações externas | 14 |
+| Integrações externas | 13 |
 | AI Agents | 4 |
 | Cron Jobs | 25 |
 | Edge Functions (Deno) | 58 |
@@ -249,14 +249,13 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 | **Planejamento** | /planejamento | — | Parcial | — |
 | **Dashboard** | /dashboard | — | Funcional | G5 |
 
-### 3.3 Integrações externas (14)
+### 3.3 Integrações externas (13)
 
 | Integração | O que faz | Direção | Status | Gate |
 |------------|-----------|---------|--------|------|
 | **HubSpot** | CRM legado (16 entidades: contacts, companies, deals, calls, meetings, etc.) | Bidirecional → migrando para read-only | Ativo — em deprecação | G3 |
 | **Stripe** | Billing para clientes novos. Webhook de eventos. | Inbound (webhooks) | Ativo — primário | G1 |
 | **Iugu** | Billing legado. Sync via ETL (customers, subscriptions, invoices, financials). | Sync periódico | Ativo — sync estável | G1, G6 |
-| **Omie** | ERP. Schema existe mas sem sync ativo. | — | Schema pronto, inativo | G6 |
 | **Meta Ads** | Marketing analytics. Dados de campanhas e CAPI. | Inbound | Ativo | — |
 | **Google Ads** | Marketing analytics. Dados de campanhas. | Inbound | Ativo | — |
 | **Conta Azul** | Contabilidade. Sync de despesas e categorias. | Sync periódico | Ativo | G1, G6 |
@@ -289,9 +288,343 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-## 4. OS 7 GATES — ESPECIFICAÇÃO DE PRODUTO
+## 4. MACRO-ÁREAS DO BACKSTAGE
 
-### 4.1 G1: Gestão financeira centralizada
+> Cada macro-área é um domínio funcional do Backstage com escopo, responsável e PRD próprio.
+> O responsável pelo PRD de cada área detalha user stories, critérios de aceite e dependências.
+> Esta seção é o **mapa de ownership** — quem é dono de quê.
+
+### Mapa de Atribuição
+
+| # | Macro-Área | Módulos | Páginas | Gates | Responsável PRD | Status PRD |
+|---|------------|---------|---------|-------|-----------------|------------|
+| MA1 | Financeiro & Billing | /financeiro/* | 28 | G1, G5 | _a definir_ | Não iniciado |
+| MA2 | Vendas & Pipeline | /vendas/*, /crm/*, /oitiva/* | 51 | G3 | _a definir_ | Não iniciado |
+| MA3 | Aquisição & Outbound | /aquisicao/*, /vendas/outbound | 6 | G3 | _a definir_ | Não iniciado |
+| MA4 | Customer Success | /cs/*, /suporte/cliente/* | 24 | G2 | _a definir_ | Não iniciado |
+| MA5 | Mensageria & Comunicação | /interno/whatsapp, /suporte/inbox, /chat | 31 | G7 | _a definir_ | Não iniciado |
+| MA6 | Automações & Workflows | /produto/workflows, crons, edge functions | — | G4 | _a definir_ | Não iniciado |
+| MA7 | Integrações | Transversal (13 sistemas) | — | G6 | _a definir_ | Não iniciado |
+| MA8 | Dashboard & Analytics Executivo | /dashboard, /executive | — | G5 | _a definir_ | Não iniciado |
+| MA9 | RH & Produtividade | /rh/* | 18 | — | _a definir_ | Não iniciado |
+| MA10 | Marketing | /marketing/* | 4 | — | _a definir_ | Não iniciado |
+| MA11 | Prestadores & Comunidade | /prestadores/* | 12 | — | _a definir_ | Não iniciado |
+| MA12 | Produto & Plataforma | /produto/*, /wiki, /chat | 121 | — | _a definir_ | Não iniciado |
+
+---
+
+### MA1: Financeiro & Billing
+
+**Escopo**: Toda gestão financeira — receita, custos, MRR, DRE, billing, conciliação, unit economics, business plan.
+
+**Módulos**: `/financeiro/*` (28 páginas, 30+ API routes)
+
+**O que existe**:
+- Receita: overview, assinaturas, faturamento, billing, novo-MRR → FUNCIONAL
+- Custos: despesas (sync Conta Azul), prestadores, nova-sede → FUNCIONAL
+- Relatórios: DRE, balanço, DFC, KPIs, auditoria, relatório diário → FUNCIONAL
+- Análise: churn, inadimplência, unit economics (CAC/LTV/payback), analytics → FUNCIONAL
+- Planejamento: business plan com import/export Google Sheets → FUNCIONAL
+- Schemas: v2_billing.* (24+ tabelas), sync.iugu_*, fin_estruturas, fin_centros_custo
+
+**O que falta para Fase 0**:
+- ERP (Freelaw One): placeholder — decisão pendente (D9)
+- Recebimentos: STUB
+- Estruturas organizacionais: STUB
+- Eliminar Google Sheets como dependência para Business Plan (D10)
+
+**Gates**: G1 (95%), G5 (parcial — dados financeiros alimentam dashboard)
+
+---
+
+### MA2: Vendas & Pipeline
+
+**Escopo**: Pipeline de deals, CRM nativo, comissões, propostas, metas de vendas, oitiva (avaliação de ligações), sequences de email.
+
+**Módulos**: `/vendas/*` (31 páginas), `/crm/*` (12 páginas), `/oitiva/*` (8 páginas)
+
+**O que existe**:
+- Pipeline kanban com deals por estágio → FUNCIONAL
+- CRM nativo: contacts, companies, deals, activities → FUNCIONAL
+- Propostas: draft → sent → viewed → accepted/rejected → FUNCIONAL
+- Metas de vendas (sales_targets) por pessoa e período → FUNCIONAL
+- Oitiva: scorecards com critérios ponderados, transcrições, avaliações → EM DEV
+- Analytics: CRM analytics, churn cohort, form analysis, plan mix → FUNCIONAL
+- Comissão: BDR 1%, Closer 5% → PARCIAL (forecast não validado)
+
+**O que falta para Fase 0**:
+- Desligar HubSpot como fonte de verdade (D4)
+- Motor de execução de sequences (schema pronto, sem cron que processa e envia)
+- Dedup nativo sem HubSpot (consultar v2_sales.companies.domain)
+- Integrar métricas de Oitiva ao pipeline e scorecards
+- Validar forecast de comissão com vendas
+- Tracking de opens/clicks/replies (webhooks Resend)
+
+**Gates**: G3 (70%) — **GATE MAIS CRÍTICO** (mudança de processo + código)
+
+---
+
+### MA3: Aquisição & Outbound
+
+**Escopo**: Prospecção outbound (BDR), qualificação inbound (SDR), Lead Hunter, lead scoring, KPIs de aquisição.
+
+**Módulos**: `/aquisicao/*` (6 páginas), `/vendas/outbound`, `/vendas/leads`
+
+**O que existe**:
+- Lead Hunter: prospecção B2B com Google Places + Exa enrichment → FUNCIONAL
+- Lista de leads com filtros por localidade e segmento → FUNCIONAL
+- KPIs diários de aquisição → PARCIAL (tela existe mas dados vazios)
+- Leads com scoring schema (lead_scoring_rules) → SCHEMA PRONTO
+
+**O que falta para Fase 0**:
+- KPIs diários com data binding real (hoje mostra zeros)
+- Lead scoring processor: cron que calcula scores baseado nas regras
+- Cadências outbound funcionais (depende do motor de sequences de MA2)
+- Dedup nativo sem HubSpot
+
+**Gates**: G3 (parcial — depende de MA2 para sequences e dedup)
+
+---
+
+### MA4: Customer Success
+
+**Escopo**: Health score, NPS, renovações, playbooks, retention offers, customer 360, journey, churn prediction.
+
+**Módulos**: `/cs/*` (9 páginas), `/suporte/cliente/[orgId]` (15 páginas)
+
+**O que existe**:
+- Health Score: 5 componentes (usage, engagement, support, financial, advocacy) com thresholds → FUNCIONAL
+- Customer 360 API: agrega 9 fontes (CRM, billing, health, support, WhatsApp, AI, onboarding, churn, NPS) → FUNCIONAL
+- NPS: surveys + respostas + score (promoter/passive/detractor) → FUNCIONAL
+- Renovações: pipeline (upcoming → in_negotiation → renewed/churned/downgraded/upgraded) → FUNCIONAL
+- Journey: 7 estágios (onboarding → advocacy → churned) → FUNCIONAL
+- Churn Predictions: risk score + fatores + ações recomendadas → FUNCIONAL
+- Retention Offers: schema completo (discount_percentage, discount_fixed, upgrade_discount, free_months, custom) → NÃO CONECTADO
+
+**O que falta para Fase 0**:
+- **Playbooks CS: 0% implementado** — precisa de 3 mínimos (onboarding, cliente em risco, NPS detractor)
+- Wiring de retention offers à UI (engine existe, falta conectar)
+- Validar pesos do health score com time de CS (D3)
+- Timeline de interações com dados 100% reais (hoje mistura real + mock)
+- Dados de uso do Studio: depende time Migração (risco externo)
+
+**Gates**: G2 (73%)
+
+---
+
+### MA5: Mensageria & Comunicação
+
+**Escopo**: WhatsApp, email transacional, inbox unificado, templates, chat interno, classificação IA de mensagens.
+
+**Módulos**: `/interno/whatsapp` (12 páginas), `/suporte/inbox`, `/chat` (4 páginas)
+
+**O que existe**:
+- WhatsApp via Evolution API: envio e recebimento bidireccional → FUNCIONAL
+- Email via Resend: transacional com tracking completo → FUNCIONAL
+- Inbox unificado em /suporte/inbox → FUNCIONAL (complexo, com assignedTo e departments)
+- Chat interno com canais, DMs, threads → FUNCIONAL
+- Chatbot via Blip para atendimento automatizado → FUNCIONAL
+- AI Classification: classifica mensagens por intent (sales/support/cs/marketing) com confidence → FUNCIONAL
+- Templates: notification_templates por canal (email, push, sms, in_app, whatsapp, slack) → PARCIAL
+
+**O que falta para Fase 0**:
+- Histórico consolidado por cliente cross-channel (conversas em v2_comms não linkadas ao Customer 360)
+- Completar webhook de respostas WhatsApp
+- UI de gerenciamento de templates validada com o time
+- SMS: stub sem provedor (decisão: entra na Fase 0?)
+
+**Gates**: G7 (85%)
+
+---
+
+### MA6: Automações & Workflows
+
+**Escopo**: Workflow builder, marketing automations, lead scoring engine, cron jobs, edge functions, automações de processo.
+
+**Módulos**: `/produto/workflows`, crons, 58 edge functions (Deno)
+
+**O que existe**:
+- Workflow Builder: tipos (trigger → condição → ação) e executor definidos → STUB (simula, não executa)
+- Marketing Automations: CRUD + cron 5min + enrollment engine → PARCIAL
+  - Funcionais: send_email (Resend), send_whatsapp (Evolution), set_contact_property, create_task
+  - Stub: send_sms, create_deal, webhook, internal_notification
+- 25 Cron Jobs: maioria funcional, mas sem monitoramento centralizado
+- 58 Edge Functions (Deno): separadas do monorepo, rodando no Supabase
+
+**O que falta para Fase 0**:
+- Workflow execution real (substituir stub por execução de ações)
+- Lead scoring processor: cron que calcula scores e dispara ações
+- Completar 4 ações de automação (SMS, deal, webhook, notification)
+- UI de monitoramento de automações (logs, falhas, re-runs)
+- Inventário de automações externas (Zapier, Make) para migrar ou eliminar (D1)
+- Monitoramento centralizado dos 25 crons (health dashboard)
+
+**Gates**: G4 (60%)
+
+---
+
+### MA7: Integrações
+
+**Escopo**: 13 integrações externas, sync engine, monitoramento de saúde, documentação técnica.
+
+**Módulos**: Transversal — afeta todos os módulos
+
+**O que existe**:
+- **Iugu**: sync estável (customers, subscriptions, invoices, financials, receivables, plans)
+- **Stripe**: webhooks funcionando (subscription + invoice events)
+- **Conta Azul**: sync estável (despesas, categorias)
+- **Banco Inter**: mTLS + OAuth implementado → pronto mas INATIVO (D12)
+- **HubSpot**: sync ativo → em deprecação, migrando para G3
+- **Evolution/Blip**: WhatsApp operando
+- **Meta/Google Ads**: analytics funcionando, CAPI integrado
+- **Golden Record**: entity resolution para dedup
+- **Clicksign**: assinatura digital de contratos
+- **Slack**: notificações outbound
+- **Notion**: sync de documentação
+- Sync engine com dual-write para v2_billing
+
+**O que falta para Fase 0**:
+- Monitoramento centralizado com alertas (Sentry/Slack)
+- Documentação formal de cada integração (o que sincroniza, frequência, credenciais, fallback)
+- SLA definido por sync
+- Decisão sobre Banco Inter (D12)
+
+**Gates**: G6 (85%)
+
+---
+
+### MA8: Dashboard & Analytics Executivo
+
+**Escopo**: Dashboard unificado para liderança, métricas consolidadas, filtros transversais, visão executiva.
+
+**Módulos**: `/dashboard` (existente), `/executive` (a criar)
+
+**O que existe**:
+- /dashboard: hub principal com links para todos os módulos → FUNCIONAL
+- Analytics espalhados por módulo: financeiro (DRE, MRR, churn), vendas (pipeline, conversão), CS (health) → FUNCIONAL
+- PostHog integrado para analytics de produto → FUNCIONAL
+- Churn cohort, unit economics, form analysis → FUNCIONAL
+
+**O que falta para Fase 0**:
+- **UMA página /executive** que consolide: MRR, churn rate, novos clientes, receita, despesas, health score médio, pipeline
+- Filtros transversais: período, plano, cohort, ICP
+- Binding de dados em /aquisicao/kpis-diarios (hoje mostra zeros)
+- Métricas de CS no dashboard (health score médio, clientes em risco, NPS)
+- MetricaSnapshot: tabela para snapshots históricos + cron diário (para comparativos mês a mês)
+
+**Gates**: G5 (90%)
+
+---
+
+### MA9: RH & Produtividade
+
+**Escopo**: Gestão de pessoas, org chart, dashboards de produtividade do time de desenvolvimento, performance tracking.
+
+**Módulos**: `/rh/*` (18 páginas)
+
+**O que existe**:
+- 18 páginas de RH parcialmente implementadas
+- Org chart → PARCIAL
+- Perfis de usuário (user_profiles) → FUNCIONAL
+
+**O que falta para Fase 0**:
+- **Dashboard de produtividade dos devs**:
+  - Métricas de código: commits, PRs abertos/merged, code review time, lines changed
+  - Velocity do time: story points, cycle time (PR aberto → merged → deployed)
+  - Alocação por projeto/sprint: quem está trabalhando em quê
+  - Integração com GitHub API para puxar métricas automaticamente
+- Performance tracking por pessoa (reviews, goals, 1:1s)
+- Org chart funcional com hierarquia e reportes
+- Visão de capacidade do time (quem está disponível, quem está alocado)
+
+**Gates**: Nenhum gate vinculado. **Decisão necessária**: elevar a gate ou manter como Fase 1?
+
+> **Nota**: Este módulo tem 18 páginas construídas mas não foi incluído nos 7 gates originais.
+> Se a liderança considerar os dashboards de produtividade críticos para Fase 0,
+> deve ser elevado a G8 ou integrado ao G5 (Dashboard Executivo).
+
+---
+
+### MA10: Marketing
+
+**Escopo**: Campanhas de ads, analytics de marketing, email marketing, newsletters, landing pages, CAPI.
+
+**Módulos**: `/marketing/*` (4 páginas)
+
+**O que existe**:
+- Campanhas Meta/Google Ads com analytics → FUNCIONAL
+- CAPI (Conversions API) para Meta e Google → FUNCIONAL
+- Schema completo: campaigns, email_campaigns, landing_pages, utm_parameters, conversion_events, blog_posts, newsletters
+- Newsletter subscribers e events → SCHEMA PRONTO, UI parcial
+
+**O que falta para Fase 0**:
+- UI de marketing pouco desenvolvida (apenas 4 páginas para schema extenso)
+- Email marketing campaigns: schema existe mas sem UI de criação e envio
+- Landing pages: schema sem builder visual
+- Analytics de canal de aquisição consolidado
+
+**Gates**: Nenhum gate vinculado. Candidato a Fase 1 (exceto analytics de aquisição que alimenta G5).
+
+---
+
+### MA11: Prestadores & Comunidade
+
+**Escopo**: Gestão de prestadores de serviço jurídico, funnel de aquisição de prestadores, tiers de qualidade, ranking, saturação.
+
+**Módulos**: `/prestadores/*` (12 páginas)
+
+**O que existe**:
+- Provider funnel com tiers (S+ a D) e ranking → FUNCIONAL
+- Journey phases de prestadores → FUNCIONAL
+- Saturação por região/especialidade → FUNCIONAL
+- Onboarding de prestadores → PARCIAL (depende HubSpot para parte do fluxo)
+
+**O que falta para Fase 0**:
+- Desvincular onboarding de prestadores do HubSpot (atrelado ao G3)
+- Validar se módulo opera de forma autônoma sem HubSpot
+
+**Gates**: Parcialmente vinculado ao G3 (dependência HubSpot no onboarding)
+
+---
+
+### MA12: Produto & Plataforma
+
+**Escopo**: Design system, wiki/knowledge base, audit logs, feature flags, AI agents (Mastra), chatbots, infraestrutura técnica.
+
+**Módulos**: `/produto/*` (112 páginas), `/wiki` (5 páginas)
+
+**O que existe**:
+- Design system completo → FUNCIONAL
+- Wiki / knowledge base → FUNCIONAL
+- AI Agents (Mastra): CEO IA, Maria Insights, Oitiva Evaluation, Backstage Assistant → FUNCIONAL
+- Audit logs → FUNCIONAL
+- Feature flags → FUNCIONAL
+- Chatbots configuráveis → FUNCIONAL
+
+**O que falta para Fase 0**:
+- Nenhum bloqueio crítico — módulo funcional e mantido
+- Melhorias são Fase 1+
+
+**Gates**: Nenhum — plataforma de suporte transversal
+
+---
+
+## 5. OS 7 GATES — ESPECIFICAÇÃO DE PRODUTO
+
+> Cada gate é um marco de capacidade que cruza uma ou mais macro-áreas (seção 4).
+> Use a tabela abaixo para navegar entre gates e macro-áreas.
+
+| Gate | Descrição | Macro-Áreas | Completude |
+|------|-----------|-------------|------------|
+| G1 | Gestão financeira centralizada | MA1 (Financeiro) | 95% |
+| G2 | Acompanhar Cliente v1 | MA4 (Customer Success) | 73% |
+| G3 | Pipeline e CRM unificados | MA2 (Vendas) + MA3 (Aquisição) + MA11 (Prestadores) | 70% |
+| G4 | Automações internas | MA6 (Automações) | 60% |
+| G5 | Dashboard unificado | MA8 (Dashboard) + MA1 (Financeiro) + MA4 (CS) | 90% |
+| G6 | Integrações estabilizadas | MA7 (Integrações) | 85% |
+| G7 | Mensageria no monorepo | MA5 (Mensageria) | 85% |
+
+### 5.1 G1: Gestão financeira centralizada
 
 **Declaração**: Toda operação financeira da Freelaw é consultável, analisável e planejável dentro do Backstage, sem dependência de planilhas externas.
 
@@ -337,7 +670,7 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-### 4.2 G2: Acompanhar Cliente v1
+### 5.2 G2: Acompanhar Cliente v1
 
 **Declaração**: O time de CS consegue acompanhar a saúde de qualquer cliente ativo numa única tela, receber alertas quando algo piora, e agir com playbooks pré-definidos.
 
@@ -397,7 +730,7 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-### 4.3 G3: Pipeline e CRM unificados (matar HubSpot)
+### 5.3 G3: Pipeline e CRM unificados (matar HubSpot)
 
 **Declaração**: Todo o funil de vendas — da prospecção ao fechamento — opera dentro do Backstage, com CRM nativo e zero dependência do HubSpot como fonte de verdade.
 
@@ -461,7 +794,7 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-### 4.4 G4: Automações internas
+### 5.4 G4: Automações internas
 
 **Declaração**: Todas as automações críticas da operação rodam dentro do Backstage, com monitoramento, logs, e UI para gerenciamento.
 
@@ -508,7 +841,7 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-### 4.5 G5: Dashboard unificado de métricas
+### 5.5 G5: Dashboard unificado de métricas
 
 **Declaração**: A liderança da Freelaw abre UMA tela no Backstage e vê todas as métricas-chave da empresa em tempo real.
 
@@ -548,9 +881,9 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-### 4.6 G6: Integrações estabilizadas
+### 5.6 G6: Integrações estabilizadas
 
-**Declaração**: Todas as 14 integrações externas estão monitoradas, documentadas, e operando sem falhas críticas.
+**Declaração**: Todas as 13 integrações externas estão monitoradas, documentadas, e operando sem falhas críticas.
 
 **Completude estimada**: 85%
 
@@ -564,7 +897,6 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 - **Conta Azul**: sync estável (despesas, categorias)
 - **Stripe**: webhooks funcionando (subscription events, invoice events)
 - **Banco Inter**: mTLS + OAuth implementado, pronto mas INATIVO
-- **Omie**: schema existe mas sync não implementado
 - **HubSpot**: sync ativo mas em deprecação (migra para G3)
 - **Evolution/Blip**: WhatsApp operando
 - **Meta/Google Ads**: ads analytics funcionando
@@ -572,13 +904,12 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 **Gaps**:
 - Sem monitoramento centralizado com alertas
-- Omie sync não implementado
 - Banco Inter inativo (decisão pendente)
 - Sem documentação formal de cada integração
 - Sem SLA definido para cada sync
 
 **Critérios de aceite**:
-- [ ] Auditoria completa das 14 integrações (status, última sync, erros)
+- [ ] Auditoria completa das 13 integrações (status, última sync, erros)
 - [ ] Monitoramento ativo com alertas Sentry/Slack para falhas
 - [ ] Zero falhas críticas em 7 dias consecutivos
 - [ ] Documentação de cada integração (o que sincroniza, frequência, credenciais, fallback)
@@ -592,7 +923,7 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-### 4.7 G7: Mensageria no monorepo
+### 5.7 G7: Mensageria no monorepo
 
 **Declaração**: Toda comunicação com clientes e leads (WhatsApp, email) opera dentro do monorepo, com histórico consolidado por cliente e templates gerenciáveis.
 
@@ -641,9 +972,9 @@ A Fase 0 tem 7 gates. Cada gate representa uma capacidade operacional que o Back
 
 ---
 
-## 5. ARQUITETURA DE DADOS
+## 6. ARQUITETURA DE DADOS
 
-### 5.1 Mapa de schemas
+### 6.1 Mapa de schemas
 
 O Backstage usa PostgreSQL via Drizzle ORM com estratégia multi-schema:
 
@@ -715,7 +1046,7 @@ SCHEMAS INFRA-DB (packages/infra/db/src/schemas/v2/):
     └── ...
 ```
 
-### 5.2 Fluxos de dados entre sistemas
+### 6.2 Fluxos de dados entre sistemas
 
 #### Fluxo de Aquisição → Venda → Cliente
 
@@ -787,7 +1118,7 @@ sequence_enrollments       Atualiza step_execution     Exit conditions:
                                                         unsubscribe
 ```
 
-### 5.3 Entidades que faltam para a visão do Gab
+### 6.3 Entidades que faltam para a visão do Gab
 
 #### Cadência Unificada (expandir v2_sales.sequences)
 O schema de sequences já suporta multi-canal (stepType: email, call, linkedin, whatsapp, sms, manual_task). O que falta é o **motor de execução** e a **integração com WhatsApp/SMS** além de email.
@@ -809,7 +1140,7 @@ Não existe tabela dedicada para snapshots de métricas históricas. Hoje cada m
 - Tabela metric_snapshots com tipo, período, valor, segmentação
 - Cron job diário que snapshota MRR, churn, health score médio, etc.
 
-### 5.4 RLS e Segurança
+### 6.4 RLS e Segurança
 
 **Padrão**: Row Level Security no Supabase por organization_id.
 
@@ -834,13 +1165,13 @@ pgPolicy("finance_only", {
 
 ---
 
-## 6. VISÃO PÓS-FASE 0 (Gab)
+## 7. VISÃO PÓS-FASE 0 (Gab)
 
 > Esta seção documenta a visão estratégica do CEO para o Backstage APÓS a Fase 0.
 > Nenhum item desta seção entra no escopo atual. São pré-requisitos futuros que
 > a Fase 0 deve habilitar.
 
-### 6.1 Dados unificados com cohortização
+### 7.1 Dados unificados com cohortização
 
 **Visão**: Qualquer métrica da empresa pode ser segmentada por cohort (mês de aquisição), plano, ICP, canal de aquisição. Exemplo: "MRR dos clientes que entraram em janeiro no plano Professional via inbound."
 
@@ -848,7 +1179,7 @@ pgPolicy("finance_only", {
 
 **O que a Fase 0 habilita**: Customer 360 (G2) + dashboard unificado (G5) + CRM nativo (G3) criam a base de dados necessária. Cohortização transversal é Fase 1.
 
-### 6.2 Cadências automáticas omni-channel
+### 7.2 Cadências automáticas omni-channel
 
 **Visão**: Cadências de vendas e CS que combinam email + WhatsApp + ligação, operadas por humanos OU por IA, com comparativos de performance.
 
@@ -856,7 +1187,7 @@ pgPolicy("finance_only", {
 
 **O que a Fase 0 habilita**: G3 (sequences com motor de execução) + G7 (mensageria consolidada) criam a infraestrutura. IA para cadências é Fase 1+.
 
-### 6.3 IA por área
+### 7.3 IA por área
 
 **Visão**: Cada área da empresa tem IA aplicada: coaching de SDRs/Closers com comparativo humano vs IA, pipeline de conteúdo marketing com IA, health score inteligente com tratativa automatizada.
 
@@ -864,7 +1195,7 @@ pgPolicy("finance_only", {
 
 **O que a Fase 0 habilita**: G2 (health score funcionando) + G4 (automações) + Oitiva (avaliações) criam os dados necessários. IA coaching e comparativos são Fase 1+.
 
-### 6.4 Flywheel operacional
+### 7.4 Flywheel operacional
 
 **Visão**: O Backstage como flywheel — dados de uso alimentam health score, health score aciona CS, CS melhora retenção, retenção aumenta LTV, LTV justifica mais investimento em aquisição.
 
@@ -872,9 +1203,9 @@ pgPolicy("finance_only", {
 
 ---
 
-## 7. DÉBITO TÉCNICO
+## 8. DÉBITO TÉCNICO
 
-### 7.1 Inventário
+### 8.1 Inventário
 
 **Segurança (P0)**:
 - ~167 API routes sem autenticação — CRÍTICO
@@ -894,7 +1225,7 @@ pgPolicy("finance_only", {
 - Módulos com dados mock misturados com dados reais
 - Playbooks CS vazio
 
-### 7.2 Estratégia
+### 8.2 Estratégia
 
 > **NÃO** tratar débito técnico de forma horizontal na Fase 0.
 > Apenas corrigir nos módulos que estamos tocando para fechar os gates.
@@ -902,7 +1233,7 @@ pgPolicy("finance_only", {
 
 Exceção: se uma route sem auth for pública e expor dados sensíveis, corrigir imediatamente.
 
-### 7.3 Routes sem auth — priorização
+### 8.3 Routes sem auth — priorização
 
 A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério sugerido:
 1. Routes públicas que expõem dados de clientes → P0
@@ -911,7 +1242,7 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 
 ---
 
-## 8. DECISÕES PENDENTES
+## 9. DECISÕES PENDENTES
 
 | # | Decisão | Responsável | Deadline | Status |
 |---|---------|-------------|----------|--------|
@@ -927,14 +1258,13 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 | D10 | Google Sheets: eliminar ou conviver na Fase 0? | Finance + Guilherme | Sprint 1 | Pendente |
 | D11 | Dados históricos do HubSpot: migrar ou perder? | Vendas + Biel | Sprint 1 | Pendente |
 | D12 | Banco Inter sync: ativar na Fase 0? | Finance | Sprint 2 | Pendente |
-| D13 | Omie sync: implementar na Fase 0? | Finance | Sprint 2 | Pendente |
-| D14 | Workflow builder visual: Fase 0 ou Fase 1? | VDC | Sprint 1 | Pendente |
+| D13 | Workflow builder visual: Fase 0 ou Fase 1? | VDC | Sprint 1 | Pendente |
 
 ---
 
-## 9. MÉTRICAS DE SUCESSO
+## 10. MÉTRICAS DE SUCESSO
 
-### 9.1 Fase 0 (quantitativas)
+### 10.1 Fase 0 (quantitativas)
 
 - [ ] 7/7 gates fechados e aprovados por VDC + Gab
 - [ ] Zero dependência de CRM externo como fonte de verdade
@@ -945,7 +1275,7 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 - [ ] Zero falhas críticas de integração em 7 dias
 - [ ] 3 playbooks CS operando
 
-### 9.2 Norte pós-Fase 0 (qualitativas)
+### 10.2 Norte pós-Fase 0 (qualitativas)
 
 - Cadências automáticas (email + WhatsApp + ligação) operando
 - Sistema omni-channel funcional com timeline unificada
@@ -957,7 +1287,7 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 
 ---
 
-## 10. GOVERNANÇA
+## 11. GOVERNANÇA
 
 ### Regra de ouro
 
@@ -984,3 +1314,4 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 | 2026-03-09 | v1 | Documento criado | Guilherme + Claude |
 | 2026-03-09 | v2 | Atualizado com mapeamento real do código | Guilherme + Claude |
 | 2026-03-09 | v3 | Reescrita completa: personas, user stories, arquitetura profunda, separação PRD/Plano | Guilherme + Claude |
+| 2026-03-09 | v4 | Macro-áreas com ownership, RH & Produtividade, gates orientados, remoção Omie, correção papel VDC | Guilherme + Claude |
