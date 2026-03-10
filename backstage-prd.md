@@ -1,4 +1,4 @@
-# BACKSTAGE FREELAW — Super PRD v6
+# BACKSTAGE FREELAW — Super PRD v7
 
 > O QUE construir e POR QUÊ.
 > Toda decisão, construção e priorização deve estar ancorada aqui.
@@ -40,6 +40,8 @@ STUDIO OFFICES (cliente)     BACKSTAGE (operação)      STUDIO PROVIDERS (prest
 ```
 
 O Backstage centraliza **gestão comercial** (vendas, CRM, pipeline), **gestão financeira** (receita, custos, DRE, billing), **gestão de clientes** (CS, health score, NPS, churn), **mensageria** (WhatsApp, email), **automações** (workflows, cadências) e **inteligência** (dashboards, IA, analytics).
+
+A visão da Freelaw é ser uma **empresa powered by AI** — a CEO da Freelaw é uma IA. Humanos representam a IA por enquanto. Cada pessoa que abre o Backstage encontra um **AI Cockpit** personalizado para o seu papel: o que é mais importante para ela naquele dia, quais decisões tomar, quais compromissos cobrar. O **Management OS** é o sistema operacional da gestão em si — pulses, weekly reports, combinados, e a IA que orquestra tudo.
 
 ### 1.3 O problema: fragmentação operacional
 
@@ -588,6 +590,11 @@ pgPolicy("finance_only", {
 > estrutura (contacts, companies, deals, activities, pipelines) é reutilizada para outros domínios:
 > pipeline de gestão de prestadores, pipeline de CS, pipeline de investidores, etc.
 >
+> O **Management OS** segue a mesma lógica transversal: AI Cockpit + CEO AI + Pulses + Weekly Reports
+> + Combinados rodam **por dentro** de todas as áreas. Cada pessoa abre o Backstage e encontra uma
+> home personalizada pelo seu papel. Como o CRM, o Management OS é infraestrutura consumida por
+> todas as macro-áreas — não é um módulo isolado.
+>
 > Essa lógica de **packages transversais** se aplica a outras conexões entre áreas:
 > - **Financeiro ↔ Prestadores**: pagamento a prestadores alimenta custos e DRE
 > - **Financeiro ↔ CS**: recebimentos ligados a health score e inadimplência
@@ -595,6 +602,7 @@ pgPolicy("finance_only", {
 > - **Vendas ↔ CS**: deal fechado → onboarding → health score → renovação
 > - **Aquisição ↔ Vendas**: lead qualificado → deal no pipeline
 > - **Mensageria ↔ Todos**: WhatsApp/email como canal transversal
+> - **Management OS ↔ Todos**: pulses, reports e combinados alimentam e são alimentados por todas as MAs
 >
 > **Status**: Mapeamento completo de conexões cross-área **PENDENTE** (ver D14).
 
@@ -621,6 +629,7 @@ pgPolicy("finance_only", {
 |---|------------|------|---------|---------|-------|-----------------|------------|
 | **PACKAGES (infra transversal)** ||||||
 | MA-CRM | CRM (Operating System) | Package | Transversal | — | G3 | _a definir_ | Não iniciado |
+| MA-MGMT | Management OS (Gestão & Reports) | Package | Transversal | — | — | _a definir_ | Não iniciado |
 | MA7 | Integrações | Package | Transversal (13→9 sistemas, com internalização) | — | G6 | _a definir_ | Não iniciado |
 | MA6 | Automações & Workflows | Package | /produto/workflows, crons, edge functions | — | G4 | _a definir_ | Não iniciado |
 | MA5 | Mensageria & Comunicação | Package | /interno/whatsapp, /suporte/inbox, /chat | 31 | G7 | _a definir_ | Não iniciado |
@@ -644,32 +653,37 @@ pgPolicy("finance_only", {
 > Este mapeamento é pré-requisito para construir os PRDs das macro-áreas.
 
 ```
-                    ┌─────────────────────────────────────────────┐
-                    │         CRM (Operating System)              │
-                    │  contacts · companies · deals · pipelines   │
-                    │  activities · sequences · scoring           │
-                    └──────┬──────────┬──────────┬────────────────┘
-                           │          │          │
-              ┌────────────┤          │          ├────────────┐
-              ▼            ▼          ▼          ▼            ▼
-         ┌─────────┐ ┌─────────┐ ┌────────┐ ┌──────────┐ ┌──────────┐
-         │ Vendas  │ │Marketing│ │  CS    │ │Prestador.│ │Aquisição │
-         │  (MA2)  │ │ (MA10)  │ │ (MA4)  │ │  (MA11)  │ │  (MA3)   │
-         └────┬────┘ └─────────┘ └───┬────┘ └─────┬────┘ └──────────┘
-              │                      │             │
-              ▼                      ▼             ▼
-         ┌───────────────────────────────────────────────┐
-         │              Financeiro (MA1)                 │
-         │  receita · custos · billing · recebimentos    │
-         │  pagto prestadores · DRE · business plan      │
-         │  General Ledger · plano de contas             │
-         └────────────────────┬──────────────────────────┘
-                              │
-                              ▼
-         ┌───────────────────────────────────────────────┐
-         │            IA & Produção (MA13)               │
-         │  LIA · AI agents · Oitiva · insights          │
-         └───────────────────────────────────────────────┘
+    ┌───────────────────────────────────────────────────────────────────┐
+    │                  Management OS (MA-MGMT)                         │
+    │  AI Cockpit · CEO AI · Pulses · Weekly Reports · Combinados      │
+    │  (transversal — personalizado por role, permeia todas as áreas)  │
+    └──────────┬──────────┬──────────┬──────────┬──────────┬───────────┘
+               │          │          │          │          │
+    ┌──────────▼──────────▼──────────▼──────────▼──────────▼───────────┐
+    │                CRM (Operating System)                            │
+    │  contacts · companies · deals · pipelines                        │
+    │  activities · sequences · scoring                                │
+    └──────┬──────────┬──────────┬──────────┬──────────┬───────────────┘
+           │          │          │          │          │
+           ▼          ▼          ▼          ▼          ▼
+      ┌─────────┐ ┌─────────┐ ┌────────┐ ┌──────────┐ ┌──────────┐
+      │ Vendas  │ │Marketing│ │  CS    │ │Prestador.│ │Aquisição │
+      │  (MA2)  │ │ (MA10)  │ │ (MA4)  │ │  (MA11)  │ │  (MA3)   │
+      └────┬────┘ └─────────┘ └───┬────┘ └─────┬────┘ └──────────┘
+           │                      │             │
+           ▼                      ▼             ▼
+      ┌───────────────────────────────────────────────┐
+      │              Financeiro (MA1)                 │
+      │  receita · custos · billing · recebimentos    │
+      │  pagto prestadores · DRE · business plan      │
+      │  General Ledger · plano de contas             │
+      └────────────────────┬──────────────────────────┘
+                           │
+                           ▼
+      ┌───────────────────────────────────────────────┐
+      │            IA & Produção (MA13)               │
+      │  LIA · AI agents · Oitiva · insights          │
+      └───────────────────────────────────────────────┘
 ```
 
 | Conexão | De → Para | Dados que fluem | Status Mapeamento |
@@ -687,6 +701,7 @@ pgPolicy("finance_only", {
 | CS → Suporte | MA4 ↔ MA5 | Tickets de suporte alimentam health score | A mapear |
 | CS → Produto | MA4 ← Studio | Dados de uso alimentam health score | A mapear |
 | Aquisição → CS | MA3 → MA4 | Onboarding inicia imediatamente após deal close | A mapear |
+| Management OS → Todas | MA-MGMT ↔ * | Pulses, reports e combinados alimentam e são alimentados por todas as MAs. Cockpit consome dados de todas as áreas. | A mapear |
 
 ---
 
@@ -769,6 +784,74 @@ pgPolicy("finance_only", {
 - [ ] Tracking de opens/clicks/replies via webhooks Resend
 - [ ] Contacts com lifecycle tracking completo (lead → customer → churned)
 - [ ] Activities registrando TODOS os touchpoints (calls, emails, meetings, demos, tasks)
+
+---
+
+### MA-MGMT: Management OS (Gestão, Reports, AI Cockpit)
+
+**Escopo**: Sistema de gestão transversal — AI Cockpit personalizado por role, CEO AI que orquestra prioridades/cobranças/aprendizado, Pulses (captura qualitativa diária/semanal), Weekly Reports automáticos, Combinados (commitments rastreáveis com evidência), Knowledge Schema para contexto da IA, Ritmos de gestão (diário/semanal/mensal/trimestral).
+
+**Visão**: "A IA não é um relatório: ela é o sistema operacional da gestão." Cada pessoa abre o Backstage e encontra o que é mais importante para ela naquele dia. A IA observa dados, pergunta o que falta, documenta decisões, cobra combinados, propõe plano, e mede resultado.
+
+**Módulos**: Transversal — roda por dentro de todas as áreas (como o CRM package)
+
+**Componentes**:
+
+1. **AI Cockpit** (home personalizada por role): Top priorities, metas, alertas, chat com IA, combinados pendentes
+2. **Pulses** (captura qualitativa): Daily pulse (30-60s), Weekly pulse (2-4min), Incident pulse (ad hoc), suporte a áudio com transcrição automática
+3. **Weekly Report** (CEO AI gera automaticamente): Resumo executivo, riscos/oportunidades, decisões sugeridas, plano de ação, perguntas pendentes
+4. **Combinados** (commitments rastreáveis): título, owner, data, KPI relacionado, evidência esperada, status, logs automáticos
+5. **CEO AI behaviors**: Sensemaking (conecta dados e narrativa), Prioritização (rankeia por impacto), Orquestração (distribui ações), Cobrança (follow-ups automáticos), Documentação (registra decisões e outcomes)
+6. **CEO AI modes**: Autopilot (sugere, humano aprova), Copilot (humano pede, IA executa), Ops Mode (anomalia detectada → playbook automático)
+
+**Knowledge Schema**:
+- `knowledge_events` — eventos relevantes (marco, incidente, mudança)
+- `knowledge_pulses` — respostas de daily/weekly pulses
+- `knowledge_decisions` — decisões documentadas com contexto e rationale
+- `knowledge_outcomes` — resultados de ações e experimentos
+- `kpi_definitions` — definição única de cada KPI (fórmula, fonte, owner, frequência)
+- `kpi_values` — valores históricos de KPIs (snapshots)
+- `management_actions` — ações de gestão (cobranças, follow-ups, escalações)
+
+**Cockpits por role**:
+- **Vendas**: pipeline ativo + forecast de receita + top 5 accounts + combinados de vendas
+- **Marketing**: budget utilizado + CAC por canal + experimentos ativos + leads da semana
+- **CS**: health score médio + clientes em risco + playbooks ativos + renovações próximas
+- **Financeiro**: caixa projetado + MRR trend + desvios do BP + alertas financeiros
+- **Executivo**: north star metric + top 3 riscos + decisões pendentes + combinados da liderança
+
+**O que existe**:
+- Mastra AI agents (backstage-assistant, CEO IA, Maria Insights, Oitiva Evaluation)
+- Dashboard hub (/dashboard)
+- Alguns KPIs espalhados por módulos
+- Nenhum sistema de pulses
+- Nenhum sistema de combinados
+
+**O que falta para Fase 0** (MVP):
+- Home personalizada por role (4 roles mínimos)
+- Daily pulse (texto) + Weekly pulse (texto + áudio)
+- Weekly report automático (1 executivo + por área)
+- Combinados com owner/prazo
+- Alertas simples (thresholds) em 5 KPIs vitais
+
+**Fases**:
+- **Fase 1**: "Gestão que se escreve sozinha" — Pulses capturam contexto → IA sintetiza → weekly report → ações sugeridas
+- **Fase 2**: "Gestão que executa" — IA cria drafts de emails, tasks, tickets, updates automaticamente
+- **Fase 3**: "Gestão que aprende" — Loop completo: ações → evidências → outcomes → playbooks. A IA aprende o que funciona e refina continuamente
+
+**Gates**: Transversal — conecta com G2 (CS cockpit), G3 (Vendas cockpit), G5 (Dashboard executivo)
+
+**Escopo Fase 0 (2 meses)**:
+- [ ] Home/Cockpit personalizada para 4 roles (Vendas, CS, Marketing, Financeiro)
+- [ ] Daily pulse com template por área (texto, 30-60s para preencher)
+- [ ] Weekly pulse com suporte a áudio + transcrição automática
+- [ ] CEO AI gera weekly report automático (1 executivo + 4 por área)
+- [ ] Weekly report inclui: resumo narrativo, 3-7 decisões sugeridas, plano de ação com owners
+- [ ] Combinados CRUD: criar, atribuir, acompanhar, cobrar, fechar com evidência
+- [ ] 5 KPIs vitais com alertas de threshold (MRR, churn, pipeline, caixa, NPS)
+- [ ] Chat com IA na home (gerar email, resumo, plano, checklist)
+- [ ] Knowledge schema básico implementado (events, pulses, decisions, kpi_definitions)
+- [ ] Cockpit testável em produção pelo PO para cada role
 
 ---
 
@@ -1249,10 +1332,10 @@ LIA é a IA centralizada para clientes da Freelaw — produção de peças jurí
 | Gate | Descrição | Macro-Áreas | Completude |
 |------|-----------|-------------|------------|
 | G1 | Gestão financeira centralizada | MA1 (Financeiro) | 95% |
-| G2 | Acompanhar Cliente v1 | MA4 (Customer Success) | 73% |
-| G3 | Pipeline e CRM unificados | MA2 (Vendas) + MA3 (Aquisição) + MA11 (Prestadores) | 70% |
+| G2 | Acompanhar Cliente v1 | MA4 (Customer Success) + MA-MGMT (CS cockpit) | 73% |
+| G3 | Pipeline e CRM unificados | MA2 (Vendas) + MA3 (Aquisição) + MA11 (Prestadores) + MA-MGMT (Vendas cockpit) | 70% |
 | G4 | Automações internas | MA6 (Automações) | 60% |
-| G5 | Dashboard unificado | MA8 (Dashboard) + MA1 (Financeiro) + MA4 (CS) | 90% |
+| G5 | Dashboard unificado | MA8 (Dashboard) + MA1 (Financeiro) + MA4 (CS) + MA-MGMT (Executivo cockpit) | 90% |
 | G6 | Integrações estabilizadas | MA7 (Integrações) | 85% |
 | G7 | Mensageria no monorepo | MA5 (Mensageria) | 85% |
 
@@ -1822,6 +1905,10 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 | D19 | Design System: escopo Fase 0 e aplicação do Designer's Bible | VDC + Design | Sprint 1 | Pendente |
 | D20 | Validação em produção: plano de testes para todos os módulos "FUNCIONAL" | VDC + QA | Sprint 1 | Pendente |
 | D21 | Unificar 3 taxonomias (route domains, sidebar sections, ColaboradorAreas) sob macro-áreas | VDC + Produto | Sprint 1 | Pendente |
+| D22 | Management OS: escopo MVP e roles iniciais para AI Cockpit | VDC + Produto | Sprint 1 | Pendente |
+| D23 | CEO AI: quais KPIs vitais v1 por área + definições únicas | VDC + Lideranças | Sprint 1 | Pendente |
+| D24 | Pulses: templates por área + cadência (diário vs semanal vs amostragem) | VDC + Time | Sprint 1 | Pendente |
+| D25 | LIA vs CEO AI: compartilhar infraestrutura ou separar? | VDC + Produto | Sprint 1 | Pendente |
 
 ---
 
@@ -1892,3 +1979,4 @@ A priorização deve ser feita pelo time na Sprint 1 (decisão D6). Critério su
 | 2026-03-09 | v4 | Macro-áreas com ownership, RH & Produtividade, gates orientados, remoção Omie, correção papel VDC | Guilherme + Claude |
 | 2026-03-09 | v5 | CRM como OS (package transversal), liderança corrigida (Ju CEO, Carol CS, Didico Aquisição), conexões cross-área, D14/D15 | Guilherme + Claude |
 | 2026-03-09 | v6 | Rewrite + auditoria de código: internalização (HubSpot/Conta Azul/Notion/Slack), MA13 LIA, Arquitetura de Dados com GL real (85 contas, 5 posting engines), ciclo de vida do cliente, CRM investidores, 27 packages documentados, aquisição multicanal, CS operacional, escopo 2 meses todas MAs, validação produção, desalinhamento domínios (3 taxonomias), D16-D21 | Guilherme + Claude |
+| 2026-03-09 | v7 | Management OS (MA-MGMT): package transversal com AI Cockpit personalizado por role, CEO AI (sensemaking/orquestração/cobrança), Pulses (daily/weekly qualitativo + áudio), Weekly Reports automáticos, Combinados rastreáveis, Knowledge Schema, ritmos de gestão. Visão "empresa powered by AI" no contexto estratégico. Gates G2/G3/G5 conectados ao MA-MGMT. D22-D25 | Guilherme + Claude |
